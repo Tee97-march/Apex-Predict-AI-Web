@@ -64,3 +64,31 @@ function logout() {
     }
 
 }
+// ===============================
+// Google Sheets Connection
+// ===============================
+
+const GOOGLE_SHEETS_API =
+"https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
+
+async function connectPrototype(){
+
+    try{
+
+        const response = await fetch(GOOGLE_SHEETS_API);
+
+        const data = await response.json();
+
+        console.log("Prototype Connected");
+
+        console.log(data);
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+connectPrototype();
