@@ -61,9 +61,6 @@ function logout() {
 
         window.location.href = "index.html";
 
-    }
-
-}
 // ===============================
 // Google Sheets Connection
 // ===============================
@@ -71,24 +68,67 @@ function logout() {
 const GOOGLE_SHEETS_API =
 "https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
 
-async function connectPrototype(){
+async function connectPrototype() {
 
-    try{
+    const statusElement =
+        document.getElementById("connectionStatus");
 
-        const response = await fetch(GOOGLE_SHEETS_API);
+    try {
 
-        const data = await response.json();
+        if (statusElement) {
+            statusElement.textContent =
+                "🔄 Connecting to Google Sheets...";
+        }
 
-        console.log("Prototype Connected");
+        const response =
+            await fetch(GOOGLE_SHEETS_API);
 
+        if (!response.ok) {
+            throw new Error(
+                "Connection failed: HTTP " + response.status
+            );
+        }
+
+        const data =
+            await response.json();
+
+        console.log("APEX Predict AI Google Sheets response:");
         console.log(data);
 
-    }catch(error){
+        if (statusElement) {
 
-        console.error(error);
+            if (data.status === "CONNECTED") {
 
+                statusElement.textContent =
+                    "✅ Google Sheets Connected";
+
+            } else {
+
+                statusElement.textContent =
+                    "⚠️ Google Sheets connection requires attention";
+
+            }
+        }
+
+    } catch (error) {
+
+        console.error(
+            "APEX Predict AI Google Sheets connection error:",
+            error
+        );
+
+        if (statusElement) {
+            statusElement.textContent =
+                "❌ Google Sheets Connection Failed";
+        }
     }
-
 }
 
-connectPrototype();
+
+// Wait until the dashboard HTML has loaded
+// before looking for #connectionStatus.
+
+window.addEventListener(
+    "DOMContentLoaded",
+    connectPrototype
+);
