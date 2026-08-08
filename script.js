@@ -3,6 +3,11 @@
 // Main Application Script
 // ==============================
 
+
+// ==============================
+// LOGIN
+// ==============================
+
 function login() {
 
     const username = document.getElementById("username");
@@ -13,7 +18,10 @@ function login() {
         return;
     }
 
-    if (username.value.trim() === "" || password.value.trim() === "") {
+    if (
+        username.value.trim() === "" ||
+        password.value.trim() === ""
+    ) {
         alert("Please enter your username and password.");
         return;
     }
@@ -22,6 +30,11 @@ function login() {
 
     window.location.href = "dashboard.html";
 }
+
+
+// ==============================
+// NAVIGATION
+// ==============================
 
 function openDashboard() {
     window.location.href = "dashboard.html";
@@ -55,59 +68,77 @@ function openSettings() {
     window.location.href = "settings.html";
 }
 
+
+// ==============================
+// LOGOUT
+// ==============================
+
 function logout() {
 
-    if(confirm("Logout from Apex Predict AI?")){
+    if (confirm("Logout from APEX Predict AI?")) {
 
         window.location.href = "index.html";
 
-// ===============================
-// Google Sheets Connection
-// ===============================
+    }
+}
+
+
+// ==============================
+// GOOGLE SHEETS CONNECTION
+// ==============================
 
 const GOOGLE_SHEETS_API =
 "https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
+
 
 async function connectPrototype() {
 
     const statusElement =
         document.getElementById("connectionStatus");
 
+    // Pages without connectionStatus do not need
+    // the visible connection message.
+    if (!statusElement) {
+        return;
+    }
+
     try {
 
-        if (statusElement) {
-            statusElement.textContent =
-                "🔄 Connecting to Google Sheets...";
-        }
+        statusElement.textContent =
+            "🔄 Connecting to Google Sheets...";
 
         const response =
             await fetch(GOOGLE_SHEETS_API);
 
         if (!response.ok) {
+
             throw new Error(
-                "Connection failed: HTTP " + response.status
+                "Connection failed: HTTP " +
+                response.status
             );
+
         }
 
         const data =
             await response.json();
 
-        console.log("APEX Predict AI Google Sheets response:");
+        console.log(
+            "APEX Predict AI Google Sheets response:"
+        );
+
         console.log(data);
 
-        if (statusElement) {
 
-            if (data.status === "CONNECTED") {
+        if (data.status === "CONNECTED") {
 
-                statusElement.textContent =
-                    "✅ Google Sheets Connected";
+            statusElement.textContent =
+                "✅ Google Sheets Connected";
 
-            } else {
+        } else {
 
-                statusElement.textContent =
-                    "⚠️ Google Sheets connection requires attention";
+            statusElement.textContent =
+                "⚠️ Google Sheets connection requires attention";
 
-            }
         }
 
     } catch (error) {
@@ -117,16 +148,15 @@ async function connectPrototype() {
             error
         );
 
-        if (statusElement) {
-            statusElement.textContent =
-                "❌ Google Sheets Connection Failed";
-        }
+        statusElement.textContent =
+            "❌ Google Sheets Connection Failed";
     }
 }
 
 
-// Wait until the dashboard HTML has loaded
-// before looking for #connectionStatus.
+// ==============================
+// START GOOGLE SHEETS CONNECTION
+// ==============================
 
 window.addEventListener(
     "DOMContentLoaded",
