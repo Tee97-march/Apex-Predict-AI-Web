@@ -28,4 +28,4 @@ window.addEventListener(
     "DOMContentLoaded",
     connectPrototype
 );
-            
+
