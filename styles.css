@@ -116,3 +116,210 @@ button:hover{
     font-size:28px;
   }
   }
+/* =========================================
+   APEX PREDICT AI - DASHBOARD FOUNDATION
+   Added without changing existing login CSS
+   ========================================= */
+
+.container{
+  width:100%;
+  max-width:1100px;
+  margin:0 auto;
+  padding:25px;
+  color:#fff;
+}
+
+.container > h1{
+  text-align:center;
+  margin-bottom:8px;
+  font-size:32px;
+}
+
+.container > p{
+  text-align:center;
+  color:#cfd8e3;
+  margin-bottom:18px;
+}
+
+#connectionStatus{
+  text-align:center;
+  margin:15px 0 20px;
+  padding:12px 15px;
+  border-radius:12px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  color:#b9f6ca;
+  font-weight:bold;
+}
+
+
+/* =========================================
+   DASHBOARD NAVIGATION
+   ========================================= */
+
+.dashboard-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin:20px 0 25px;
+}
+
+.dashboard-grid button{
+  width:100%;
+  margin-top:0;
+  min-height:55px;
+  font-size:14px;
+  background:rgba(255,255,255,.09);
+  border:1px solid rgba(255,255,255,.14);
+  backdrop-filter:blur(10px);
+}
+
+.dashboard-grid button:hover{
+  background:rgba(255,255,255,.16);
+  transform:translateY(-2px);
+}
+
+
+/* =========================================
+   MATCH DATABASE PANEL
+   ========================================= */
+
+#matchDataPanel{
+  width:100%;
+  color:#111;
+  overflow:hidden;
+}
+
+#matchDataPanel h2{
+  color:#061326;
+  font-size:24px;
+  margin-bottom:8px;
+}
+
+#matchDataPanel h3{
+  color:#061326;
+  font-size:20px;
+}
+
+
+/* =========================================
+   MATCH DATA CARDS
+   ========================================= */
+
+#matchDataPanel > div{
+  width:100%;
+}
+
+#matchDataPanel p{
+  color:#333;
+  margin:6px 0;
+}
+
+
+/* =========================================
+   FULL DATA GRID
+   ========================================= */
+
+#matchDataPanel div[style*="grid-template-columns"]{
+  width:100%;
+}
+
+#matchDataPanel div[style*="grid-template-columns"] > div{
+  min-width:0;
+  word-break:break-word;
+}
+
+
+/* =========================================
+   MOBILE DASHBOARD
+   ========================================= */
+
+@media(max-width:800px){
+
+  .container{
+    padding:15px;
+  }
+
+  .dashboard-grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+  }
+
+  .container > h1{
+    font-size:27px;
+  }
+
+}
+
+@media(max-width:480px){
+
+  .container{
+    padding:12px;
+  }
+
+  .dashboard-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .dashboard-grid button{
+    min-height:52px;
+    font-size:13px;
+    padding:10px 6px;
+  }
+
+  #connectionStatus{
+    font-size:13px;
+  }
+
+  #matchDataPanel{
+    padding:15px !important;
+  }
+
+  #matchDataPanel h2{
+    font-size:21px;
+  }
+
+  #matchDataPanel h3{
+    font-size:18px;
+  }
+
+}
+
+
+/* =========================================
+   APEX DASHBOARD SCROLLING
+   ========================================= */
+
+body{
+  align-items:flex-start;
+  overflow-x:hidden;
+  overflow-y:auto;
+}
+
+.container{
+  margin-top:20px;
+  margin-bottom:30px;
+}
+
+
+/* =========================================
+   APEX PROFESSIONAL CARD EFFECT
+   ========================================= */
+
+#matchDataPanel{
+  box-shadow:
+    0 12px 35px rgba(0,0,0,.25);
+}
+
+
+/* =========================================
+   SAFE MOBILE DATA DISPLAY
+   ========================================= */
+
+#matchDataPanel *{
+  max-width:100%;
+}
+
+#matchDataPanel strong{
+  font-weight:700;
+}
