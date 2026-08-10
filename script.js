@@ -253,49 +253,155 @@ async function loadMatchDatabase() {
                     border:1px solid #ddd;
                     border-radius:10px;
                 ">
+// ==============================
+// LOAD MATCH DATABASE
+// ==============================
+
+async function loadMatchDatabase() {
+
+    const statusElement =
+        document.getElementById("connectionStatus");
+
+    if (!statusElement) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(GOOGLE_SHEETS_API);
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Match database request failed: HTTP " +
+                response.status
+            );
+        }
+
+        const data =
+            await response.json();
+
+        console.log(
+            "APEX Predict AI Match Database:",
+            data
+        );
+
+        const matchDatabase =
+            data.matchDatabase;
+
+        if (
+            !matchDatabase ||
+            !matchDatabase.exists ||
+            !matchDatabase.objects ||
+            matchDatabase.objects.length === 0
+        ) {
+
+            return;
+        }
+
+
+        // ==============================
+        // CREATE MATCH DATA PANEL
+        // ==============================
+
+        let panel =
+            document.getElementById("matchDataPanel");
+
+
+        if (!panel) {
+
+            panel =
+                document.createElement("div");
+
+            panel.id =
+                "matchDataPanel";
+
+            panel.style.marginTop =
+                "20px";
+
+            panel.style.padding =
+                "20px";
+
+            panel.style.borderRadius =
+                "12px";
+
+            panel.style.background =
+                "#ffffff";
+
+            panel.style.border =
+                "1px solid #ddd";
+
+            statusElement.insertAdjacentElement(
+                "afterend",
+                panel
+            );
+        }
+
+
+        // ==============================
+        // DISPLAY ALL MATCH DATA
+        // ==============================
+
+        const matches =
+            matchDatabase.objects;
+
+
+        panel.innerHTML = `
+
+            <h2>
+                ⚽ APEX MATCH DATABASE
+            </h2>
+
+            <p>
+                <strong>
+                    ${matches.length}
+                </strong>
+                match(es) loaded from Google Sheets.
+            </p>
+
+
+            ${matches.map((match, index) => `
+
+                <div style="
+                    margin-top:20px;
+                    padding:18px;
+                    border:1px solid #ddd;
+                    border-radius:12px;
+                ">
 
                     <h3>
-                        Match ${index + 1}
+                        ⚽ MATCH ${index + 1}
                     </h3>
 
-                    <p>
-                        <strong>League:</strong>
-                        ${match["League"] || ""}
-                    </p>
 
-                    <p>
-                        <strong>
-                            ${match["Home Team"] || ""}
-                        </strong>
-                        vs
-                        <strong>
-                            ${match["Away Team"] || ""}
-                        </strong>
-                    </p>
+                    ${Object.entries(match)
+                        .map(([key, value]) => `
 
-                    <p>
-                        <strong>Prediction:</strong>
-                        ${match["Prediction"] || ""}
-                    </p>
+                            <p style="
+                                margin:8px 0;
+                                line-height:1.5;
+                            ">
 
-                    <p>
-                        <strong>Confidence:</strong>
-                        ${match["Confidence %"] || ""}%
-                    </p>
+                                <strong>
+                                    ${key}:
+                                </strong>
 
-                    <p>
-                        <strong>Risk Level:</strong>
-                        ${match["Risk Level"] || ""}
-                    </p>
+                                ${value !== null &&
+                                  value !== undefined &&
+                                  String(value).trim() !== ""
+                                    ? value
+                                    : "—"}
 
-                    <p>
-                        <strong>Recommended Market:</strong>
-                        ${match["recommended market"] || ""}
-                    </p>
+                            </p>
+
+                        `)
+                        .join("")}
 
                 </div>
 
             `).join("")}
+
         `;
 
     } catch (error) {
