@@ -1,13 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>APEX Predict AI</title>
 
-    <link rel="stylesheet" href="./styles.css">
+    <link
+        rel="stylesheet"
+        href="./styles.css"
+    >
+
 </head>
+
 
 <body>
 
@@ -19,44 +30,87 @@
             ⚽
         </div>
 
-        <h1>APEX Predict AI</h1>
+
+        <h1>
+            APEX Predict AI
+        </h1>
+
 
         <p class="subtitle">
             Professional Football Prediction Platform
         </p>
 
+
         <div class="version">
             Version 2.1 XL
         </div>
 
-        <div id="status">
-            Initializing AI Engine...
+
+        <div
+            id="status"
+            style="
+                color:#ffd54f;
+                margin-bottom:20px;
+                font-size:14px;
+            "
+        >
+            APEX AI Engine Ready
         </div>
 
-        <input
-            type="text"
-            id="username"
-            placeholder="Username"
-            autocomplete="username"
+
+        <!--
+        =========================================
+        LOGIN FORM
+        =========================================
+        The form itself points directly to the
+        dashboard. This provides a browser-level
+        fallback even if JavaScript has a problem.
+        =========================================
+        -->
+
+        <form
+            id="loginForm"
+            action="./dashboard.html"
+            method="get"
         >
 
-        <input
-            type="password"
-            id="password"
-            placeholder="Password"
-            autocomplete="current-password"
-        >
 
-        <button
-            type="button"
-            id="loginBtn"
-        >
-            LOGIN
-        </button>
+            <input
+                type="text"
+                id="username"
+                placeholder="Username"
+                autocomplete="username"
+                required
+            >
 
-        <p class="forgot">
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Password"
+                autocomplete="current-password"
+                required
+            >
+
+
+            <button
+                type="submit"
+                id="loginBtn"
+            >
+                LOGIN
+            </button>
+
+
+        </form>
+
+
+        <p
+            class="forgot"
+            id="forgotPassword"
+        >
             Forgot Password?
         </p>
+
 
         <div class="footer">
             © 2026 APEX Predict AI
@@ -67,126 +121,201 @@
 </div>
 
 
+
 <script>
-(function () {
 
-    "use strict";
-
-    const loginButton =
-        document.getElementById("loginBtn");
-
-    const username =
-        document.getElementById("username");
-
-    const password =
-        document.getElementById("password");
-
-    const status =
-        document.getElementById("status");
+"use strict";
 
 
-    if (!loginButton || !username || !password) {
+/*
+=================================================
+APEX PREDICT AI
+LOGIN ENGINE
+=================================================
+*/
 
-        console.error(
-            "APEX Predict AI: Login elements were not found."
+
+const loginForm =
+    document.getElementById("loginForm");
+
+
+const username =
+    document.getElementById("username");
+
+
+const password =
+    document.getElementById("password");
+
+
+const loginButton =
+    document.getElementById("loginBtn");
+
+
+const status =
+    document.getElementById("status");
+
+
+
+/*
+=================================================
+LOGIN SUBMISSION
+=================================================
+*/
+
+loginForm.addEventListener(
+    "submit",
+    function (event) {
+
+        event.preventDefault();
+
+
+        const usernameValue =
+            username.value.trim();
+
+
+        const passwordValue =
+            password.value.trim();
+
+
+
+        /*
+        =========================================
+        EMPTY LOGIN
+        =========================================
+        */
+
+        if (
+            usernameValue === "" ||
+            passwordValue === ""
+        ) {
+
+            status.textContent =
+                "⚠️ Please enter your username and password.";
+
+            status.style.color =
+                "#ffd54f";
+
+            return;
+        }
+
+
+
+        /*
+        =========================================
+        LOGIN ACCEPTED
+        =========================================
+        */
+
+        status.textContent =
+            "✅ Welcome to APEX Predict AI";
+
+        status.style.color =
+            "#00c853";
+
+
+        loginButton.textContent =
+            "OPENING APEX...";
+
+
+        loginButton.disabled =
+            true;
+
+
+
+        /*
+        =========================================
+        DIRECT DASHBOARD NAVIGATION
+        =========================================
+
+        We deliberately do NOT use a long
+        setTimeout here.
+
+        The dashboard opens immediately.
+        =========================================
+        */
+
+        window.location.assign(
+            "./dashboard.html"
         );
 
-        return;
     }
+);
 
 
-    loginButton.addEventListener(
+
+/*
+=================================================
+ENTER KEY SUPPORT
+=================================================
+*/
+
+username.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            loginForm.requestSubmit();
+
+        }
+
+    }
+);
+
+
+password.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            loginForm.requestSubmit();
+
+        }
+
+    }
+);
+
+
+
+/*
+=================================================
+FORGOT PASSWORD
+=================================================
+*/
+
+document
+    .getElementById("forgotPassword")
+    .addEventListener(
         "click",
         function () {
 
-            const usernameValue =
-                username.value.trim();
-
-            const passwordValue =
-                password.value.trim();
-
-
-            if (
-                usernameValue === "" ||
-                passwordValue === ""
-            ) {
-
-                status.textContent =
-                    "⚠️ Please enter your username and password.";
-
-                status.style.color =
-                    "#ffd54f";
-
-                return;
-            }
-
-
-            status.textContent =
-                "✅ Welcome to APEX Predict AI";
-
-            status.style.color =
-                "#00c853";
-
-
-            loginButton.disabled = true;
-
-            loginButton.textContent =
-                "LOADING...";
-
-
-            setTimeout(function () {
-
-                window.location.href =
-                    "./dashboard.html";
-
-            }, 500);
+            alert(
+                "Password recovery will be available in a future APEX Predict AI update."
+            );
 
         }
     );
 
 
-    username.addEventListener(
-        "keydown",
-        function (event) {
 
-            if (event.key === "Enter") {
+/*
+=================================================
+READY
+=================================================
+*/
 
-                loginButton.click();
+console.log(
+    "APEX Predict AI Login Engine Ready."
+);
 
-            }
-
-        }
-    );
-
-
-    password.addEventListener(
-        "keydown",
-        function (event) {
-
-            if (event.key === "Enter") {
-
-                loginButton.click();
-
-            }
-
-        }
-    );
-
-
-    if (status) {
-
-        status.textContent =
-            "APEX AI Engine Ready";
-
-    }
-
-
-    console.log(
-        "APEX Predict AI Login Interface Ready."
-    );
-
-})();
 </script>
 
+
 </body>
-</html>
+
+    </html>
