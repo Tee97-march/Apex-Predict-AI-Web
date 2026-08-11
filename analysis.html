@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
@@ -10,14 +9,150 @@
 
 <link rel="stylesheet" href="styles.css">
 
-</head>
+<style>
 
+.analysis-header{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.analysis-header h1{
+    font-size:32px;
+    margin-bottom:10px;
+}
+
+.analysis-header p{
+    color:#cfd8e3;
+    line-height:1.5;
+}
+
+.analysis-status{
+    text-align:center;
+    margin:15px 0 20px;
+    padding:13px;
+    border-radius:12px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.12);
+    font-weight:bold;
+}
+
+.analysis-card{
+    background:#ffffff;
+    color:#111;
+    border-radius:20px;
+    padding:22px;
+    margin-bottom:25px;
+    box-shadow:0 12px 35px rgba(0,0,0,.25);
+}
+
+.match-title{
+    font-size:25px;
+    font-weight:bold;
+    color:#061326;
+    margin-bottom:18px;
+}
+
+.match-teams{
+    background:#f4f6fa;
+    padding:18px;
+    border-radius:15px;
+    margin-bottom:18px;
+}
+
+.match-teams h2{
+    margin:0 0 10px;
+    color:#061326;
+}
+
+.data-row{
+    background:#f7f7f7;
+    border-radius:12px;
+    padding:15px;
+    margin:10px 0;
+}
+
+.data-label{
+    font-weight:bold;
+    color:#555;
+    display:block;
+    margin-bottom:5px;
+}
+
+.data-value{
+    color:#111;
+    font-size:17px;
+}
+
+.prediction-box{
+    background:#e8f7ec;
+    border-left:7px solid #00c853;
+    padding:18px;
+    border-radius:12px;
+    margin-top:20px;
+}
+
+.prediction-box h3{
+    margin:0 0 8px;
+    color:#061326;
+}
+
+.prediction-value{
+    font-size:22px;
+    font-weight:bold;
+    color:#00a844;
+}
+
+.analysis-section{
+    margin-top:22px;
+}
+
+.analysis-section h3{
+    color:#061326;
+    margin-bottom:12px;
+}
+
+.navigation{
+    margin-top:25px;
+}
+
+.navigation button{
+    margin-top:10px;
+}
+
+.error-box{
+    background:#fff3f3;
+    color:#b00020;
+    border:1px solid #ffcdd2;
+    border-radius:15px;
+    padding:20px;
+    text-align:center;
+}
+
+@media(max-width:600px){
+
+    .analysis-header h1{
+        font-size:27px;
+    }
+
+    .analysis-card{
+        padding:16px;
+    }
+
+    .match-title{
+        font-size:22px;
+    }
+
+}
+
+</style>
+
+</head>
 
 <body>
 
 <div class="container">
 
-    <div class="header" style="text-align:center; margin-bottom:25px;">
+    <div class="analysis-header">
 
         <h1>🤖 AI Match Analysis</h1>
 
@@ -28,152 +163,101 @@
     </div>
 
 
-    <div id="connectionStatus"
-         style="
-            text-align:center;
-            margin:15px 0 20px;
-            padding:12px 15px;
-            border-radius:12px;
-            background:rgba(255,255,255,.08);
-            border:1px solid rgba(255,255,255,.12);
-            color:#b9f6ca;
-            font-weight:bold;
-         ">
-
-        🔄 Loading Match Analysis...
-
+    <div
+        id="analysisStatus"
+        class="analysis-status"
+    >
+        🔄 Connecting to Google Sheets...
     </div>
 
 
     <div id="analysisContainer">
 
-        <div style="
-            background:#ffffff;
-            color:#111;
-            padding:25px;
-            border-radius:16px;
-            text-align:center;
-        ">
+        <div class="analysis-card">
 
-            🔄 Loading analysis...
+            <h2>
+                🔄 Loading Match Analysis...
+            </h2>
+
+            <p>
+                Please wait while APEX Predict AI loads the match data.
+            </p>
 
         </div>
 
     </div>
 
 
-    <br>
+    <div class="navigation">
 
+        <button onclick="window.location.href='dashboard.html'">
+            🏠 Dashboard
+        </button>
 
-    <button onclick="openDashboard()">
-        🏠 Dashboard
-    </button>
+        <button onclick="window.location.href='predictions.html'">
+            🤖 Predictions
+        </button>
 
+        <button onclick="window.location.href='statistics.html'">
+            📈 Statistics
+        </button>
 
-    <button onclick="openPredictions()">
-        🤖 Predictions
-    </button>
+        <button onclick="window.location.href='livescores.html'">
+            ⚽ Live Scores
+        </button>
 
+        <button onclick="window.location.href='leagues.html'">
+            🏆 Leagues
+        </button>
 
-    <button onclick="openStatistics()">
-        📈 Statistics
-    </button>
+        <button onclick="window.location.href='headtohead.html'">
+            ⚔ Head To Head
+        </button>
 
+        <button onclick="window.location.href='settings.html'">
+            ⚙ Settings
+        </button>
 
-    <button onclick="openLiveScores()">
-        ⚽ Live Scores
-    </button>
-
-
-    <button onclick="openLeagues()">
-        🏆 Leagues
-    </button>
-
-
-    <button onclick="openHeadToHead()">
-        ⚔ Head To Head
-    </button>
-
-
-    <button onclick="openSettings()">
-        ⚙ Settings
-    </button>
-
+    </div>
 
 </div>
 
 
-
 <script>
 
-/* =========================================================
-   APEX PREDICT AI
-   MATCH ANALYSIS
-   VERSION 2.1 XL
-   ========================================================= */
+"use strict";
 
-
-/* =========================================================
-   GOOGLE SHEETS API
-   ========================================================= */
 
 const GOOGLE_SHEETS_API =
 "https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
 
 
+async function loadAnalysis(){
 
-/* =========================================================
-   SAFE VALUE FUNCTION
-   ========================================================= */
-
-function getValue(match, names) {
-
-    for (let i = 0; i < names.length; i++) {
-
-        const key = names[i];
-
-        if (
-            match[key] !== undefined &&
-            match[key] !== null &&
-            match[key] !== ""
-        ) {
-
-            return match[key];
-
-        }
-
-    }
-
-    return "—";
-
-}
-
-
-
-/* =========================================================
-   LOAD MATCH ANALYSIS
-   ========================================================= */
-
-async function loadAnalysis() {
+    const status =
+        document.getElementById("analysisStatus");
 
     const container =
         document.getElementById("analysisContainer");
 
-    const status =
-        document.getElementById("connectionStatus");
 
-
-    try {
+    try{
 
         status.textContent =
             "🔄 Connecting to Google Sheets...";
 
 
         const response =
-            await fetch(GOOGLE_SHEETS_API);
+            await fetch(
+                GOOGLE_SHEETS_API,
+                {
+                    method:"GET",
+                    cache:"no-store"
+                }
+            );
 
 
-        if (!response.ok) {
+        if(!response.ok){
 
             throw new Error(
                 "HTTP " + response.status
@@ -187,42 +271,43 @@ async function loadAnalysis() {
 
 
         console.log(
-            "APEX Predict AI Analysis Data:",
+            "APEX Analysis Google Sheets Data:",
             data
         );
 
 
-        const matchDatabase =
+        if(data.status === "CONNECTED"){
+
+            status.textContent =
+                "✅ Google Sheets Connected";
+
+            status.style.color =
+                "#b9f6ca";
+
+        }
+
+
+        const database =
             data.matchDatabase;
 
 
-        if (
-            !matchDatabase ||
-            !Array.isArray(matchDatabase.objects) ||
-            matchDatabase.objects.length === 0
-        ) {
-
-            status.textContent =
-                "⚠️ No match data available";
-
+        if(
+            !database ||
+            !database.exists ||
+            !Array.isArray(database.objects) ||
+            database.objects.length === 0
+        ){
 
             container.innerHTML = `
 
-                <div style="
-                    background:#ffffff;
-                    color:#111;
-                    padding:25px;
-                    border-radius:16px;
-                    text-align:center;
-                ">
+                <div class="error-box">
 
-                    <h2>
-                        ⚠️ No Match Data
-                    </h2>
+                    <h2>⚠️ No Match Data Found</h2>
 
-                    <p style="margin-top:10px;">
-                        No matches were found in the
-                        Google Sheets Match Database.
+                    <p>
+                        Google Sheets is connected,
+                        but there are currently no matches
+                        available in the Match Database.
                     </p>
 
                 </div>
@@ -234,35 +319,21 @@ async function loadAnalysis() {
         }
 
 
-        status.textContent =
-            "✅ Google Sheets Connected";
-
-
         const matches =
-            matchDatabase.objects;
+            database.objects;
 
 
-        let html = `
+        container.innerHTML = `
 
-            <div style="
-                background:#ffffff;
-                color:#111;
-                padding:20px;
-                border-radius:16px;
-                margin-bottom:20px;
-                box-shadow:0 12px 35px rgba(0,0,0,.25);
-            ">
+            <div class="analysis-card">
 
-                <h2 style="
-                    color:#061326;
-                    margin-bottom:8px;
-                ">
+                <div class="match-title">
                     🤖 APEX AI MATCH ANALYSIS
-                </h2>
+                </div>
 
-                <p style="color:#444;">
+                <p>
                     ${matches.length}
-                    match(es) available for analysis.
+                    match(es) loaded from Google Sheets.
                 </p>
 
             </div>
@@ -270,581 +341,330 @@ async function loadAnalysis() {
         `;
 
 
+        matches.forEach(
+            function(match,index){
 
-        /* =================================================
-           ANALYSE EACH MATCH
-           ================================================= */
+                const home =
+                    match["Home Team"] || "Unknown Home Team";
 
-        matches.forEach(function(match, index) {
+                const away =
+                    match["Away Team"] || "Unknown Away Team";
 
+                const league =
+                    match["League"] || "Unknown League";
 
-            const date =
-                getValue(match, [
-                    "Date",
-                    "date"
-                ]);
+                const date =
+                    match["Date"] || "Not available";
 
+                const prediction =
+                    match["Prediction"] || "Not available";
 
-            const league =
-                getValue(match, [
-                    "League",
-                    "league"
-                ]);
+                const confidence =
+                    match["Confidence %"] || "Not available";
 
+                const risk =
+                    match["Risk Level"] || "Not available";
 
-            const homeTeam =
-                getValue(match, [
-                    "Home Team",
-                    "home team",
-                    "Home"
-                ]);
+                const market =
+                    match["recommended market"] ||
+                    match["Recommended Market"] ||
+                    "Not available";
 
+                const expectedGoals =
+                    match["Expected Goals"] ||
+                    "Not available";
 
-            const awayTeam =
-                getValue(match, [
-                    "Away Team",
-                    "away team",
-                    "Away"
-                ]);
+                const homeForm =
+                    match["Home Form"] ||
+                    "Not available";
 
+                const awayForm =
+                    match["Away Form"] ||
+                    "Not available";
 
-            const prediction =
-                getValue(match, [
-                    "Prediction",
-                    "prediction"
-                ]);
+                const homeAdvantage =
+                    match["Home Advantage Score"] ||
+                    "Not available";
 
+                const headToHead =
+                    match["Head to Head"] ||
+                    "Not available";
 
-            const confidence =
-                getValue(match, [
-                    "Confidence %",
-                    "Confidence",
-                    "confidence %"
-                ]);
+                const headToHeadScore =
+                    match["Head to Head Score"] ||
+                    "Not available";
 
+                const bookmakerOdds =
+                    match["Bookmaker Odds"] ||
+                    "Not available";
 
-            const risk =
-                getValue(match, [
-                    "Risk Level",
-                    "Risk",
-                    "risk level"
-                ]);
-
-
-            const market =
-                getValue(match, [
-                    "recommended market",
-                    "Recommended Market",
-                    "Market"
-                ]);
+                const oddsValue =
+                    match["Odds Value Score"] ||
+                    "Not available";
 
 
-            /* ================================
-               ANALYSIS FIELDS
-               ================================ */
+                const card =
+                    document.createElement("div");
 
-            const teamForm =
-                getValue(match, [
-                    "Team Form",
-                    "Form",
-                    "Team Form Score",
-                    "Form Score"
-                ]);
+                card.className =
+                    "analysis-card";
 
 
-            const expectedGoals =
-                getValue(match, [
-                    "Expected Goals",
-                    "Expected Goals (xG)",
-                    "xG",
-                    "Expected Goal"
-                ]);
+                card.innerHTML = `
 
-
-            const defensiveRating =
-                getValue(match, [
-                    "Defensive Rating",
-                    "Defense Rating",
-                    "Defensive Strength"
-                ]);
-
-
-            const attackRating =
-                getValue(match, [
-                    "Attack Rating",
-                    "Attacking Rating",
-                    "Attack Strength"
-                ]);
-
-
-            const headToHead =
-                getValue(match, [
-                    "Head to Head",
-                    "Head To Head",
-                    "H2H",
-                    "Head-to-Head"
-                ]);
-
-
-            const homeAdvantage =
-                getValue(match, [
-                    "Home Advantage",
-                    "Home Advantage Score",
-                    "Home Advantage Rating"
-                ]);
-
-
-            const headToHeadScore =
-                getValue(match, [
-                    "Head to Head Score",
-                    "Head To Head Score",
-                    "H2H Score"
-                ]);
-
-
-            const bookmakerOdds =
-                getValue(match, [
-                    "Bookmaker Odds",
-                    "Odds",
-                    "Bookmaker odds"
-                ]);
-
-
-            const oddsValueScore =
-                getValue(match, [
-                    "Odds Value Score",
-                    "Value Score",
-                    "Odds Value"
-                ]);
-
-
-
-            /* =================================================
-               MATCH CARD
-               ================================================= */
-
-            html += `
-
-                <div style="
-                    background:#ffffff;
-                    color:#111;
-                    padding:25px;
-                    border-radius:16px;
-                    margin-bottom:25px;
-                    box-shadow:0 12px 35px rgba(0,0,0,.25);
-                ">
-
-
-                    <h2 style="
-                        color:#061326;
-                        margin-bottom:18px;
-                    ">
-
+                    <div class="match-title">
                         ⚽ Match ${index + 1}
-
-                    </h2>
-
+                    </div>
 
 
-                    <div style="
-                        background:#f4f6fa;
-                        padding:20px;
-                        border-radius:14px;
-                        margin-bottom:20px;
-                    ">
+                    <div class="match-teams">
 
-                        <h2 style="
-                            color:#061326;
-                            margin-bottom:12px;
-                        ">
-
-                            ${homeTeam}
-
-                            <span style="
-                                color:#777;
-                                font-weight:normal;
-                            ">
+                        <h2>
+                            ${home}
+                            <span style="color:#777;">
                                 vs
                             </span>
-
-                            ${awayTeam}
-
+                            ${away}
                         </h2>
 
-
-                        <p style="
-                            color:#333;
-                            margin:7px 0;
-                        ">
-
-                            <strong>
-                                League:
-                            </strong>
-
+                        <p>
+                            <strong>League:</strong>
                             ${league}
-
                         </p>
 
-
-                        <p style="
-                            color:#333;
-                            margin:7px 0;
-                        ">
-
-                            <strong>
-                                Date:
-                            </strong>
-
+                        <p>
+                            <strong>Date:</strong>
                             ${date}
-
                         </p>
 
                     </div>
 
 
+                    <div class="prediction-box">
 
-                    <!-- AI PREDICTION -->
-
-                    <div style="
-                        background:#e8f5e9;
-                        border-left:5px solid #00c853;
-                        padding:20px;
-                        border-radius:12px;
-                        margin-bottom:20px;
-                    ">
-
-                        <h3 style="
-                            color:#061326;
-                            margin-bottom:10px;
-                        ">
-
+                        <h3>
                             🤖 AI Prediction
+                        </h3>
 
+                        <div class="prediction-value">
+                            ${prediction}
+                        </div>
+
+                    </div>
+
+
+                    <div class="analysis-section">
+
+                        <h3>
+                            📊 Match Analysis
                         </h3>
 
 
-                        <p style="
-                            color:#111;
-                            font-size:22px;
-                            font-weight:bold;
-                        ">
+                        <div class="data-row">
 
-                            ${prediction}
+                            <span class="data-label">
+                                Confidence
+                            </span>
 
-                        </p>
-
-
-                        <p style="
-                            color:#333;
-                            margin-top:10px;
-                        ">
-
-                            <strong>
-                                Recommended Market:
-                            </strong>
-
-                            ${market}
-
-                        </p>
-
-
-                        <p style="
-                            color:#333;
-                            margin-top:8px;
-                        ">
-
-                            <strong>
-                                Confidence:
-                            </strong>
-
-                            ${confidence}
-                            ${confidence !== "—" ? "%" : ""}
-
-                        </p>
-
-
-                        <p style="
-                            color:#333;
-                            margin-top:8px;
-                        ">
-
-                            <strong>
-                                Risk Level:
-                            </strong>
-
-                            ${risk}
-
-                        </p>
-
-                    </div>
-
-
-
-                    <!-- TEAM ANALYSIS -->
-
-                    <h3 style="
-                        color:#061326;
-                        margin:20px 0 15px;
-                    ">
-
-                        📊 Team Analysis
-
-                    </h3>
-
-
-                    <div style="
-                        display:grid;
-                        grid-template-columns:
-                            repeat(auto-fit,minmax(200px,1fr));
-                        gap:12px;
-                    ">
-
-
-                        <div style="
-                            background:#f5f5f5;
-                            padding:16px;
-                            border-radius:12px;
-                        ">
-
-                            <strong>
-                                📈 Team Form
-                            </strong>
-
-                            <p style="
-                                color:#111;
-                                margin-top:8px;
-                                font-size:18px;
-                            ">
-
-                                ${teamForm}
-
-                            </p>
+                            <span class="data-value">
+                                ${confidence}%
+                            </span>
 
                         </div>
 
 
+                        <div class="data-row">
 
-                        <div style="
-                            background:#f5f5f5;
-                            padding:16px;
-                            border-radius:12px;
-                        ">
+                            <span class="data-label">
+                                Risk Level
+                            </span>
 
-                            <strong>
-                                ⚽ Expected Goals
-                            </strong>
+                            <span class="data-value">
+                                ${risk}
+                            </span>
 
-                            <p style="
-                                color:#111;
-                                margin-top:8px;
-                                font-size:18px;
-                            ">
+                        </div>
 
+
+                        <div class="data-row">
+
+                            <span class="data-label">
+                                Recommended Market
+                            </span>
+
+                            <span class="data-value">
+                                ${market}
+                            </span>
+
+                        </div>
+
+
+                        <div class="data-row">
+
+                            <span class="data-label">
+                                Expected Goals
+                            </span>
+
+                            <span class="data-value">
                                 ${expectedGoals}
-
-                            </p>
-
-                        </div>
-
-
-
-                        <div style="
-                            background:#f5f5f5;
-                            padding:16px;
-                            border-radius:12px;
-                        ">
-
-                            <strong>
-                                🛡 Defensive Rating
-                            </strong>
-
-                            <p style="
-                                color:#111;
-                                margin-top:8px;
-                                font-size:18px;
-                            ">
-
-                                ${defensiveRating}
-
-                            </p>
+                            </span>
 
                         </div>
 
 
+                        <div class="data-row">
 
-                        <div style="
-                            background:#f5f5f5;
-                            padding:16px;
-                            border-radius:12px;
-                        ">
+                            <span class="data-label">
+                                Home Form
+                            </span>
 
-                            <strong>
-                                🔥 Attack Rating
-                            </strong>
-
-                            <p style="
-                                color:#111;
-                                margin-top:8px;
-                                font-size:18px;
-                            ">
-
-                                ${attackRating}
-
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- HEAD TO HEAD -->
-
-                    <h3 style="
-                        color:#061326;
-                        margin:25px 0 15px;
-                    ">
-
-                        ⚔ Head to Head Analysis
-
-                    </h3>
-
-
-                    <div style="
-                        display:grid;
-                        grid-template-columns:
-                            repeat(auto-fit,minmax(200px,1fr));
-                        gap:12px;
-                    ">
-
-
-                        <div style="
-                            background:#f5f5f5;
-                            padding:16px;
-                            border-radius:12px;
-                        ">
-
-                            <strong>
-                                Head to Head
-                            </strong>
-
-                            <p style="
-                                color:#111;
-                                margin-top:8px;
-                                font-size:18px;
-                            ">
-
-                                ${headToHead}
-
-                            </p>
+                            <span class="data-value">
+                                ${homeForm}
+                            </span>
 
                         </div>
 
 
+                        <div class="data-row">
 
-                        <div style="
-                            background:#f5f5f5;
-                            padding:16px;
-                            border-radius:12px;
-                        ">
+                            <span class="data-label">
+                                Away Form
+                            </span>
 
-                            <strong>
+                            <span class="data-value">
+                                ${awayForm}
+                            </span>
+
+                        </div>
+
+
+                        <div class="data-row">
+
+                            <span class="data-label">
                                 Home Advantage Score
-                            </strong>
+                            </span>
 
-                            <p style="
-                                color:#111;
-                                margin-top:8px;
-                                font-size:18px;
-                            ">
-
+                            <span class="data-value">
                                 ${homeAdvantage}
-
-                            </p>
+                            </span>
 
                         </div>
 
 
+                        <div class="data-row">
 
-                        <div style="
-                            background:#f5f5f5;
-                            padding:16px;
-                            border-radius:12px;
-                        ">
+                            <span class="data-label">
+                                Head to Head
+                            </span>
 
-                            <strong>
+                            <span class="data-value">
+                                ${headToHead}
+                            </span>
+
+                        </div>
+
+
+                        <div class="data-row">
+
+                            <span class="data-label">
                                 Head to Head Score
-                            </strong>
+                            </span>
 
-                            <p style="
-                                color:#111;
-                                margin-top:8px;
-                                font-size:18px;
-                            ">
-
+                            <span class="data-value">
                                 ${headToHeadScore}
+                            </span>
 
-                            </p>
+                        </div>
+
+
+                        <div class="data-row">
+
+                            <span class="data-label">
+                                Bookmaker Odds
+                            </span>
+
+                            <span class="data-value">
+                                ${bookmakerOdds}
+                            </span>
+
+                        </div>
+
+
+                        <div class="data-row">
+
+                            <span class="data-label">
+                                Odds Value Score
+                            </span>
+
+                            <span class="data-value">
+                                ${oddsValue}
+                            </span>
 
                         </div>
 
                     </div>
 
+                `;
 
 
-                    <!-- ODDS ANALYSIS -->
+                container.appendChild(card);
 
-                    <h3 style="
-                        color:#061326;
-                        margin:25px 0 15px;
-                    ">
-
-                        💰 Odds & Value Analysis
-
-                    </h3>
+            }
+        );
 
 
-                    <div style="
-                        display:grid;
-                        grid-template-columns:
-                            repeat(auto-fit,minmax(200px,1fr));
-                        gap:12px;
-                    ">
+        status.textContent =
+            "✅ Match Analysis Loaded";
 
 
-                        <div style="
-                            background:#f5f5f5;
-                            padding:16px;
-                            border-radius:12px;
-                        ">
+    }catch(error){
 
-                            <strong>
-                                Bookmaker Odds
-                            </strong>
-
-                            <p style="
-                                color:#111;
-                                margin-top:8px;
-                                font-size:20px;
-                            ">
-
-                                ${bookmakerOdds}
-
-                            </p>
-
-                        </div>
+        console.error(
+            "APEX Match Analysis Error:",
+            error
+        );
 
 
+        status.textContent =
+            "❌ Analysis Connection Failed";
 
-                        <div style="
-                            background:#f5f5f5;
-                            padding:16px;
-                            border-radius:12px;
-                        ">
 
-                            <strong>
-                                Odds Value Score
-                            </strong>
+        status.style.color =
+            "#ff8a80";
 
-                            <p style="
-                     
+
+        container.innerHTML = `
+
+            <div class="error-box">
+
+                <h2>
+                    ❌ Unable to Load Analysis
+                </h2>
+
+                <p>
+                    The Google Sheets connection
+                    could not be completed.
+                </p>
+
+                <p>
+                    Please refresh the page and try again.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    loadAnalysis
+);
+
+</script>
+
+</body>
+    </html>
