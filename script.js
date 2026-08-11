@@ -1,53 +1,37 @@
-// ============================================================
-// APEX PREDICT AI
-// Version 2.1 XL
+// ==============================
+// APEX Predict AI Version 2.1 XL
 // Main Application Script
-// ============================================================
+// ==============================
+
+"use strict";
 
 
-// ============================================================
+// ==============================
 // LOGIN
-// ============================================================
+// ==============================
 
 function login() {
 
-    const usernameInput =
+    const username =
         document.getElementById("username");
 
-    const passwordInput =
+    const password =
         document.getElementById("password");
 
-    const statusElement =
-        document.getElementById("status");
 
+    if (!username || !password) {
 
-    // Make sure the login fields exist
-    if (!usernameInput || !passwordInput) {
-
-        console.error(
-            "APEX LOGIN ERROR: Login fields not found."
-        );
+        window.location.href =
+            "./dashboard.html";
 
         return;
     }
 
 
-    const username =
-        usernameInput.value.trim();
-
-    const password =
-        passwordInput.value.trim();
-
-
-    // Require both fields
-    if (username === "" || password === "") {
-
-        if (statusElement) {
-
-            statusElement.textContent =
-                "⚠️ Please enter your username and password.";
-
-        }
+    if (
+        username.value.trim() === "" ||
+        password.value.trim() === ""
+    ) {
 
         alert(
             "Please enter your username and password."
@@ -57,296 +41,117 @@ function login() {
     }
 
 
-    // Login accepted for prototype
-    if (statusElement) {
-
-        statusElement.textContent =
-            "✅ Login successful. Opening APEX Predict AI...";
-
-    }
-
-
-    console.log(
-        "APEX Predict AI login successful."
-    );
-
-
-    // Small delay allows the success message
-    // to appear before navigation.
-    setTimeout(function () {
-
-        window.location.href =
-            "dashboard.html";
-
-    }, 300);
+    window.location.href =
+        "./dashboard.html";
 }
 
 
-// ============================================================
-// CONNECT LOGIN BUTTON
-// ============================================================
 
-function setupLogin() {
-
-    const loginButton =
-        document.getElementById("loginBtn");
-
-    const usernameInput =
-        document.getElementById("username");
-
-    const passwordInput =
-        document.getElementById("password");
-
-
-    if (!loginButton) {
-        return;
-    }
-
-
-    // Prevent duplicate event listeners
-    loginButton.onclick = login;
-
-
-    // Pressing ENTER in username field
-    // triggers login.
-    if (usernameInput) {
-
-        usernameInput.addEventListener(
-            "keydown",
-            function (event) {
-
-                if (event.key === "Enter") {
-
-                    event.preventDefault();
-
-                    login();
-
-                }
-
-            }
-        );
-
-    }
-
-
-    // Pressing ENTER in password field
-    // triggers login.
-    if (passwordInput) {
-
-        passwordInput.addEventListener(
-            "keydown",
-            function (event) {
-
-                if (event.key === "Enter") {
-
-                    event.preventDefault();
-
-                    login();
-
-                }
-
-            }
-        );
-
-    }
-
-
-    console.log(
-        "APEX login system initialized."
-    );
-}
-
-
-// ============================================================
+// ==============================
 // NAVIGATION
-// ============================================================
+// ==============================
 
 function openDashboard() {
 
     window.location.href =
-        "dashboard.html";
+        "./dashboard.html";
 }
 
 
 function openPredictions() {
 
     window.location.href =
-        "predictions.html";
+        "./predictions.html";
 }
 
 
 function openAnalysis() {
 
     window.location.href =
-        "analysis.html";
+        "./analysis.html";
 }
 
 
 function openStatistics() {
 
     window.location.href =
-        "statistics.html";
+        "./statistics.html";
 }
 
 
 function openLiveScores() {
 
     window.location.href =
-        "livescores.html";
+        "./livescores.html";
 }
 
 
 function openLeagues() {
 
     window.location.href =
-        "leagues.html";
+        "./leagues.html";
 }
 
 
 function openHeadToHead() {
 
     window.location.href =
-        "head2head.html";
+        "./head2head.html";
 }
 
 
 function openSettings() {
 
     window.location.href =
-        "settings.html";
+        "./settings.html";
 }
 
 
-// ============================================================
+
+// ==============================
 // LOGOUT
-// ============================================================
+// ==============================
 
 function logout() {
 
-    const confirmed =
+    if (
         confirm(
             "Logout from APEX Predict AI?"
-        );
-
-
-    if (confirmed) {
+        )
+    ) {
 
         window.location.href =
-            "index.html";
-
+            "./index.html";
     }
 }
 
 
-// ============================================================
-// GOOGLE SHEETS API
-// ============================================================
+
+// ==============================
+// GOOGLE SHEETS
+// ==============================
 
 const GOOGLE_SHEETS_API =
     "https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
 
 
-// ============================================================
-// GOOGLE SHEETS CONNECTION
-// ============================================================
-
-async function connectPrototype() {
-
-    const statusElement =
-        document.getElementById(
-            "connectionStatus"
-        );
+const GOOGLE_SHEETS_TIMEOUT =
+    12000;
 
 
-    // Login page does not contain
-    // connectionStatus.
-    if (!statusElement) {
 
-        return;
-
-    }
-
-
-    try {
-
-        statusElement.textContent =
-            "🔄 Connecting to Google Sheets...";
-
-
-        const response =
-            await fetch(
-                GOOGLE_SHEETS_API,
-                {
-                    method: "GET",
-                    cache: "no-store"
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "HTTP " + response.status
-            );
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        console.log(
-            "APEX Google Sheets Response:",
-            data
-        );
-
-
-        if (
-            data &&
-            data.status === "CONNECTED"
-        ) {
-
-            statusElement.textContent =
-                "✅ Google Sheets Connected";
-
-        } else {
-
-            statusElement.textContent =
-                "⚠️ Google Sheets connection requires attention";
-
-        }
-
-
-    } catch (error) {
-
-        console.error(
-            "APEX Google Sheets connection error:",
-            error
-        );
-
-
-        statusElement.textContent =
-            "❌ Google Sheets Connection Failed";
-
-    }
-
-}
-
-
-// ============================================================
-// HTML SAFETY
-// ============================================================
+// ==============================
+// SECURITY / HTML FORMATTING
+// ==============================
 
 function escapeHtml(value) {
 
-    return String(value)
+    return String(value ?? "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#39;");
-
 }
 
 
@@ -359,7 +164,6 @@ function formatCellValue(value) {
     ) {
 
         return "—";
-
     }
 
 
@@ -368,21 +172,23 @@ function formatCellValue(value) {
     ) {
 
         return String(value);
-
     }
 
 
     return escapeHtml(value)
         .replace(/\n/g, "<br>");
-
 }
 
 
-// ============================================================
-// LOAD MATCH DATABASE
-// ============================================================
 
-async function loadMatchDatabase() {
+// ==============================
+// CONNECTION STATUS
+// ==============================
+
+function setConnectionStatus(
+    message,
+    type
+) {
 
     const statusElement =
         document.getElementById(
@@ -390,14 +196,57 @@ async function loadMatchDatabase() {
         );
 
 
-    // Only dashboard-style pages
-    // with connectionStatus load
-    // the match database.
     if (!statusElement) {
-
         return;
+    }
+
+
+    statusElement.textContent =
+        message;
+
+
+    if (type === "success") {
+
+        statusElement.style.color =
+            "#b9f6ca";
 
     }
+
+    else if (type === "error") {
+
+        statusElement.style.color =
+            "#ffb4ab";
+
+    }
+
+    else {
+
+        statusElement.style.color =
+            "#ffd54f";
+    }
+}
+
+
+
+// ==============================
+// FETCH GOOGLE SHEETS DATA
+// ==============================
+
+async function fetchGoogleSheetsData() {
+
+    const controller =
+        new AbortController();
+
+
+    const timeout =
+        setTimeout(
+            function () {
+
+                controller.abort();
+
+            },
+            GOOGLE_SHEETS_TIMEOUT
+        );
 
 
     try {
@@ -407,7 +256,9 @@ async function loadMatchDatabase() {
                 GOOGLE_SHEETS_API,
                 {
                     method: "GET",
-                    cache: "no-store"
+                    cache: "no-store",
+                    signal:
+                        controller.signal
                 }
             );
 
@@ -415,404 +266,652 @@ async function loadMatchDatabase() {
         if (!response.ok) {
 
             throw new Error(
-                "HTTP " + response.status
+                "Google Sheets HTTP " +
+                response.status
             );
-
         }
 
 
+        return await response.json();
+
+    }
+
+    catch (error) {
+
+        if (
+            error.name ===
+            "AbortError"
+        ) {
+
+            throw new Error(
+                "Google Sheets request timed out after 12 seconds."
+            );
+        }
+
+
+        throw error;
+
+    }
+
+    finally {
+
+        clearTimeout(timeout);
+    }
+}
+
+
+
+// ==============================
+// CONNECT TO GOOGLE SHEETS
+// ==============================
+
+async function connectPrototype() {
+
+    const statusElement =
+        document.getElementById(
+            "connectionStatus"
+        );
+
+
+    if (!statusElement) {
+        return null;
+    }
+
+
+    setConnectionStatus(
+        "🔄 Connecting to Google Sheets...",
+        "loading"
+    );
+
+
+    try {
+
         const data =
-            await response.json();
+            await fetchGoogleSheetsData();
 
 
         console.log(
-            "APEX Match Database:",
+            "APEX Predict AI Google Sheets response:",
             data
         );
 
 
-        const matchDatabase =
-            data.matchDatabase;
-
-
         if (
-            !matchDatabase ||
-            !matchDatabase.exists ||
-            !Array.isArray(
-                matchDatabase.objects
-            ) ||
-            matchDatabase.objects.length === 0
+            data &&
+            data.status === "CONNECTED"
         ) {
 
-            console.log(
-                "No matches available."
-            );
-
-            return;
-
-        }
-
-
-        let panel =
-            document.getElementById(
-                "matchDataPanel"
-            );
-
-
-        // Create panel if dashboard
-        // does not already contain one.
-        if (!panel) {
-
-            panel =
-                document.createElement(
-                    "div"
-                );
-
-
-            panel.id =
-                "matchDataPanel";
-
-
-            panel.style.marginTop =
-                "20px";
-
-
-            panel.style.padding =
-                "20px";
-
-
-            panel.style.borderRadius =
-                "12px";
-
-
-            panel.style.background =
-                "#ffffff";
-
-
-            panel.style.border =
-                "1px solid #ddd";
-
-
-            panel.style.boxShadow =
-                "0 8px 24px rgba(0,0,0,0.06)";
-
-
-            statusElement.insertAdjacentElement(
-                "afterend",
-                panel
+            setConnectionStatus(
+                "✅ Google Sheets Connected",
+                "success"
             );
 
         }
 
+        else {
 
-        const matches =
-            matchDatabase.objects;
+            setConnectionStatus(
+                "⚠️ Google Sheets responded, but connection status needs attention.",
+                "loading"
+            );
+        }
 
+
+        return data;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "APEX Predict AI Google Sheets connection error:",
+            error
+        );
+
+
+        setConnectionStatus(
+            "❌ Google Sheets Connection Failed: " +
+            error.message,
+            "error"
+        );
+
+
+        return null;
+    }
+}
+
+
+
+// ==============================
+// RENDER MATCH DATABASE
+// ==============================
+
+function renderMatchDatabase(data) {
+
+    const statusElement =
+        document.getElementById(
+            "connectionStatus"
+        );
+
+
+    if (
+        !statusElement ||
+        !data
+    ) {
+
+        return;
+    }
+
+
+    const matchDatabase =
+        data.matchDatabase;
+
+
+    if (
+        !matchDatabase ||
+        !matchDatabase.exists ||
+        !Array.isArray(
+            matchDatabase.objects
+        )
+    ) {
+
+        console.warn(
+            "APEX Predict AI: MATCH DATABASE was not returned by Google Sheets."
+        );
+
+        return;
+    }
+
+
+    const matches =
+        matchDatabase.objects;
+
+
+    let panel =
+        document.getElementById(
+            "matchDataPanel"
+        );
+
+
+    if (!panel) {
+
+        panel =
+            document.createElement(
+                "div"
+            );
+
+
+        panel.id =
+            "matchDataPanel";
+
+
+        statusElement.insertAdjacentElement(
+            "afterend",
+            panel
+        );
+    }
+
+
+    panel.style.marginTop =
+        "20px";
+
+
+    panel.style.padding =
+        "20px";
+
+
+    panel.style.borderRadius =
+        "12px";
+
+
+    panel.style.background =
+        "#ffffff";
+
+
+    panel.style.border =
+        "1px solid #ddd";
+
+
+    panel.style.boxShadow =
+        "0 12px 35px rgba(0,0,0,.25)";
+
+
+    if (matches.length === 0) {
 
         panel.innerHTML = `
 
-            <h2 style="margin-top:0;">
+            <h2>
                 ⚽ APEX MATCH DATABASE
             </h2>
 
-            <p style="margin-bottom:18px;">
-                <strong>
-                    ${matches.length}
-                </strong>
-                match(es) loaded from Google Sheets.
+            <p>
+                No matches are currently loaded.
             </p>
 
+        `;
 
-            ${matches.map(
-                function (match, index) {
-
-                    const league =
-                        match["League"] || "";
-
-                    const homeTeam =
-                        match["Home Team"] || "";
-
-                    const awayTeam =
-                        match["Away Team"] || "";
-
-                    const prediction =
-                        match["Prediction"] || "";
-
-                    const confidence =
-                        match["Confidence %"] || "";
-
-                    const riskLevel =
-                        match["Risk Level"] || "";
-
-                    const recommendedMarket =
-                        match["recommended market"] || "";
+        return;
+    }
 
 
-                    return `
+    panel.innerHTML = `
 
-                        <div style="
-                            margin-top:18px;
-                            padding:18px;
-                            border:1px solid #e5e5e5;
-                            border-radius:12px;
-                            background:#fafafa;
+        <h2 style="margin-top:0;">
+
+            ⚽ APEX MATCH DATABASE
+
+        </h2>
+
+
+        <p style="margin-bottom:18px;">
+
+            <strong>
+                ${matches.length}
+            </strong>
+
+            match(es) loaded from Google Sheets.
+
+        </p>
+
+
+        ${matches.map(
+            function (match, index) {
+
+                const league =
+                    match["League"] || "";
+
+
+                const homeTeam =
+                    match["Home Team"] || "";
+
+
+                const awayTeam =
+                    match["Away Team"] || "";
+
+
+                const prediction =
+                    match["Prediction"] || "";
+
+
+                const confidence =
+                    match["Confidence %"] || "";
+
+
+                const riskLevel =
+                    match["Risk Level"] || "";
+
+
+                const recommendedMarket =
+                    match[
+                        "recommended market"
+                    ] || "";
+
+
+                return `
+
+                    <div style="
+                        margin-top:18px;
+                        padding:18px;
+                        border:1px solid #e5e5e5;
+                        border-radius:12px;
+                        background:#fafafa;
+                    ">
+
+
+                        <h3 style="
+                            margin-top:0;
+                            margin-bottom:10px;
                         ">
 
-                            <h3 style="
-                                margin-top:0;
-                                margin-bottom:10px;
-                            ">
-                                ⚽ Match ${index + 1}
-                            </h3>
+                            ⚽ Match
+                            ${index + 1}
+
+                        </h3>
+
+
+                        <div style="
+                            margin-bottom:14px;
+                        ">
 
 
                             <div style="
-                                margin-bottom:14px;
+                                font-weight:700;
+                                font-size:1.05rem;
                             ">
 
-                                <div style="
-                                    font-weight:700;
-                                    font-size:1.05rem;
-                                ">
-                                    ${formatCellValue(
-                                        league
-                                    )}
-                                </div>
-
-
-                                <div style="
-                                    margin-top:4px;
-                                ">
-
-                                    <strong>
-                                        ${formatCellValue(
-                                            homeTeam
-                                        )}
-                                    </strong>
-
-                                    vs
-
-                                    <strong>
-                                        ${formatCellValue(
-                                            awayTeam
-                                        )}
-                                    </strong>
-
-                                </div>
+                                ${formatCellValue(
+                                    league
+                                )}
 
                             </div>
 
 
                             <div style="
-                                display:grid;
-                                grid-template-columns:
-                                repeat(
-                                    auto-fit,
-                                    minmax(220px, 1fr)
-                                );
-                                gap:10px;
+                                margin-top:4px;
                             ">
 
-                                <p>
-                                    <strong>
-                                        Prediction:
-                                    </strong>
-
+                                <strong>
                                     ${formatCellValue(
-                                        prediction
+                                        homeTeam
                                     )}
-                                </p>
+                                </strong>
 
+                                vs
 
-                                <p>
-                                    <strong>
-                                        Confidence:
-                                    </strong>
-
+                                <strong>
                                     ${formatCellValue(
-                                        confidence
+                                        awayTeam
                                     )}
-
-                                    ${
-                                        confidence !== ""
-                                        ? "%"
-                                        : ""
-                                    }
-
-                                </p>
-
-
-                                <p>
-                                    <strong>
-                                        Risk Level:
-                                    </strong>
-
-                                    ${formatCellValue(
-                                        riskLevel
-                                    )}
-                                </p>
-
-
-                                <p>
-                                    <strong>
-                                        Recommended Market:
-                                    </strong>
-
-                                    ${formatCellValue(
-                                        recommendedMarket
-                                    )}
-
-                                </p>
-
-                            </div>
-
-
-                            <div style="
-                                margin-top:16px;
-                                padding-top:16px;
-                                border-top:1px solid #ddd;
-                            ">
-
-                                <h4 style="
-                                    margin:0 0 12px 0;
-                                ">
-                                    Full Match Data
-                                </h4>
-
-
-                                <div style="
-                                    display:grid;
-                                    grid-template-columns:
-                                    repeat(
-                                        auto-fit,
-                                        minmax(240px, 1fr)
-                                    );
-                                    gap:10px;
-                                ">
-
-
-                                    ${Object.entries(
-                                        match
-                                    ).map(
-                                        function (
-                                            entry
-                                        ) {
-
-                                            const key =
-                                                entry[0];
-
-                                            const value =
-                                                entry[1];
-
-
-                                            return `
-
-                                                <div style="
-                                                    padding:
-                                                    10px 12px;
-
-                                                    border:
-                                                    1px solid #ececec;
-
-                                                    border-radius:
-                                                    10px;
-
-                                                    background:
-                                                    #fff;
-                                                ">
-
-                                                    <div style="
-                                                        font-size:
-                                                        0.82rem;
-
-                                                        font-weight:
-                                                        700;
-
-                                                        color:
-                                                        #444;
-
-                                                        margin-bottom:
-                                                        4px;
-                                                    ">
-
-                                                        ${escapeHtml(
-                                                            key
-                                                        )}
-
-                                                    </div>
-
-
-                                                    <div style="
-                                                        font-size:
-                                                        0.95rem;
-
-                                                        line-height:
-                                                        1.35;
-                                                    ">
-
-                                                        ${formatCellValue(
-                                                            value
-                                                        )}
-
-                                                    </div>
-
-                                                </div>
-
-                                            `;
-
-                                        }
-                                    ).join("")}
-
-                                </div>
+                                </strong>
 
                             </div>
 
                         </div>
 
-                    `;
 
-                }
-            ).join("")}
+                        <div style="
+                            display:grid;
+                            grid-template-columns:
+                                repeat(
+                                    auto-fit,
+                                    minmax(220px,1fr)
+                                );
+                            gap:8px;
+                        ">
 
-        `;
+
+                            <p>
+
+                                <strong>
+                                    Prediction:
+                                </strong>
+
+                                ${formatCellValue(
+                                    prediction
+                                )}
+
+                            </p>
 
 
-    } catch (error) {
+                            <p>
 
-        console.error(
-            "APEX Match Database error:",
-            error
-        );
+                                <strong>
+                                    Confidence:
+                                </strong>
 
-    }
+                                ${formatCellValue(
+                                    confidence
+                                )}
 
+                                ${
+                                    confidence !== ""
+                                        ? "%"
+                                        : ""
+                                }
+
+                            </p>
+
+
+                            <p>
+
+                                <strong>
+                                    Risk Level:
+                                </strong>
+
+                                ${formatCellValue(
+                                    riskLevel
+                                )}
+
+                            </p>
+
+
+                            <p>
+
+                                <strong>
+                                    Recommended Market:
+                                </strong>
+
+                                ${formatCellValue(
+                                    recommendedMarket
+                                )}
+
+                            </p>
+
+
+                        </div>
+
+
+                        <div style="
+                            margin-top:16px;
+                            padding-top:16px;
+                            border-top:1px solid #ddd;
+                        ">
+
+
+                            <h4 style="
+                                margin:
+                                    0 0 12px 0;
+                            ">
+
+                                Full Match Data
+
+                            </h4>
+
+
+                            <div style="
+                                display:grid;
+                                grid-template-columns:
+                                    repeat(
+                                        auto-fit,
+                                        minmax(240px,1fr)
+                                    );
+                                gap:10px;
+                            ">
+
+
+                                ${Object.entries(
+                                    match
+                                ).map(
+                                    function (
+                                        [key, value]
+                                    ) {
+
+                                        return `
+
+                                            <div style="
+                                                padding:
+                                                    10px 12px;
+                                                border:
+                                                    1px solid #ececec;
+                                                border-radius:
+                                                    10px;
+                                                background:
+                                                    #fff;
+                                            ">
+
+
+                                                <div style="
+                                                    font-size:
+                                                        .82rem;
+                                                    font-weight:
+                                                        700;
+                                                    color:
+                                                        #444;
+                                                    margin-bottom:
+                                                        4px;
+                                                ">
+
+                                                    ${escapeHtml(
+                                                        key
+                                                    )}
+
+                                                </div>
+
+
+                                                <div style="
+                                                    font-size:
+                                                        .95rem;
+                                                    line-height:
+                                                        1.35;
+                                                ">
+
+                                                    ${formatCellValue(
+                                                        value
+                                                    )}
+
+                                                </div>
+
+
+                                            </div>
+
+                                        `;
+                                    }
+                                ).join("")}
+
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                `;
+
+            }
+        ).join("")}
+
+    `;
 }
 
 
-// ============================================================
-// APPLICATION STARTUP
-// ============================================================
 
-window.addEventListener(
-    "DOMContentLoaded",
-    function () {
+// ==============================
+// LOAD MATCH DATABASE
+// ==============================
 
-        console.log(
-            "APEX Predict AI starting..."
+async function loadMatchDatabase(
+    data
+) {
+
+    if (data) {
+
+        renderMatchDatabase(
+            data
+        );
+
+        return data;
+    }
+
+
+    const freshData =
+        await connectPrototype();
+
+
+    if (freshData) {
+
+        renderMatchDatabase(
+            freshData
+        );
+    }
+
+
+    return freshData;
+}
+
+
+
+// ==============================
+// INITIALIZE APEX DASHBOARD
+// ==============================
+
+async function initializeAPEXDashboard() {
+
+    if (
+        window.__APEX_INITIALIZED__
+    ) {
+
+        return;
+    }
+
+
+    window.__APEX_INITIALIZED__ =
+        true;
+
+
+    const statusElement =
+        document.getElementById(
+            "connectionStatus"
         );
 
 
-        // Initialize login
-        setupLogin();
+    if (!statusElement) {
+
+        return;
+    }
 
 
-        // Connect Google Sheets only
-        // on pages that use it.
-        connectPrototype();
+    const data =
+        await connectPrototype();
 
 
-        // Load match database only
-        // on pages that use it.
-        loadMatchDatabase();
+    if (data) {
 
-  
+        renderMatchDatabase(
+            data
+        );
+    }
+}
+
+
+
+// ==============================
+// STARTUP
+// ==============================
+
+window.addEventListener(
+    "DOMContentLoaded",
+    initializeAPEXDashboard
+);
+
+
+
+// ==============================
+// GLOBAL FUNCTIONS
+// ==============================
+
+window.login =
+    login;
+
+window.openDashboard =
+    openDashboard;
+
+window.openPredictions =
+    openPredictions;
+
+window.openAnalysis =
+    openAnalysis;
+
+window.openStatistics =
+    openStatistics;
+
+window.openLiveScores =
+    openLiveScores;
+
+window.openLeagues =
+    openLeagues;
+
+window.openHeadToHead =
+    openHeadToHead;
+
+window.openSettings =
+    openSettings;
+
+window.logout =
+    logout;
+
+window.connectPrototype =
+    connectPrototype;
+
+window.loadMatchDatabase =
+    loadMatchDatabase;
