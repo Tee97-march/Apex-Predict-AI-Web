@@ -6,45 +6,632 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Football Leagues</title>
+<title>APEX Predict AI - Football Leagues</title>
 
 <link rel="stylesheet" href="styles.css">
-<script src="script.js"></script>
 
 </head>
+
 
 <body>
 
 <div class="container">
 
-<h1>🏆 Football Leagues</h1>
+    <h1>🏆 Football Leagues</h1>
 
-<p>Browse all supported leagues</p>
+    <p>
+        Leagues available in the APEX Predict AI Match Database
+    </p>
 
-<div id="leagueContainer">
 
-<p>Loading supported leagues...</p>
+    <div
+        id="leagueStatus"
+        style="
+            text-align:center;
+            margin:15px 0 20px;
+            padding:12px 15px;
+            border-radius:12px;
+            background:rgba(255,255,255,.08);
+            border:1px solid rgba(255,255,255,.12);
+            color:#ffd54f;
+            font-weight:bold;
+        "
+    >
+        🔄 Loading leagues from Google Sheets...
+    </div>
+
+
+    <div
+        id="leagueContainer"
+        style="
+            width:100%;
+        "
+    >
+
+        <p style="text-align:center;">
+            Loading supported leagues...
+        </p>
+
+    </div>
+
+
+    <br>
+
+
+    <button onclick="openDashboard()">
+        🏠 Dashboard
+    </button>
+
+
+    <button onclick="openPredictions()">
+        🤖 Predictions
+    </button>
+
+
+    <button onclick="openAnalysis()">
+        📊 Analysis
+    </button>
+
+
+    <button onclick="openStatistics()">
+        📈 Statistics
+    </button>
+
+
+    <button onclick="openLiveScores()">
+        ⚽ Live Scores
+    </button>
+
+
+    <button onclick="openHeadToHead()">
+        ⚔ Head To Head
+    </button>
+
+
+    <button onclick="openSettings()">
+        ⚙ Settings
+    </button>
 
 </div>
 
-<br>
 
-<button onclick="openDashboard()">🏠 Dashboard</button>
+<script>
 
-<button onclick="openPredictions()">🤖 Predictions</button>
+"use strict";
 
-<button onclick="openAnalysis()">📊 Analysis</button>
 
-<button onclick="openStatistics()">📈 Statistics</button>
+// ========================================
+// APEX PREDICT AI - LEAGUES
+// ========================================
 
-<button onclick="openLiveScores()">⚽ Live Scores</button>
+const APEX_GOOGLE_SHEETS_API =
+"https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
 
-<button onclick="openHeadToHead()">⚔ Head To Head</button>
 
-<button onclick="openSettings()">⚙ Settings</button>
+// ========================================
+// HTML SECURITY
+// ========================================
 
-</div>
+function leagueEscape(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#39;");
+
+}
+
+
+// ========================================
+// STATUS
+// ========================================
+
+function setLeagueStatus(
+    message,
+    type
+){
+
+    const status =
+        document.getElementById(
+            "leagueStatus"
+        );
+
+
+    if(!status){
+        return;
+    }
+
+
+    status.textContent =
+        message;
+
+
+    if(type === "success"){
+
+        status.style.color =
+            "#b9f6ca";
+
+    }
+
+    else if(type === "error"){
+
+        status.style.color =
+            "#ffb4ab";
+
+    }
+
+    else{
+
+        status.style.color =
+            "#ffd54f";
+
+    }
+
+}
+
+
+// ========================================
+// LOAD MATCH DATABASE
+// ========================================
+
+async function loadLeagues(){
+
+    const container =
+        document.getElementById(
+            "leagueContainer"
+        );
+
+
+    if(!container){
+        return;
+    }
+
+
+    try{
+
+        setLeagueStatus(
+            "🔄 Loading leagues from Google Sheets...",
+            "loading"
+        );
+
+
+        const response =
+            await fetch(
+                APEX_GOOGLE_SHEETS_API,
+                {
+                    method:"GET",
+                    cache:"no-store"
+                }
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Google Sheets HTTP " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "APEX Predict AI League Data:",
+            data
+        );
+
+
+        const matchDatabase =
+            data.matchDatabase;
+
+
+        if(
+            !matchDatabase ||
+            !matchDatabase.exists ||
+            !Array.isArray(
+                matchDatabase.objects
+            )
+        ){
+
+            throw new Error(
+                "MATCH DATABASE was not returned."
+            );
+
+        }
+
+
+        const matches =
+            matchDatabase.objects;
+
+
+        if(matches.length === 0){
+
+            setLeagueStatus(
+                "⚠️ Match Database is empty.",
+                "loading"
+            );
+
+
+            container.innerHTML = `
+
+                <div style="
+                    background:#102847;
+                    padding:25px;
+                    border-radius:15px;
+                    text-align:center;
+                ">
+
+                    No league data is currently available.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        // ========================================
+        // BUILD LEAGUE SUMMARY
+        // ========================================
+
+        const leagueMap =
+            new Map();
+
+
+        matches.forEach(
+            function(match){
+
+                const league =
+                    String(
+                        match["League"] || ""
+                    ).trim();
+
+
+                if(!league){
+                    return;
+                }
+
+
+                if(!leagueMap.has(league)){
+
+                    leagueMap.set(
+                        league,
+                        {
+                            name:league,
+                            matches:0,
+                            teams:new Set()
+                        }
+                    );
+
+                }
+
+
+                const leagueData =
+                    leagueMap.get(
+                        league
+                    );
+
+
+                leagueData.matches++;
+
+
+                const homeTeam =
+                    String(
+                        match["Home Team"] || ""
+                    ).trim();
+
+
+                const awayTeam =
+                    String(
+                        match["Away Team"] || ""
+                    ).trim();
+
+
+                if(homeTeam){
+
+                    leagueData.teams.add(
+                        homeTeam
+                    );
+
+                }
+
+
+                if(awayTeam){
+
+                    leagueData.teams.add(
+                        awayTeam
+                    );
+
+                }
+
+            }
+        );
+
+
+        const leagues =
+            Array.from(
+                leagueMap.values()
+            ).sort(
+                function(a,b){
+
+                    return a.name.localeCompare(
+                        b.name
+                    );
+
+                }
+            );
+
+
+        if(leagues.length === 0){
+
+            setLeagueStatus(
+                "⚠️ No league names found in MATCH DATABASE.",
+                "loading"
+            );
+
+
+            container.innerHTML = `
+
+                <div style="
+                    background:#102847;
+                    padding:25px;
+                    border-radius:15px;
+                    text-align:center;
+                ">
+
+                    No league names were found.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        // ========================================
+        // RENDER LEAGUES
+        // ========================================
+
+        container.innerHTML = `
+
+            <div style="
+                background:#ffffff;
+                color:#111;
+                padding:20px;
+                border-radius:15px;
+                box-shadow:0 12px 35px rgba(0,0,0,.25);
+            ">
+
+                <h2 style="
+                    margin-top:0;
+                    color:#061326;
+                ">
+
+                    🏆 Supported Leagues
+
+                </h2>
+
+
+                <p style="
+                    color:#444;
+                    margin-bottom:20px;
+                ">
+
+                    <strong>
+                        ${leagues.length}
+                    </strong>
+
+                    league(s) found from
+
+                    <strong>
+                        ${matches.length}
+                    </strong>
+
+                    match(es) in the Match Database.
+
+                </p>
+
+
+                <div style="
+                    display:grid;
+                    grid-template-columns:
+                        repeat(
+                            auto-fit,
+                            minmax(240px,1fr)
+                        );
+                    gap:15px;
+                ">
+
+                    ${leagues.map(
+                        function(league,index){
+
+                            return `
+
+                                <div style="
+                                    background:#fafafa;
+                                    border:
+                                        1px solid #e5e5e5;
+                                    border-radius:12px;
+                                    padding:18px;
+                                ">
+
+                                    <div style="
+                                        font-size:13px;
+                                        color:#777;
+                                        font-weight:bold;
+                                        margin-bottom:7px;
+                                    ">
+
+                                        LEAGUE
+                                        ${index + 1}
+
+                                    </div>
+
+
+                                    <div style="
+                                        font-size:19px;
+                                        font-weight:bold;
+                                        color:#061326;
+                                        margin-bottom:12px;
+                                    ">
+
+                                        🏆
+                                        ${leagueEscape(
+                                            league.name
+                                        )}
+
+                                    </div>
+
+
+                                    <div style="
+                                        display:grid;
+                                        grid-template-columns:
+                                            1fr 1fr;
+                                        gap:8px;
+                                    ">
+
+
+                                        <div style="
+                                            background:#fff;
+                                            border:
+                                                1px solid #ddd;
+                                            border-radius:8px;
+                                            padding:10px;
+                                        ">
+
+                                            <div style="
+                                                font-size:12px;
+                                                color:#777;
+                                            ">
+
+                                                Matches
+
+                                            </div>
+
+                                            <strong>
+
+                                                ${league.matches}
+
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div style="
+                                            background:#fff;
+                                            border:
+                                                1px solid #ddd;
+                                            border-radius:8px;
+                                            padding:10px;
+                                        ">
+
+                                            <div style="
+                                                font-size:12px;
+                                                color:#777;
+                                            ">
+
+                                                Teams
+
+                                            </div>
+
+                                            <strong>
+
+                                                ${league.teams.size}
+
+                                            </strong>
+
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+
+                            `;
+
+                        }
+                    ).join("")}
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        setLeagueStatus(
+            "✅ Leagues Connected to Match Database",
+            "success"
+        );
+
+
+    }
+
+    catch(error){
+
+        console.error(
+            "APEX Predict AI Leagues error:",
+            error
+        );
+
+
+        setLeagueStatus(
+            "❌ Unable to load leagues: " +
+            error.message,
+            "error"
+        );
+
+
+        container.innerHTML = `
+
+            <div style="
+                background:#102847;
+                padding:25px;
+                border-radius:15px;
+                text-align:center;
+            ">
+
+                ❌
+
+                <br><br>
+
+                Unable to load league data.
+
+                <br><br>
+
+                Please try again later.
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+// ========================================
+// START
+// ========================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    loadLeagues
+);
+
+</script>
+
 
 </body>
 
-</html>
+  </html>
