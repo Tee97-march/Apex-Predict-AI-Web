@@ -1,49 +1,967 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Head To Head</title>
+<title>APEX Predict AI - Head To Head</title>
 
 <link rel="stylesheet" href="styles.css">
-<script src="script.js"></script>
+
+<style>
+
+.h2h-header{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.h2h-card{
+    background:#102847;
+    border-radius:15px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 8px 20px rgba(0,0,0,.25);
+}
+
+.h2h-card h2,
+.h2h-card h3{
+    margin-top:0;
+}
+
+.h2h-controls{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.h2h-controls label{
+    display:block;
+    margin-bottom:7px;
+    font-weight:bold;
+}
+
+.h2h-controls select{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    background:white;
+    color:#111;
+}
+
+.h2h-button{
+    margin-top:18px;
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:#00c853;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.h2h-button:hover{
+    background:#00b248;
+}
+
+.h2h-status{
+    text-align:center;
+    padding:12px;
+    margin-bottom:18px;
+    border-radius:10px;
+    background:rgba(255,255,255,.08);
+    color:#ffd54f;
+}
+
+.h2h-teams{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:15px;
+    text-align:center;
+    margin:20px 0;
+}
+
+.h2h-team{
+    background:#0b2344;
+    padding:18px;
+    border-radius:12px;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.h2h-vs{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.h2h-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:12px;
+}
+
+.h2h-stat{
+    background:white;
+    color:#111;
+    padding:15px;
+    border-radius:10px;
+    border:1px solid #ddd;
+}
+
+.h2h-stat-title{
+    font-size:13px;
+    font-weight:bold;
+    color:#555;
+    margin-bottom:7px;
+}
+
+.h2h-stat-value{
+    font-size:18px;
+    font-weight:bold;
+    word-break:break-word;
+}
+
+.h2h-empty{
+    text-align:center;
+    padding:25px;
+    color:#cfd8e3;
+}
+
+.h2h-navigation{
+    margin-top:25px;
+}
+
+.h2h-navigation button{
+    margin-top:8px;
+}
+
+@media(max-width:700px){
+
+    .h2h-controls{
+        grid-template-columns:1fr;
+    }
+
+    .h2h-teams{
+        grid-template-columns:1fr;
+    }
+
+    .h2h-vs{
+        margin:-5px 0;
+    }
+
+}
+
+</style>
 
 </head>
+
 
 <body>
 
 <div class="container">
 
-<h1>⚔ Head To Head</h1>
+    <div class="h2h-header">
 
-<p>Compare two football teams</p>
+        <h1>⚔ Head To Head</h1>
 
-<div id="headToHeadContainer">
+        <p>
+            Compare two football teams using APEX Predict AI match data
+        </p>
 
-<p>Waiting for team selection...</p>
+    </div>
+
+
+    <div class="h2h-card">
+
+        <div
+            id="h2hStatus"
+            class="h2h-status"
+        >
+            🔄 Connecting to Google Sheets...
+        </div>
+
+
+        <div class="h2h-controls">
+
+            <div>
+
+                <label for="homeTeamSelect">
+                    Home Team
+                </label>
+
+                <select id="homeTeamSelect">
+
+                    <option value="">
+                        Loading teams...
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label for="awayTeamSelect">
+                    Away Team
+                </label>
+
+                <select id="awayTeamSelect">
+
+                    <option value="">
+                        Loading teams...
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="h2h-button"
+            id="compareButton"
+        >
+            ⚔ COMPARE TEAMS
+        </button>
+
+    </div>
+
+
+    <div
+        id="headToHeadContainer"
+        class="h2h-card"
+    >
+
+        <div class="h2h-empty">
+            Select two teams and press COMPARE TEAMS.
+        </div>
+
+    </div>
+
+
+    <div class="h2h-navigation">
+
+        <button onclick="openDashboard()">
+            🏠 Dashboard
+        </button>
+
+        <button onclick="openPredictions()">
+            🤖 Predictions
+        </button>
+
+        <button onclick="openAnalysis()">
+            📊 Analysis
+        </button>
+
+        <button onclick="openStatistics()">
+            📈 Statistics
+        </button>
+
+        <button onclick="openLiveScores()">
+            ⚽ Live Scores
+        </button>
+
+        <button onclick="openLeagues()">
+            🏆 Leagues
+        </button>
+
+        <button onclick="openSettings()">
+            ⚙ Settings
+        </button>
+
+    </div>
 
 </div>
 
-<br>
 
-<button onclick="openDashboard()">🏠 Dashboard</button>
+<script>
 
-<button onclick="openPredictions()">🤖 Predictions</button>
+"use strict";
 
-<button onclick="openAnalysis()">📊 Analysis</button>
 
-<button onclick="openStatistics()">📈 Statistics</button>
+// ========================================
+// APEX HEAD TO HEAD
+// ========================================
 
-<button onclick="openLiveScores()">⚽ Live Scores</button>
+const APEX_GOOGLE_SHEETS_API =
+"https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
 
-<button onclick="openLeagues()">🏆 Leagues</button>
 
-<button onclick="openSettings()">⚙ Settings</button>
+let apexMatches = [];
 
-</div>
+
+// ========================================
+// HTML SECURITY
+// ========================================
+
+function h2hEscape(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#39;");
+}
+
+
+function h2hValue(value){
+
+    if(
+        value === null ||
+        value === undefined ||
+        String(value).trim() === ""
+    ){
+
+        return "—";
+
+    }
+
+    return h2hEscape(value);
+
+}
+
+
+// ========================================
+// STATUS
+// ========================================
+
+function setH2HStatus(message,type){
+
+    const element =
+        document.getElementById("h2hStatus");
+
+    if(!element){
+        return;
+    }
+
+    element.textContent = message;
+
+    if(type === "success"){
+
+        element.style.color = "#b9f6ca";
+
+    }else if(type === "error"){
+
+        element.style.color = "#ffb4ab";
+
+    }else{
+
+        element.style.color = "#ffd54f";
+
+    }
+
+}
+
+
+// ========================================
+// LOAD GOOGLE SHEETS
+// ========================================
+
+async function loadH2HData(){
+
+    try{
+
+        setH2HStatus(
+            "🔄 Loading Match Database from Google Sheets...",
+            "loading"
+        );
+
+
+        const response =
+            await fetch(
+                APEX_GOOGLE_SHEETS_API,
+                {
+                    method:"GET",
+                    cache:"no-store"
+                }
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Google Sheets HTTP " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "APEX Head To Head Google Sheets data:",
+            data
+        );
+
+
+        const database =
+            data.matchDatabase;
+
+
+        if(
+            !database ||
+            !database.exists ||
+            !Array.isArray(database.objects)
+        ){
+
+            throw new Error(
+                "MATCH DATABASE was not returned."
+            );
+
+        }
+
+
+        apexMatches =
+            database.objects;
+
+
+        if(apexMatches.length === 0){
+
+            setH2HStatus(
+                "⚠️ Match Database is currently empty.",
+                "loading"
+            );
+
+            showEmptyMessage(
+                "No match data is currently available."
+            );
+
+            return;
+
+        }
+
+
+        populateTeamSelectors();
+
+
+        setH2HStatus(
+            "✅ Match Database Connected",
+            "success"
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "APEX Head To Head error:",
+            error
+        );
+
+
+        setH2HStatus(
+            "❌ Unable to load Match Database: " +
+            error.message,
+            "error"
+        );
+
+
+        showEmptyMessage(
+            "The Match Database could not be loaded. Please try again."
+        );
+
+    }
+
+}
+
+
+// ========================================
+// GET TEAM NAMES
+// ========================================
+
+function getTeams(){
+
+    const teams = new Set();
+
+
+    apexMatches.forEach(function(match){
+
+        const home =
+            String(
+                match["Home Team"] || ""
+            ).trim();
+
+
+        const away =
+            String(
+                match["Away Team"] || ""
+            ).trim();
+
+
+        if(home){
+            teams.add(home);
+        }
+
+
+        if(away){
+            teams.add(away);
+        }
+
+    });
+
+
+    return Array.from(teams).sort(
+        function(a,b){
+
+            return a.localeCompare(b);
+
+        }
+    );
+
+}
+
+
+// ========================================
+// POPULATE SELECTORS
+// ========================================
+
+function populateTeamSelectors(){
+
+    const homeSelect =
+        document.getElementById(
+            "homeTeamSelect"
+        );
+
+
+    const awaySelect =
+        document.getElementById(
+            "awayTeamSelect"
+        );
+
+
+    if(!homeSelect || !awaySelect){
+        return;
+    }
+
+
+    const teams =
+        getTeams();
+
+
+    if(teams.length === 0){
+
+        homeSelect.innerHTML =
+            '<option value="">No teams available</option>';
+
+        awaySelect.innerHTML =
+            '<option value="">No teams available</option>';
+
+        return;
+
+    }
+
+
+    let options =
+        '<option value="">Select team</option>';
+
+
+    teams.forEach(function(team){
+
+        options +=
+            '<option value="' +
+            h2hEscape(team) +
+            '">' +
+            h2hEscape(team) +
+            '</option>';
+
+    });
+
+
+    homeSelect.innerHTML =
+        options;
+
+
+    awaySelect.innerHTML =
+        options;
+
+}
+
+
+// ========================================
+// FIND MATCH
+// ========================================
+
+function findMatch(homeTeam,awayTeam){
+
+    return apexMatches.find(
+        function(match){
+
+            const home =
+                String(
+                    match["Home Team"] || ""
+                ).trim()
+                .toLowerCase();
+
+
+            const away =
+                String(
+                    match["Away Team"] || ""
+                ).trim()
+                .toLowerCase();
+
+
+            return (
+                home ===
+                homeTeam.trim().toLowerCase()
+                &&
+                away ===
+                awayTeam.trim().toLowerCase()
+            );
+
+        }
+    );
+
+}
+
+
+// ========================================
+// DISPLAY MATCH
+// ========================================
+
+function compareTeams(){
+
+    const homeSelect =
+        document.getElementById(
+            "homeTeamSelect"
+        );
+
+
+    const awaySelect =
+        document.getElementById(
+            "awayTeamSelect"
+        );
+
+
+    const container =
+        document.getElementById(
+            "headToHeadContainer"
+        );
+
+
+    if(
+        !homeSelect ||
+        !awaySelect ||
+        !container
+    ){
+
+        return;
+
+    }
+
+
+    const homeTeam =
+        homeSelect.value.trim();
+
+
+    const awayTeam =
+        awaySelect.value.trim();
+
+
+    if(!homeTeam || !awayTeam){
+
+        showEmptyMessage(
+            "⚠️ Please select both teams."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        homeTeam.toLowerCase() ===
+        awayTeam.toLowerCase()
+    ){
+
+        showEmptyMessage(
+            "⚠️ Please select two different teams."
+        );
+
+        return;
+
+    }
+
+
+    const match =
+        findMatch(
+            homeTeam,
+            awayTeam
+        );
+
+
+    if(!match){
+
+        showEmptyMessage(
+            "No exact match between these two teams was found in the current Match Database."
+        );
+
+        return;
+
+    }
+
+
+    renderComparison(
+        match,
+        homeTeam,
+        awayTeam
+    );
+
+}
+
+
+// ========================================
+// RENDER COMPARISON
+// ========================================
+
+function renderComparison(
+    match,
+    homeTeam,
+    awayTeam
+){
+
+    const container =
+        document.getElementById(
+            "headToHeadContainer"
+        );
+
+
+    if(!container){
+        return;
+    }
+
+
+    const preferredFields = [
+
+        "League",
+        "Home Team",
+        "Away Team",
+        "Head to Head",
+        "Head To Head",
+        "Head-to-Head",
+        "Head to Head Score",
+        "Head To Head Score",
+        "Head-to-Head Score",
+        "Head-to-Head Avg Goals",
+        "Head To Head Avg Goals",
+        "Home Advantage",
+        "Home Advantage Score",
+        "Prediction",
+        "Confidence %",
+        "Risk Level",
+        "recommended market"
+
+    ];
+
+
+    const used =
+        new Set();
+
+
+    let statsHtml = "";
+
+
+    preferredFields.forEach(
+        function(field){
+
+            if(
+                Object.prototype.hasOwnProperty.call(
+                    match,
+                    field
+                )
+            ){
+
+                used.add(field);
+
+
+                statsHtml += `
+
+                    <div class="h2h-stat">
+
+                        <div class="h2h-stat-title">
+
+                            ${h2hEscape(field)}
+
+                        </div>
+
+                        <div class="h2h-stat-value">
+
+                            ${h2hValue(match[field])}
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+    );
+
+
+    const additionalFields =
+        Object.entries(match);
+
+
+    additionalFields.forEach(
+        function(entry){
+
+            const key =
+                entry[0];
+
+            const value =
+                entry[1];
+
+
+            if(
+                used.has(key)
+            ){
+
+                return;
+
+            }
+
+
+            statsHtml += `
+
+                <div class="h2h-stat">
+
+                    <div class="h2h-stat-title">
+
+                        ${h2hEscape(key)}
+
+                    </div>
+
+                    <div class="h2h-stat-value">
+
+                        ${h2hValue(value)}
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    container.innerHTML = `
+
+        <h2 style="text-align:center;">
+            ⚔ Head To Head Analysis
+        </h2>
+
+
+        <div class="h2h-teams">
+
+            <div class="h2h-team">
+
+                🏠
+                ${h2hEscape(homeTeam)}
+
+            </div>
+
+
+            <div class="h2h-vs">
+                VS
+            </div>
+
+
+            <div class="h2h-team">
+
+                🛡
+                ${h2hEscape(awayTeam)}
+
+            </div>
+
+        </div>
+
+
+        <div class="h2h-grid">
+
+            ${statsHtml}
+
+        </div>
+
+    `;
+
+}
+
+
+// ========================================
+// EMPTY STATE
+// ========================================
+
+function showEmptyMessage(message){
+
+    const container =
+        document.getElementById(
+            "headToHeadContainer"
+        );
+
+
+    if(!container){
+        return;
+    }
+
+
+    container.innerHTML = `
+
+        <div class="h2h-empty">
+
+            ${h2hEscape(message)}
+
+        </div>
+
+    `;
+
+}
+
+
+// ========================================
+// BUTTON
+// ========================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        const button =
+            document.getElementById(
+                "compareButton"
+            );
+
+
+        if(button){
+
+            button.addEventListener(
+                "click",
+                compareTeams
+            );
+
+        }
+
+
+        loadH2HData();
+
+    }
+);
+
+</script>
 
 </body>
 
-</html>
+                  </html>
