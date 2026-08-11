@@ -1,117 +1,850 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>APEX Predict AI - Match Analysis</title>
 
-<link rel="stylesheet" href="style.css">
-
-<style>
-
-body{
-background:#081b33;
-color:white;
-font-family:Arial,sans-serif;
-margin:0;
-}
-
-.container{
-max-width:1100px;
-margin:auto;
-padding:20px;
-}
-
-.header{
-text-align:center;
-margin-bottom:25px;
-}
-
-.card{
-background:#102847;
-padding:20px;
-border-radius:15px;
-margin-bottom:20px;
-box-shadow:0 8px 20px rgba(0,0,0,.35);
-}
-
-input{
-width:100%;
-padding:14px;
-margin:10px 0;
-border:none;
-border-radius:10px;
-font-size:16px;
-}
-
-button{
-width:100%;
-padding:15px;
-background:#00c853;
-color:white;
-border:none;
-border-radius:10px;
-font-size:16px;
-font-weight:bold;
-cursor:pointer;
-}
-
-.analysis{
-margin-top:20px;
-line-height:2;
-}
-
-.tag{
-display:inline-block;
-padding:6px 14px;
-border-radius:20px;
-background:#00c853;
-font-weight:bold;
-margin-top:10px;
-}
-
-.back{
-display:inline-block;
-margin-top:25px;
-padding:12px 20px;
-background:#00c853;
-color:white;
-text-decoration:none;
-border-radius:10px;
-font-weight:bold;
-}
-
-</style>
+<link rel="stylesheet" href="styles.css">
 
 </head>
+
 
 <body>
 
 <div class="container">
 
-<div class="header">
-<h1>🤖 AI Match Analysis</h1>
-<p>Version 2.1 Stable</p>
+    <div class="header" style="text-align:center; margin-bottom:25px;">
+
+        <h1>🤖 AI Match Analysis</h1>
+
+        <p>
+            Analysis generated from APEX Predict AI Match Database
+        </p>
+
+    </div>
+
+
+    <div id="connectionStatus"
+         style="
+            text-align:center;
+            margin:15px 0 20px;
+            padding:12px 15px;
+            border-radius:12px;
+            background:rgba(255,255,255,.08);
+            border:1px solid rgba(255,255,255,.12);
+            color:#b9f6ca;
+            font-weight:bold;
+         ">
+
+        🔄 Loading Match Analysis...
+
+    </div>
+
+
+    <div id="analysisContainer">
+
+        <div style="
+            background:#ffffff;
+            color:#111;
+            padding:25px;
+            border-radius:16px;
+            text-align:center;
+        ">
+
+            🔄 Loading analysis...
+
+        </div>
+
+    </div>
+
+
+    <br>
+
+
+    <button onclick="openDashboard()">
+        🏠 Dashboard
+    </button>
+
+
+    <button onclick="openPredictions()">
+        🤖 Predictions
+    </button>
+
+
+    <button onclick="openStatistics()">
+        📈 Statistics
+    </button>
+
+
+    <button onclick="openLiveScores()">
+        ⚽ Live Scores
+    </button>
+
+
+    <button onclick="openLeagues()">
+        🏆 Leagues
+    </button>
+
+
+    <button onclick="openHeadToHead()">
+        ⚔ Head To Head
+    </button>
+
+
+    <button onclick="openSettings()">
+        ⚙ Settings
+    </button>
+
+
 </div>
 
-<div class="card">
 
-<input type="text" placeholder="Home Team">
 
-<input type="text" placeholder="Away Team">
+<script>
 
-<button>Analyze Match</button>
+/* =========================================================
+   APEX PREDICT AI
+   MATCH ANALYSIS
+   VERSION 2.1 XL
+   ========================================================= */
 
-<div class="analysis">
 
-<h3>AI Analysis Result</h3>
+/* =========================================================
+   GOOGLE SHEETS API
+   ========================================================= */
 
-<p>📈 Team Form : Good</p>
+const GOOGLE_SHEETS_API =
+"https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
 
-<p>⚽ Expected Goals : 2.45</p>
 
-<p>🛡 Defensive Rating : Strong</p>
 
-<p>🔥 Attack Rating : Excellent</p>
+/* =========================================================
+   SAFE VALUE FUNCTION
+   ========================================================= */
 
-<p>📊 Head to Head : Home Advantage</p>
+function getValue(match, names) {
+
+    for (let i = 0; i < names.length; i++) {
+
+        const key = names[i];
+
+        if (
+            match[key] !== undefined &&
+            match[key] !== null &&
+            match[key] !== ""
+        ) {
+
+            return match[key];
+
+        }
+
+    }
+
+    return "—";
+
+}
+
+
+
+/* =========================================================
+   LOAD MATCH ANALYSIS
+   ========================================================= */
+
+async function loadAnalysis() {
+
+    const container =
+        document.getElementById("analysisContainer");
+
+    const status =
+        document.getElementById("connectionStatus");
+
+
+    try {
+
+        status.textContent =
+            "🔄 Connecting to Google Sheets...";
+
+
+        const response =
+            await fetch(GOOGLE_SHEETS_API);
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "HTTP " + response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "APEX Predict AI Analysis Data:",
+            data
+        );
+
+
+        const matchDatabase =
+            data.matchDatabase;
+
+
+        if (
+            !matchDatabase ||
+            !Array.isArray(matchDatabase.objects) ||
+            matchDatabase.objects.length === 0
+        ) {
+
+            status.textContent =
+                "⚠️ No match data available";
+
+
+            container.innerHTML = `
+
+                <div style="
+                    background:#ffffff;
+                    color:#111;
+                    padding:25px;
+                    border-radius:16px;
+                    text-align:center;
+                ">
+
+                    <h2>
+                        ⚠️ No Match Data
+                    </h2>
+
+                    <p style="margin-top:10px;">
+                        No matches were found in the
+                        Google Sheets Match Database.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        status.textContent =
+            "✅ Google Sheets Connected";
+
+
+        const matches =
+            matchDatabase.objects;
+
+
+        let html = `
+
+            <div style="
+                background:#ffffff;
+                color:#111;
+                padding:20px;
+                border-radius:16px;
+                margin-bottom:20px;
+                box-shadow:0 12px 35px rgba(0,0,0,.25);
+            ">
+
+                <h2 style="
+                    color:#061326;
+                    margin-bottom:8px;
+                ">
+                    🤖 APEX AI MATCH ANALYSIS
+                </h2>
+
+                <p style="color:#444;">
+                    ${matches.length}
+                    match(es) available for analysis.
+                </p>
+
+            </div>
+
+        `;
+
+
+
+        /* =================================================
+           ANALYSE EACH MATCH
+           ================================================= */
+
+        matches.forEach(function(match, index) {
+
+
+            const date =
+                getValue(match, [
+                    "Date",
+                    "date"
+                ]);
+
+
+            const league =
+                getValue(match, [
+                    "League",
+                    "league"
+                ]);
+
+
+            const homeTeam =
+                getValue(match, [
+                    "Home Team",
+                    "home team",
+                    "Home"
+                ]);
+
+
+            const awayTeam =
+                getValue(match, [
+                    "Away Team",
+                    "away team",
+                    "Away"
+                ]);
+
+
+            const prediction =
+                getValue(match, [
+                    "Prediction",
+                    "prediction"
+                ]);
+
+
+            const confidence =
+                getValue(match, [
+                    "Confidence %",
+                    "Confidence",
+                    "confidence %"
+                ]);
+
+
+            const risk =
+                getValue(match, [
+                    "Risk Level",
+                    "Risk",
+                    "risk level"
+                ]);
+
+
+            const market =
+                getValue(match, [
+                    "recommended market",
+                    "Recommended Market",
+                    "Market"
+                ]);
+
+
+            /* ================================
+               ANALYSIS FIELDS
+               ================================ */
+
+            const teamForm =
+                getValue(match, [
+                    "Team Form",
+                    "Form",
+                    "Team Form Score",
+                    "Form Score"
+                ]);
+
+
+            const expectedGoals =
+                getValue(match, [
+                    "Expected Goals",
+                    "Expected Goals (xG)",
+                    "xG",
+                    "Expected Goal"
+                ]);
+
+
+            const defensiveRating =
+                getValue(match, [
+                    "Defensive Rating",
+                    "Defense Rating",
+                    "Defensive Strength"
+                ]);
+
+
+            const attackRating =
+                getValue(match, [
+                    "Attack Rating",
+                    "Attacking Rating",
+                    "Attack Strength"
+                ]);
+
+
+            const headToHead =
+                getValue(match, [
+                    "Head to Head",
+                    "Head To Head",
+                    "H2H",
+                    "Head-to-Head"
+                ]);
+
+
+            const homeAdvantage =
+                getValue(match, [
+                    "Home Advantage",
+                    "Home Advantage Score",
+                    "Home Advantage Rating"
+                ]);
+
+
+            const headToHeadScore =
+                getValue(match, [
+                    "Head to Head Score",
+                    "Head To Head Score",
+                    "H2H Score"
+                ]);
+
+
+            const bookmakerOdds =
+                getValue(match, [
+                    "Bookmaker Odds",
+                    "Odds",
+                    "Bookmaker odds"
+                ]);
+
+
+            const oddsValueScore =
+                getValue(match, [
+                    "Odds Value Score",
+                    "Value Score",
+                    "Odds Value"
+                ]);
+
+
+
+            /* =================================================
+               MATCH CARD
+               ================================================= */
+
+            html += `
+
+                <div style="
+                    background:#ffffff;
+                    color:#111;
+                    padding:25px;
+                    border-radius:16px;
+                    margin-bottom:25px;
+                    box-shadow:0 12px 35px rgba(0,0,0,.25);
+                ">
+
+
+                    <h2 style="
+                        color:#061326;
+                        margin-bottom:18px;
+                    ">
+
+                        ⚽ Match ${index + 1}
+
+                    </h2>
+
+
+
+                    <div style="
+                        background:#f4f6fa;
+                        padding:20px;
+                        border-radius:14px;
+                        margin-bottom:20px;
+                    ">
+
+                        <h2 style="
+                            color:#061326;
+                            margin-bottom:12px;
+                        ">
+
+                            ${homeTeam}
+
+                            <span style="
+                                color:#777;
+                                font-weight:normal;
+                            ">
+                                vs
+                            </span>
+
+                            ${awayTeam}
+
+                        </h2>
+
+
+                        <p style="
+                            color:#333;
+                            margin:7px 0;
+                        ">
+
+                            <strong>
+                                League:
+                            </strong>
+
+                            ${league}
+
+                        </p>
+
+
+                        <p style="
+                            color:#333;
+                            margin:7px 0;
+                        ">
+
+                            <strong>
+                                Date:
+                            </strong>
+
+                            ${date}
+
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- AI PREDICTION -->
+
+                    <div style="
+                        background:#e8f5e9;
+                        border-left:5px solid #00c853;
+                        padding:20px;
+                        border-radius:12px;
+                        margin-bottom:20px;
+                    ">
+
+                        <h3 style="
+                            color:#061326;
+                            margin-bottom:10px;
+                        ">
+
+                            🤖 AI Prediction
+
+                        </h3>
+
+
+                        <p style="
+                            color:#111;
+                            font-size:22px;
+                            font-weight:bold;
+                        ">
+
+                            ${prediction}
+
+                        </p>
+
+
+                        <p style="
+                            color:#333;
+                            margin-top:10px;
+                        ">
+
+                            <strong>
+                                Recommended Market:
+                            </strong>
+
+                            ${market}
+
+                        </p>
+
+
+                        <p style="
+                            color:#333;
+                            margin-top:8px;
+                        ">
+
+                            <strong>
+                                Confidence:
+                            </strong>
+
+                            ${confidence}
+                            ${confidence !== "—" ? "%" : ""}
+
+                        </p>
+
+
+                        <p style="
+                            color:#333;
+                            margin-top:8px;
+                        ">
+
+                            <strong>
+                                Risk Level:
+                            </strong>
+
+                            ${risk}
+
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- TEAM ANALYSIS -->
+
+                    <h3 style="
+                        color:#061326;
+                        margin:20px 0 15px;
+                    ">
+
+                        📊 Team Analysis
+
+                    </h3>
+
+
+                    <div style="
+                        display:grid;
+                        grid-template-columns:
+                            repeat(auto-fit,minmax(200px,1fr));
+                        gap:12px;
+                    ">
+
+
+                        <div style="
+                            background:#f5f5f5;
+                            padding:16px;
+                            border-radius:12px;
+                        ">
+
+                            <strong>
+                                📈 Team Form
+                            </strong>
+
+                            <p style="
+                                color:#111;
+                                margin-top:8px;
+                                font-size:18px;
+                            ">
+
+                                ${teamForm}
+
+                            </p>
+
+                        </div>
+
+
+
+                        <div style="
+                            background:#f5f5f5;
+                            padding:16px;
+                            border-radius:12px;
+                        ">
+
+                            <strong>
+                                ⚽ Expected Goals
+                            </strong>
+
+                            <p style="
+                                color:#111;
+                                margin-top:8px;
+                                font-size:18px;
+                            ">
+
+                                ${expectedGoals}
+
+                            </p>
+
+                        </div>
+
+
+
+                        <div style="
+                            background:#f5f5f5;
+                            padding:16px;
+                            border-radius:12px;
+                        ">
+
+                            <strong>
+                                🛡 Defensive Rating
+                            </strong>
+
+                            <p style="
+                                color:#111;
+                                margin-top:8px;
+                                font-size:18px;
+                            ">
+
+                                ${defensiveRating}
+
+                            </p>
+
+                        </div>
+
+
+
+                        <div style="
+                            background:#f5f5f5;
+                            padding:16px;
+                            border-radius:12px;
+                        ">
+
+                            <strong>
+                                🔥 Attack Rating
+                            </strong>
+
+                            <p style="
+                                color:#111;
+                                margin-top:8px;
+                                font-size:18px;
+                            ">
+
+                                ${attackRating}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- HEAD TO HEAD -->
+
+                    <h3 style="
+                        color:#061326;
+                        margin:25px 0 15px;
+                    ">
+
+                        ⚔ Head to Head Analysis
+
+                    </h3>
+
+
+                    <div style="
+                        display:grid;
+                        grid-template-columns:
+                            repeat(auto-fit,minmax(200px,1fr));
+                        gap:12px;
+                    ">
+
+
+                        <div style="
+                            background:#f5f5f5;
+                            padding:16px;
+                            border-radius:12px;
+                        ">
+
+                            <strong>
+                                Head to Head
+                            </strong>
+
+                            <p style="
+                                color:#111;
+                                margin-top:8px;
+                                font-size:18px;
+                            ">
+
+                                ${headToHead}
+
+                            </p>
+
+                        </div>
+
+
+
+                        <div style="
+                            background:#f5f5f5;
+                            padding:16px;
+                            border-radius:12px;
+                        ">
+
+                            <strong>
+                                Home Advantage Score
+                            </strong>
+
+                            <p style="
+                                color:#111;
+                                margin-top:8px;
+                                font-size:18px;
+                            ">
+
+                                ${homeAdvantage}
+
+                            </p>
+
+                        </div>
+
+
+
+                        <div style="
+                            background:#f5f5f5;
+                            padding:16px;
+                            border-radius:12px;
+                        ">
+
+                            <strong>
+                                Head to Head Score
+                            </strong>
+
+                            <p style="
+                                color:#111;
+                                margin-top:8px;
+                                font-size:18px;
+                            ">
+
+                                ${headToHeadScore}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ODDS ANALYSIS -->
+
+                    <h3 style="
+                        color:#061326;
+                        margin:25px 0 15px;
+                    ">
+
+                        💰 Odds & Value Analysis
+
+                    </h3>
+
+
+                    <div style="
+                        display:grid;
+                        grid-template-columns:
+                            repeat(auto-fit,minmax(200px,1fr));
+                        gap:12px;
+                    ">
+
+
+                        <div style="
+                            background:#f5f5f5;
+                            padding:16px;
+                            border-radius:12px;
+                        ">
+
+                            <strong>
+                                Bookmaker Odds
+                            </strong>
+
+                            <p style="
+                                color:#111;
+                                margin-top:8px;
+                                font-size:20px;
+                            ">
+
+                                ${bookmakerOdds}
+
+                            </p>
+
+                        </div>
+
+
+
+                        <div style="
+                            background:#f5f5f5;
+                            padding:16px;
+                            border-radius:12px;
+                        ">
+
+                            <strong>
+                                Odds Value Score
+                            </strong>
+
+                            <p style="
+                     
