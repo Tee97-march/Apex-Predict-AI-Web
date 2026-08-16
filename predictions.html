@@ -18,11 +18,11 @@
     <h1>🤖 Today's AI Predictions</h1>
 
     <p>
-        Predictions generated from Apex Predict AI Engine
+        APEX Predict AI — Final 10 Selected Matches
     </p>
 
     <div id="connectionStatus">
-        🔄 Loading predictions from Google Sheets...
+        🔄 Loading today's selected predictions...
     </div>
 
     <div id="predictionContainer">
@@ -35,33 +35,13 @@
 
     <br>
 
-    <button onclick="openDashboard()">
-        🏠 Dashboard
-    </button>
-
-    <button onclick="openAnalysis()">
-        📊 Analysis
-    </button>
-
-    <button onclick="openStatistics()">
-        📈 Statistics
-    </button>
-
-    <button onclick="openLiveScores()">
-        ⚽ Live Scores
-    </button>
-
-    <button onclick="openLeagues()">
-        🏆 Leagues
-    </button>
-
-    <button onclick="openHeadToHead()">
-        ⚔ Head To Head
-    </button>
-
-    <button onclick="openSettings()">
-        ⚙ Settings
-    </button>
+    <button onclick="openDashboard()">🏠 Dashboard</button>
+    <button onclick="openAnalysis()">📊 Analysis</button>
+    <button onclick="openStatistics()">📈 Statistics</button>
+    <button onclick="openLiveScores()">⚽ Live Scores</button>
+    <button onclick="openLeagues()">🏆 Leagues</button>
+    <button onclick="openHeadToHead()">⚔ Head To Head</button>
+    <button onclick="openSettings()">⚙ Settings</button>
 
 </div>
 
@@ -71,12 +51,7 @@
 /* =========================================================
    APEX PREDICT AI
    PREDICTIONS PAGE
-   VERSION 2.1 XL
-   ========================================================= */
-
-
-/* =========================================================
-   GOOGLE SHEETS API
+   FINAL 10 DISPLAY
    ========================================================= */
 
 const GOOGLE_SHEETS_API =
@@ -84,7 +59,30 @@ const GOOGLE_SHEETS_API =
 
 
 /* =========================================================
-   LOAD PREDICTIONS
+   HELPER
+   ========================================================= */
+
+function getValue(match, names) {
+
+    for (const name of names) {
+
+        if (
+            match[name] !== undefined &&
+            match[name] !== null &&
+            match[name] !== ""
+        ) {
+            return match[name];
+        }
+
+    }
+
+    return "";
+
+}
+
+
+/* =========================================================
+   LOAD ONLY FINAL 10
    ========================================================= */
 
 async function loadPredictions() {
@@ -95,96 +93,174 @@ async function loadPredictions() {
     const status =
         document.getElementById("connectionStatus");
 
-
-    if (!container) {
-        return;
-    }
-
-
     try {
 
         status.textContent =
-            "🔄 Connecting to Google Sheets...";
-
+            "🔄 Connecting to APEX Predict AI...";
 
         const response =
             await fetch(GOOGLE_SHEETS_API);
 
-
         if (!response.ok) {
-
             throw new Error(
                 "HTTP " + response.status
             );
-
         }
-
 
         const data =
             await response.json();
 
-
         console.log(
-            "APEX Predict AI Predictions Data:",
+            "APEX DATA RECEIVED:",
             data
         );
 
 
         /* =================================================
-           CHECK MATCH DATABASE
+           GET MATCH DATABASE
            ================================================= */
 
-        const matchDatabase =
-            data.matchDatabase;
-
+        let allMatches = [];
 
         if (
-            !matchDatabase ||
-            !matchDatabase.objects ||
-            !Array.isArray(matchDatabase.objects) ||
-            matchDatabase.objects.length === 0
+            data.matchDatabase &&
+            Array.isArray(data.matchDatabase.objects)
         ) {
 
+            allMatches =
+                data.matchDatabase.objects;
+
+        }
+
+
+        if (allMatches.length === 0) {
+
             status.textContent =
-                "⚠️ No predictions found in Match Database.";
+                "⚠️ No matches available.";
 
             container.innerHTML = `
-
                 <div style="
-                    background:#ffffff;
-                    color:#222;
+                    background:white;
+                    color:#111;
                     padding:25px;
                     border-radius:16px;
                     text-align:center;
-                    margin-top:20px;
                 ">
-
-                    <h2>⚠️ No Predictions Available</h2>
-
-                    <p style="margin-top:10px;">
-                        The Google Sheets connection is working,
-                        but there are currently no matches in
-                        the Match Database.
+                    <h2>⚠️ No Matches Available</h2>
+                    <p>
+                        APEX Predict AI could not find
+                        matches in the database.
                     </p>
-
                 </div>
-
             `;
 
             return;
+
         }
 
 
         /* =================================================
-           GOOGLE SHEETS CONNECTED
+           IMPORTANT
+           
+           The Match Database may contain 1,870+ records.
+           We DO NOT display the whole database.
+
+           We take the most recent completed prediction
+           records and display ONLY 10.
            ================================================= */
 
-        status.textContent =
-            "✅ Google Sheets Connected";
+        const completedMatches =
+            allMatches.filter(function(match) {
 
+                const prediction =
+                    getValue(match, [
+                        "Prediction",
+                        "prediction",
+                        "AI Prediction"
+                    ]);
+
+                const confidence =
+                    getValue(match, [
+                        "Confidence %",
+                        "Confidence",
+                        "confidence %",
+                        "Final Confidence"
+                    ]);
+
+                const market =
+                    getValue(match, [
+                        "Recommended Market",
+                        "recommended market",
+                        "Market"
+                    ]);
+
+                return (
+                    prediction !== "" ||
+                    confidence !== "" ||
+                    market !== ""
+                );
+
+            });
+
+
+        /*
+         * Use the most recent records first.
+         * Then limit the WEB PAGE to 10.
+         *
+         * The Google Sheet remains untouched.
+         */
 
         const matches =
-            matchDatabase.objects;
+            completedMatches
+                .slice()
+                .reverse()
+                .slice(0, 10);
+
+
+        console.log(
+            "APEX database records:",
+            allMatches.length
+        );
+
+        console.log(
+            "APEX prediction records:",
+            completedMatches.length
+        );
+
+        console.log(
+            "APEX FINAL DISPLAY:",
+            matches.length
+        );
+
+
+        status.textContent =
+            "✅ APEX AI Connected — " +
+            matches.length +
+            " selected matches";
+
+
+        if (matches.length === 0) {
+
+            container.innerHTML = `
+                <div style="
+                    background:white;
+                    color:#111;
+                    padding:25px;
+                    border-radius:16px;
+                    text-align:center;
+                ">
+                    <h2>⚠️ Predictions Not Ready</h2>
+                    <p>
+                        The database is connected, but
+                        completed predictions have not
+                        been found yet.
+                    </p>
+                </div>
+            `;
+
+            return;
+
+        }
 
 
         /* =================================================
@@ -193,385 +269,264 @@ async function loadPredictions() {
 
         let html = `
 
-            <div style="
-                background:#ffffff;
-                color:#111;
-                padding:20px;
-                border-radius:16px;
-                margin-top:20px;
-                box-shadow:0 12px 35px rgba(0,0,0,.25);
+        <div style="
+            background:#ffffff;
+            color:#111;
+            padding:20px;
+            border-radius:16px;
+            margin-top:20px;
+            box-shadow:0 12px 35px rgba(0,0,0,.25);
+        ">
+
+            <h2 style="
+                color:#061326;
+                margin-bottom:8px;
             ">
+                🤖 APEX AI PREDICTIONS
+            </h2>
 
-                <h2 style="
-                    color:#061326;
-                    margin-bottom:8px;
-                ">
-                    🤖 APEX AI PREDICTIONS
-                </h2>
+            <p style="
+                color:#444;
+                margin:0;
+            ">
+                Showing the final ${matches.length}
+                selected matches.
+            </p>
 
-                <p style="
-                    color:#444;
-                    margin-bottom:0;
-                ">
-                    ${matches.length} match(es)
-                    loaded from Google Sheets.
-                </p>
-
-            </div>
+        </div>
 
         `;
 
 
         /* =================================================
-           DISPLAY EVERY MATCH
+           BUILD THE 10 MATCH CARDS
            ================================================= */
 
         matches.forEach(function(match, index) {
 
-
-            /* =============================================
-               MAIN MATCH FIELDS
-               ============================================= */
-
             const date =
-                match["Date"] ||
-                match["date"] ||
-                "";
-
+                getValue(match, [
+                    "Date",
+                    "date",
+                    "Fixture Date"
+                ]);
 
             const league =
-                match["League"] ||
-                match["league"] ||
-                "";
-
+                getValue(match, [
+                    "League",
+                    "league",
+                    "League Name"
+                ]);
 
             const homeTeam =
-                match["Home Team"] ||
-                match["home team"] ||
-                "";
-
+                getValue(match, [
+                    "Home Team",
+                    "home team",
+                    "Home",
+                    "home"
+                ]);
 
             const awayTeam =
-                match["Away Team"] ||
-                match["away team"] ||
-                "";
-
+                getValue(match, [
+                    "Away Team",
+                    "away team",
+                    "Away",
+                    "away"
+                ]);
 
             const prediction =
-                match["Prediction"] ||
-                match["prediction"] ||
-                "";
-
+                getValue(match, [
+                    "Prediction",
+                    "prediction",
+                    "AI Prediction"
+                ]);
 
             const confidence =
-                match["Confidence %"] ||
-                match["Confidence"] ||
-                match["confidence %"] ||
-                "";
-
+                getValue(match, [
+                    "Confidence %",
+                    "Confidence",
+                    "confidence %",
+                    "Final Confidence"
+                ]);
 
             const risk =
-                match["Risk Level"] ||
-                match["Risk"] ||
-                match["risk level"] ||
-                "";
-
+                getValue(match, [
+                    "Risk Level",
+                    "Risk",
+                    "risk level"
+                ]);
 
             const market =
-                match["recommended market"] ||
-                match["Recommended Market"] ||
-                match["Market"] ||
-                "";
+                getValue(match, [
+                    "Recommended Market",
+                    "recommended market",
+                    "Market"
+                ]);
 
-
-            /* =============================================
-               MATCH CARD
-               ============================================= */
 
             html += `
 
+            <div style="
+                background:#ffffff;
+                color:#111;
+                margin-top:20px;
+                padding:25px;
+                border-radius:16px;
+                box-shadow:0 12px 35px rgba(0,0,0,.25);
+            ">
+
+                <h2 style="
+                    color:#061326;
+                    margin-bottom:15px;
+                ">
+                    ⚽ Match ${index + 1}
+                </h2>
+
+
                 <div style="
-                    background:#ffffff;
-                    color:#111;
-                    margin-top:20px;
-                    padding:25px;
-                    border-radius:16px;
-                    box-shadow:0 12px 35px rgba(0,0,0,.25);
-                    overflow:hidden;
+                    background:#f5f7fa;
+                    padding:18px;
+                    border-radius:12px;
+                    margin-bottom:18px;
+                ">
+
+                    <h3 style="
+                        color:#061326;
+                        font-size:22px;
+                        margin-bottom:10px;
+                    ">
+
+                        ${homeTeam || "Home Team"}
+
+                        <span style="
+                            color:#777;
+                            font-weight:normal;
+                        ">
+                            vs
+                        </span>
+
+                        ${awayTeam || "Away Team"}
+
+                    </h3>
+
+                    <p style="
+                        color:#333;
+                        margin:6px 0;
+                    ">
+                        <strong>League:</strong>
+                        ${league || "—"}
+                    </p>
+
+                    <p style="
+                        color:#333;
+                        margin:6px 0;
+                    ">
+                        <strong>Date:</strong>
+                        ${date || "—"}
+                    </p>
+
+                </div>
+
+
+                <div style="
+                    background:#e8f5e9;
+                    border-left:5px solid #00c853;
+                    padding:18px;
+                    border-radius:10px;
+                    margin-bottom:15px;
+                ">
+
+                    <h3 style="
+                        color:#061326;
+                        margin-bottom:8px;
+                    ">
+                        🤖 AI Prediction
+                    </h3>
+
+                    <p style="
+                        color:#111;
+                        font-size:20px;
+                        font-weight:bold;
+                    ">
+                        ${prediction || "—"}
+                    </p>
+
+                </div>
+
+
+                <div style="
+                    display:grid;
+                    grid-template-columns:
+                    repeat(auto-fit,minmax(180px,1fr));
+                    gap:12px;
                 ">
 
 
-                    <h2 style="
-                        color:#061326;
-                        margin-bottom:15px;
-                    ">
-
-                        ⚽ Match ${index + 1}
-
-                    </h2>
-
-
                     <div style="
-                        background:#f5f7fa;
-                        padding:18px;
+                        background:#f5f5f5;
+                        padding:16px;
                         border-radius:12px;
-                        margin-bottom:18px;
                     ">
 
-                        <h3 style="
-                            color:#061326;
-                            font-size:22px;
-                            margin-bottom:10px;
-                        ">
-
-                            ${homeTeam || "Home Team"}
-
-                            <span style="
-                                color:#777;
-                                font-weight:normal;
-                            ">
-                                vs
-                            </span>
-
-                            ${awayTeam || "Away Team"}
-
-                        </h3>
-
-
-                        <p style="
-                            color:#333;
-                            margin:6px 0;
-                        ">
-
-                            <strong>League:</strong>
-                            ${league || "—"}
-
-                        </p>
-
-
-                        <p style="
-                            color:#333;
-                            margin:6px 0;
-                        ">
-
-                            <strong>Date:</strong>
-                            ${date || "—"}
-
-                        </p>
-
-                    </div>
-
-
-                    <div style="
-                        background:#e8f5e9;
-                        border-left:5px solid #00c853;
-                        padding:18px;
-                        border-radius:10px;
-                        margin-bottom:15px;
-                    ">
-
-                        <h3 style="
-                            color:#061326;
-                            margin-bottom:8px;
-                        ">
-                            🤖 AI Prediction
-                        </h3>
+                        <strong>Confidence</strong>
 
                         <p style="
                             color:#111;
                             font-size:20px;
-                            font-weight:bold;
+                            margin-top:8px;
                         ">
-
-                            ${prediction || "—"}
-
+                            ${confidence || "—"}
+                            ${confidence !== "" ? "%" : ""}
                         </p>
 
                     </div>
 
 
                     <div style="
-                        display:grid;
-                        grid-template-columns:
-                            repeat(auto-fit,minmax(180px,1fr));
-                        gap:12px;
-                    ">
-
-
-                        <div style="
-                            background:#f5f5f5;
-                            padding:16px;
-                            border-radius:12px;
-                        ">
-
-                            <strong>
-                                Confidence
-                            </strong>
-
-                            <p style="
-                                color:#111;
-                                font-size:20px;
-                                margin-top:8px;
-                            ">
-
-                                ${confidence || "—"}
-                                ${confidence ? "%" : ""}
-
-                            </p>
-
-                        </div>
-
-
-                        <div style="
-                            background:#f5f5f5;
-                            padding:16px;
-                            border-radius:12px;
-                        ">
-
-                            <strong>
-                                Risk Level
-                            </strong>
-
-                            <p style="
-                                color:#111;
-                                font-size:20px;
-                                margin-top:8px;
-                            ">
-
-                                ${risk || "—"}
-
-                            </p>
-
-                        </div>
-
-
-                        <div style="
-                            background:#f5f5f5;
-                            padding:16px;
-                            border-radius:12px;
-                        ">
-
-                            <strong>
-                                Recommended Market
-                            </strong>
-
-                            <p style="
-                                color:#111;
-                                font-size:18px;
-                                margin-top:8px;
-                            ">
-
-                                ${market || "—"}
-
-                            </p>
-
-                        </div>
-
-
-                    </div>
-
-
-                    <!-- ===================================
-                         FULL MATCH DATA
-                         =================================== -->
-
-                    <div style="
-                        margin-top:25px;
-                        padding-top:20px;
-                        border-top:1px solid #ddd;
-                    ">
-
-                        <h3 style="
-                            color:#061326;
-                            margin-bottom:15px;
-                        ">
-
-                            📋 Full Match Data
-
-                        </h3>
-
-
-                        <div style="
-                            display:grid;
-                            grid-template-columns:
-                                repeat(auto-fit,minmax(220px,1fr));
-                            gap:12px;
-                        ">
-
-
-            `;
-
-
-            /* =============================================
-               SHOW ALL GOOGLE SHEETS FIELDS
-               ============================================= */
-
-            Object.keys(match).forEach(function(key) {
-
-                const value =
-                    match[key];
-
-
-                if (
-                    value === null ||
-                    value === undefined ||
-                    value === ""
-                ) {
-                    return;
-                }
-
-
-                html += `
-
-                    <div style="
-                        background:#ffffff;
-                        border:1px solid #e5e5e5;
+                        background:#f5f5f5;
+                        padding:16px;
                         border-radius:12px;
-                        padding:15px;
-                        word-break:break-word;
                     ">
 
-                        <strong style="
-                            color:#444;
-                            display:block;
-                            margin-bottom:7px;
-                        ">
+                        <strong>Risk Level</strong>
 
-                            ${key}
-
-                        </strong>
-
-                        <span style="
+                        <p style="
                             color:#111;
+                            font-size:20px;
+                            margin-top:8px;
                         ">
-
-                            ${value}
-
-                        </span>
+                            ${risk || "—"}
+                        </p>
 
                     </div>
 
-                `;
 
-            });
+                    <div style="
+                        background:#f5f5f5;
+                        padding:16px;
+                        border-radius:12px;
+                    ">
 
+                        <strong>Recommended Market</strong>
 
-            html += `
-
-                        </div>
+                        <p style="
+                            color:#111;
+                            font-size:18px;
+                            margin-top:8px;
+                        ">
+                            ${market || "—"}
+                        </p>
 
                     </div>
 
                 </div>
 
+            </div>
+
             `;
 
         });
 
-
-        /* =================================================
-           PUT EVERYTHING ON PAGE
-           ================================================= */
 
         container.innerHTML =
             html;
@@ -579,52 +534,31 @@ async function loadPredictions() {
 
     } catch (error) {
 
-
         console.error(
-            "APEX Predict AI Predictions Error:",
+            "APEX Predictions Error:",
             error
         );
 
-
         status.textContent =
-            "❌ Google Sheets Connection Failed";
-
+            "❌ APEX connection error";
 
         container.innerHTML = `
-
             <div style="
-                background:#ffffff;
+                background:white;
                 color:#111;
                 padding:25px;
                 border-radius:16px;
-                margin-top:20px;
                 text-align:center;
             ">
 
-                <h2>
-                    ❌ Unable to Load Predictions
-                </h2>
+                <h2>❌ Unable to Load Predictions</h2>
 
-                <p style="margin-top:10px;">
-
-                    The Predictions page could not
-                    retrieve the Match Database.
-
-                </p>
-
-                <p style="
-                    margin-top:10px;
-                    font-size:13px;
-                    color:#777;
-                ">
-
-                    Please check the browser console
-                    for technical details.
-
+                <p>
+                    APEX could not retrieve the
+                    prediction data.
                 </p>
 
             </div>
-
         `;
 
     }
@@ -633,7 +567,7 @@ async function loadPredictions() {
 
 
 /* =========================================================
-   START WHEN PAGE LOADS
+   START
    ========================================================= */
 
 document.addEventListener(
@@ -644,85 +578,37 @@ document.addEventListener(
 
 /* =========================================================
    NAVIGATION
-   These use the existing application functions when
-   script.js is available.
    ========================================================= */
 
 function openDashboard() {
     window.location.href = "dashboard.html";
 }
 
-
 function openAnalysis() {
     window.location.href = "analysis.html";
 }
-
 
 function openStatistics() {
     window.location.href = "statistics.html";
 }
 
-
 function openLiveScores() {
     window.location.href = "livescores.html";
 }
-
 
 function openLeagues() {
     window.location.href = "leagues.html";
 }
 
-
 function openHeadToHead() {
     window.location.href = "headtohead.html";
 }
-
 
 function openSettings() {
     window.location.href = "settings.html";
 }
 
 </script>
-<script>
-(function () {
-  console.log("APEX FINAL-10 DISPLAY FILTER ACTIVE");
 
-  function limitPredictionDisplay() {
-
-    const containers = [
-      document.querySelector("#predictionsContainer"),
-      document.querySelector("#predictions"),
-      document.querySelector(".predictions-container"),
-      document.querySelector(".prediction-grid"),
-      document.querySelector(".matches-container")
-    ];
-
-    const container = containers.find(function (el) {
-      return el && el.children && el.children.length > 10;
-    });
-
-    if (!container) return;
-
-    const items = Array.from(container.children);
-
-    /*
-     * Keep only the first 10 prediction cards.
-     * The database itself is NOT changed.
-     */
-    items.forEach(function (item, index) {
-      item.style.display = index < 10 ? "" : "none";
-    });
-
-    console.log(
-      "APEX Predictions display limited to 10 matches."
-    );
-  }
-
-  setTimeout(limitPredictionDisplay, 1500);
-  setTimeout(limitPredictionDisplay, 3000);
-  setTimeout(limitPredictionDisplay, 5000);
-
-})();
-</script>
 </body>
-  </html>
+    </html>
