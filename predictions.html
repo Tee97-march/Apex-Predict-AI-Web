@@ -683,6 +683,46 @@ function openSettings() {
 }
 
 </script>
+<script>
+(function () {
+  console.log("APEX FINAL-10 DISPLAY FILTER ACTIVE");
 
+  function limitPredictionDisplay() {
+
+    const containers = [
+      document.querySelector("#predictionsContainer"),
+      document.querySelector("#predictions"),
+      document.querySelector(".predictions-container"),
+      document.querySelector(".prediction-grid"),
+      document.querySelector(".matches-container")
+    ];
+
+    const container = containers.find(function (el) {
+      return el && el.children && el.children.length > 10;
+    });
+
+    if (!container) return;
+
+    const items = Array.from(container.children);
+
+    /*
+     * Keep only the first 10 prediction cards.
+     * The database itself is NOT changed.
+     */
+    items.forEach(function (item, index) {
+      item.style.display = index < 10 ? "" : "none";
+    });
+
+    console.log(
+      "APEX Predictions display limited to 10 matches."
+    );
+  }
+
+  setTimeout(limitPredictionDisplay, 1500);
+  setTimeout(limitPredictionDisplay, 3000);
+  setTimeout(limitPredictionDisplay, 5000);
+
+})();
+</script>
 </body>
   </html>
