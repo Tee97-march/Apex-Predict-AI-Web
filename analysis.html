@@ -208,41 +208,33 @@
 
 <div class="container">
 
-    <!-- HEADER -->
-
     <div class="analysis-header">
 
         <h1>🤖 AI Match Analysis</h1>
 
         <p>
-            Analysis generated from APEX Predict AI Match Database
+            Analysis generated from APEX Predict AI
         </p>
 
     </div>
 
 
-    <!-- STATUS -->
-
     <div
         id="analysisStatus"
         class="analysis-status"
     >
-        🔄 Loading Match Analysis...
+        🔄 Loading today's analysis...
     </div>
 
-
-    <!-- RESULTS -->
 
     <div id="analysisContainer">
 
         <div class="empty-message">
-            🔄 Loading match data from Google Sheets...
+            🔄 Loading analysis...
         </div>
 
     </div>
 
-
-    <!-- NAVIGATION -->
 
     <div class="navigation">
 
@@ -284,17 +276,17 @@
 "use strict";
 
 
-/* =========================================
-   APEX GOOGLE SHEETS CONNECTION
-   ========================================= */
+/* =========================================================
+   APEX GOOGLE SHEETS API
+   ========================================================= */
 
 const GOOGLE_SHEETS_API =
 "https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
 
 
-/* =========================================
-   SAFE HTML DISPLAY
-   ========================================= */
+/* =========================================================
+   SAFE HTML
+   ========================================================= */
 
 function escapeHTML(value){
 
@@ -312,11 +304,11 @@ function escapeHTML(value){
 }
 
 
-/* =========================================
-   FIND COLUMN FLEXIBLY
-   ========================================= */
+/* =========================================================
+   FLEXIBLE COLUMN READER
+   ========================================================= */
 
-function getValue(match, names){
+function getValue(match,names){
 
     for(const name of names){
 
@@ -348,11 +340,11 @@ function getValue(match, names){
 }
 
 
-/* =========================================
-   CREATE DATA FIELD
-   ========================================= */
+/* =========================================================
+   DATA FIELD
+   ========================================================= */
 
-function createField(label, value){
+function createField(label,value){
 
     if(
         value === null ||
@@ -365,6 +357,7 @@ function createField(label, value){
     }
 
     return `
+
         <div class="data-field">
 
             <div class="data-label">
@@ -376,14 +369,15 @@ function createField(label, value){
             </div>
 
         </div>
+
     `;
 
 }
 
 
-/* =========================================
-   LOAD MATCH ANALYSIS
-   ========================================= */
+/* =========================================================
+   LOAD ANALYSIS
+   ========================================================= */
 
 async function loadAnalysis(){
 
@@ -397,7 +391,7 @@ async function loadAnalysis(){
     try{
 
         status.textContent =
-            "🔄 Connecting to Google Sheets...";
+            "🔄 Connecting to APEX Predict AI...";
 
 
         const response =
@@ -424,47 +418,119 @@ async function loadAnalysis(){
 
 
         console.log(
-            "APEX Match Analysis Response:",
+            "APEX Analysis Data:",
             data
         );
 
 
         if(
             !data.matchDatabase ||
-            !data.matchDatabase.objects
+            !Array.isArray(
+                data.matchDatabase.objects
+            )
         ){
 
             throw new Error(
-                "Match Database was not returned by Google Sheets."
+                "Match Database was not returned."
             );
 
         }
 
 
-        const matches =
+        const allMatches =
             data.matchDatabase.objects;
 
 
-        if(
-            !Array.isArray(matches) ||
-            matches.length === 0
-        ){
+        /* =================================================
+           FIND RECORDS THAT CONTAIN AI RESULTS
+           ================================================= */
+
+        const completedMatches =
+            allMatches.filter(function(match){
+
+                const prediction =
+                    getValue(match,[
+                        "Prediction",
+                        "prediction",
+                        "AI Prediction"
+                    ]);
+
+                const confidence =
+                    getValue(match,[
+                        "Confidence %",
+                        "Confidence",
+                        "confidence %",
+                        "confidence",
+                        "Final Confidence"
+                    ]);
+
+                const market =
+                    getValue(match,[
+                        "Recommended Market",
+                        "recommended market",
+                        "Recommended market",
+                        "Market"
+                    ]);
+
+                return (
+                    prediction !== "" ||
+                    confidence !== "" ||
+                    market !== ""
+                );
+
+            });
+
+
+        /* =================================================
+           SAME DISPLAY RULE AS PREDICTIONS
+           
+           DO NOT CHANGE GOOGLE SHEETS.
+           ONLY DISPLAY 10 ON THE WEBSITE.
+           ================================================= */
+
+        const matches =
+            completedMatches
+                .slice()
+                .reverse()
+                .slice(0,10);
+
+
+        console.log(
+            "APEX total database records:",
+            allMatches.length
+        );
+
+        console.log(
+            "APEX completed records:",
+            completedMatches.length
+        );
+
+        console.log(
+            "APEX Analysis display:",
+            matches.length
+        );
+
+
+        if(matches.length === 0){
 
             status.textContent =
-                "⚠️ No matches found";
+                "⚠️ No analysis available";
 
             container.innerHTML = `
+
                 <div class="empty-message">
 
-                    <h2>⚽ No Match Data</h2>
+                    <h2>
+                        ⚠️ No Analysis Available
+                    </h2>
 
                     <p>
-                        Google Sheets is connected,
-                        but the Match Database contains
-                        no match records.
+                        APEX is connected, but no completed
+                        prediction analysis was found.
                     </p>
 
                 </div>
+
             `;
 
             return;
@@ -473,8 +539,14 @@ async function loadAnalysis(){
 
 
         status.textContent =
-            "✅ Match Analysis Loaded";
+            "✅ APEX AI Connected — " +
+            matches.length +
+            " analysis records";
 
+
+        /* =================================================
+           SUMMARY
+           ================================================= */
 
         let html = `
 
@@ -485,8 +557,8 @@ async function loadAnalysis(){
                 </h2>
 
                 <p>
-                    ${matches.length}
-                    match(es) loaded from Google Sheets.
+                    Showing analysis for the final
+                    ${matches.length} selected matches.
                 </p>
 
             </div>
@@ -494,167 +566,161 @@ async function loadAnalysis(){
         `;
 
 
-        /* =====================================
-           PROCESS EVERY MATCH
-           ===================================== */
+        /* =================================================
+           BUILD THE 10 MATCHES
+           ================================================= */
 
         matches.forEach(function(match,index){
 
             const homeTeam =
-                getValue(
-                    match,
-                    [
-                        "Home Team",
-                        "home team",
-                        "HomeTeam",
-                        "home_team"
-                    ]
-                );
+                getValue(match,[
+                    "Home Team",
+                    "home team",
+                    "HomeTeam",
+                    "home_team",
+                    "Home"
+                ]);
 
 
             const awayTeam =
-                getValue(
-                    match,
-                    [
-                        "Away Team",
-                        "away team",
-                        "AwayTeam",
-                        "away_team"
-                    ]
-                );
+                getValue(match,[
+                    "Away Team",
+                    "away team",
+                    "AwayTeam",
+                    "away_team",
+                    "Away"
+                ]);
 
 
             const league =
-                getValue(
-                    match,
-                    [
-                        "League",
-                        "league"
-                    ]
-                );
+                getValue(match,[
+                    "League",
+                    "league",
+                    "League Name"
+                ]);
 
 
             const date =
-                getValue(
-                    match,
-                    [
-                        "Date",
-                        "date",
-                        "Match Date",
-                        "match date"
-                    ]
-                );
+                getValue(match,[
+                    "Date",
+                    "date",
+                    "Match Date",
+                    "match date"
+                ]);
 
 
             const prediction =
-                getValue(
-                    match,
-                    [
-                        "Prediction",
-                        "prediction",
-                        "AI Prediction",
-                        "AI prediction"
-                    ]
-                );
+                getValue(match,[
+                    "Prediction",
+                    "prediction",
+                    "AI Prediction",
+                    "AI prediction"
+                ]);
 
 
             const confidence =
-                getValue(
-                    match,
-                    [
-                        "Confidence %",
-                        "Confidence",
-                        "confidence %",
-                        "confidence"
-                    ]
-                );
+                getValue(match,[
+                    "Confidence %",
+                    "Confidence",
+                    "confidence %",
+                    "confidence",
+                    "Final Confidence"
+                ]);
 
 
             const risk =
-                getValue(
-                    match,
-                    [
-                        "Risk Level",
-                        "Risk",
-                        "risk level",
-                        "risk"
-                    ]
-                );
+                getValue(match,[
+                    "Risk Level",
+                    "Risk",
+                    "risk level",
+                    "risk"
+                ]);
 
 
             const recommendedMarket =
-                getValue(
-                    match,
-                    [
-                        "recommended market",
-                        "Recommended Market",
-                        "Recommended market"
-                    ]
-                );
+                getValue(match,[
+                    "Recommended Market",
+                    "recommended market",
+                    "Recommended market",
+                    "Market"
+                ]);
 
 
-            /* =================================
-               IMPORTANT ANALYSIS FIELDS
-               ================================= */
+            /* =============================================
+               ANALYSIS METRICS
+               ============================================= */
 
             const homeAdvantage =
-                getValue(
-                    match,
-                    [
-                        "Home Advantage Score",
-                        "Home advantage score",
-                        "home advantage score",
-                        "Home Advantage"
-                    ]
-                );
+                getValue(match,[
+                    "Home Advantage Score",
+                    "Home advantage score",
+                    "home advantage score",
+                    "Home Advantage"
+                ]);
 
 
             const headToHead =
-                getValue(
-                    match,
-                    [
-                        "Head to Head",
-                        "Head To Head",
-                        "head to head",
-                        "H2H"
-                    ]
-                );
+                getValue(match,[
+                    "Head to Head",
+                    "Head To Head",
+                    "head to head",
+                    "H2H"
+                ]);
 
 
             const headToHeadScore =
-                getValue(
-                    match,
-                    [
-                        "Head to Head Score",
-                        "Head To Head Score",
-                        "head to head score",
-                        "H2H Score"
-                    ]
-                );
+                getValue(match,[
+                    "Head to Head Score",
+                    "Head To Head Score",
+                    "head to head score",
+                    "H2H Score"
+                ]);
 
 
             const bookmakerOdds =
-                getValue(
-                    match,
-                    [
-                        "Bookmaker Odds",
-                        "Bookmaker odds",
-                        "bookmaker odds",
-                        "Odds"
-                    ]
-                );
+                getValue(match,[
+                    "Bookmaker Odds",
+                    "Bookmaker odds",
+                    "bookmaker odds",
+                    "Odds"
+                ]);
 
 
             const oddsValueScore =
-                getValue(
-                    match,
-                    [
-                        "Odds Value Score",
-                        "Odds value score",
-                        "odds value score"
-                    ]
-                );
+                getValue(match,[
+                    "Odds Value Score",
+                    "Odds value score",
+                    "odds value score"
+                ]);
 
+
+            const formScore =
+                getValue(match,[
+                    "Form Score",
+                    "form score",
+                    "Team Form Score"
+                ]);
+
+
+            const goalsScore =
+                getValue(match,[
+                    "Goals Score",
+                    "Goals score",
+                    "goals score"
+                ]);
+
+
+            const defensiveScore =
+                getValue(match,[
+                    "Defensive Score",
+                    "Defensive score",
+                    "defensive score"
+                ]);
+
+
+            /* =============================================
+               MATCH CARD
+               ============================================= */
 
             html += `
 
@@ -669,31 +735,31 @@ async function loadAnalysis(){
 
                         <div class="teams">
 
-                            ${escapeHTML(homeTeam)}
+                            ${escapeHTML(
+                                homeTeam || "Home Team"
+                            )}
 
                             <span class="vs">
                                 vs
                             </span>
 
-                            ${escapeHTML(awayTeam)}
+                            ${escapeHTML(
+                                awayTeam || "Away Team"
+                            )}
 
                         </div>
 
 
-                        ${league ? `
-                            <p>
-                                <strong>League:</strong>
-                                ${escapeHTML(league)}
-                            </p>
-                        ` : ""}
+                        <p>
+                            <strong>League:</strong>
+                            ${escapeHTML(league || "—")}
+                        </p>
 
 
-                        ${date ? `
-                            <p>
-                                <strong>Date:</strong>
-                                ${escapeHTML(date)}
-                            </p>
-                        ` : ""}
+                        <p>
+                            <strong>Date:</strong>
+                            ${escapeHTML(date || "—")}
+                        </p>
 
                     </div>
 
@@ -705,7 +771,9 @@ async function loadAnalysis(){
                         </h3>
 
                         <div class="prediction-value">
-                            ${escapeHTML(prediction)}
+                            ${escapeHTML(
+                                prediction || "—"
+                            )}
                         </div>
 
                     </div>
@@ -758,49 +826,20 @@ async function loadAnalysis(){
                             oddsValueScore
                         )}
 
-                    </div>
+                        ${createField(
+                            "Form Score",
+                            formScore
+                        )}
 
+                        ${createField(
+                            "Goals Score",
+                            goalsScore
+                        )}
 
-                    <h3 class="analysis-section-title">
-                        📋 Complete Match Database Data
-                    </h3>
-
-
-                    <div class="analysis-grid">
-
-            `;
-
-
-            /* =================================
-               SHOW EVERY COLUMN FROM SHEETS
-               ================================= */
-
-            Object.keys(match).forEach(function(key){
-
-                const value =
-                    match[key];
-
-
-                if(
-                    value === null ||
-                    value === undefined ||
-                    String(value).trim() === ""
-                ){
-
-                    return;
-
-                }
-
-
-                html += createField(
-                    key,
-                    value
-                );
-
-            });
-
-
-            html += `
+                        ${createField(
+                            "Defensive Score",
+                            defensiveScore
+                        )}
 
                     </div>
 
@@ -811,19 +850,20 @@ async function loadAnalysis(){
         });
 
 
-        container.innerHTML = html;
+        container.innerHTML =
+            html;
 
 
     }catch(error){
 
         console.error(
-            "APEX Match Analysis Error:",
+            "APEX Analysis Error:",
             error
         );
 
 
         status.textContent =
-            "❌ Match Analysis Connection Failed";
+            "❌ APEX Analysis Connection Failed";
 
 
         container.innerHTML = `
@@ -831,17 +871,11 @@ async function loadAnalysis(){
             <div class="empty-message">
 
                 <h2>
-                    ❌ Unable to Load Match Analysis
+                    ❌ Unable to Load Analysis
                 </h2>
 
                 <p>
                     ${escapeHTML(error.message)}
-                </p>
-
-                <br>
-
-                <p>
-                    Please try refreshing the page.
                 </p>
 
             </div>
@@ -853,9 +887,9 @@ async function loadAnalysis(){
 }
 
 
-/* =========================================
+/* =========================================================
    NAVIGATION
-   ========================================= */
+   ========================================================= */
 
 function goTo(page){
 
@@ -865,9 +899,9 @@ function goTo(page){
 }
 
 
-/* =========================================
+/* =========================================================
    START
-   ========================================= */
+   ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
