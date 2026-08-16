@@ -5,23 +5,13 @@
 
 <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>APEX Predict AI - Statistics</title>
 
 <link rel="stylesheet" href="styles.css">
 
-<script src="script.js"></script>
-
 <style>
-
-/* =========================================
-   APEX PREDICT AI - STATISTICS PAGE
-   Uses the existing Google Sheets connection
-   ========================================= */
 
 .statistics-header{
     text-align:center;
@@ -37,8 +27,14 @@
     margin-bottom:15px;
 }
 
-#statisticsContainer{
-    width:100%;
+#connectionStatus{
+    text-align:center;
+    margin:15px 0;
+    padding:14px;
+    border-radius:14px;
+    background:rgba(255,255,255,.08);
+    color:#b9f6ca;
+    font-weight:bold;
 }
 
 .statistics-summary{
@@ -51,19 +47,17 @@
 }
 
 .statistics-summary h2{
-    margin:0 0 8px 0;
-    color:#061326;
+    margin:0 0 8px;
 }
 
 .statistics-summary p{
     color:#333;
-    margin:5px 0;
 }
 
 .statistics-grid{
     display:grid;
     grid-template-columns:
-        repeat(auto-fit,minmax(220px,1fr));
+        repeat(auto-fit,minmax(180px,1fr));
     gap:14px;
     margin-top:18px;
 }
@@ -74,7 +68,6 @@
     border-radius:14px;
     padding:17px;
     color:#061326;
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
 }
 
 .stat-card-title{
@@ -85,10 +78,9 @@
 }
 
 .stat-card-value{
-    font-size:1.45rem;
+    font-size:1.4rem;
     font-weight:700;
     color:#061326;
-    line-height:1.3;
 }
 
 .match-statistics{
@@ -100,11 +92,6 @@
     box-shadow:0 12px 35px rgba(0,0,0,.25);
 }
 
-.match-statistics h2{
-    margin-top:0;
-    color:#061326;
-}
-
 .match-card{
     background:#fafafa;
     border:1px solid #e5e5e5;
@@ -114,12 +101,12 @@
 }
 
 .match-card h3{
-    margin-top:0;
     color:#061326;
+    margin-top:0;
 }
 
 .match-teams{
-    font-size:1.15rem;
+    font-size:1.2rem;
     font-weight:700;
     margin-bottom:15px;
 }
@@ -127,7 +114,7 @@
 .match-detail-grid{
     display:grid;
     grid-template-columns:
-        repeat(auto-fit,minmax(200px,1fr));
+        repeat(auto-fit,minmax(180px,1fr));
     gap:10px;
 }
 
@@ -146,38 +133,32 @@
 }
 
 .match-detail-value{
-    font-size:1rem;
     color:#061326;
-    line-height:1.4;
+    word-break:break-word;
+}
+
+.loading-box,
+.error-box,
+.empty-box{
+    border-radius:15px;
+    padding:20px;
+    text-align:center;
+    margin-top:20px;
 }
 
 .loading-box{
     background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:12px;
-    padding:16px;
-    text-align:center;
     color:#ffd54f;
-    font-weight:bold;
 }
 
 .error-box{
     background:#3a1515;
-    border:1px solid #8b3030;
     color:#ffb4ab;
-    border-radius:12px;
-    padding:16px;
-    text-align:center;
-    font-weight:bold;
 }
 
 .empty-box{
-    background:#ffffff;
+    background:#fff;
     color:#333;
-    border-radius:16px;
-    padding:25px;
-    text-align:center;
-    box-shadow:0 12px 35px rgba(0,0,0,.2);
 }
 
 .navigation{
@@ -189,37 +170,15 @@
     margin-top:10px;
 }
 
-
-/* =========================================
-   MOBILE
-   ========================================= */
-
 @media(max-width:600px){
+
+    .statistics-grid{
+        grid-template-columns:1fr 1fr;
+    }
 
     .statistics-summary,
     .match-statistics{
         padding:16px;
-    }
-
-    .statistics-grid{
-        grid-template-columns:1fr 1fr;
-        gap:10px;
-    }
-
-    .stat-card{
-        padding:13px;
-    }
-
-    .stat-card-title{
-        font-size:.8rem;
-    }
-
-    .stat-card-value{
-        font-size:1.15rem;
-    }
-
-    .match-detail-grid{
-        grid-template-columns:1fr;
     }
 
 }
@@ -236,57 +195,34 @@
 
 </head>
 
-
 <body>
-
 
 <div class="container">
 
-
-    <!-- =====================================
-         HEADER
-         ===================================== -->
-
     <div class="statistics-header">
 
-        <h1>
-            📈 AI Statistics
-        </h1>
+        <h1>📈 AI Statistics</h1>
 
         <p>
-            Statistics generated from
-            the APEX Match Database
+            Statistics generated from APEX Predict AI
         </p>
 
     </div>
 
 
-    <!-- =====================================
-         CONNECTION STATUS
-         ===================================== -->
-
     <div id="connectionStatus">
-        🔄 Connecting to Google Sheets...
+        🔄 Connecting to APEX AI...
     </div>
 
-
-    <!-- =====================================
-         STATISTICS OUTPUT
-         ===================================== -->
 
     <div id="statisticsContainer">
 
         <div class="loading-box">
-            🔄 Loading statistics from
-            Google Sheets...
+            🔄 Loading the final 10 selected matches...
         </div>
 
     </div>
 
-
-    <!-- =====================================
-         NAVIGATION
-         ===================================== -->
 
     <div class="navigation">
 
@@ -320,21 +256,462 @@
 
     </div>
 
-
 </div>
-
 
 
 <script>
 
-/* =========================================
-   APEX STATISTICS ENGINE
-   ========================================= */
+"use strict";
 
-(function(){
 
-    "use strict";
+/* =====================================================
+   APEX PREDICT AI
+   STATISTICS PAGE
+   FINAL 10 SELECTED MATCHES
+   ===================================================== */
 
+const GOOGLE_SHEETS_API =
+"https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
+
+
+/* =====================================================
+   SAFE VALUE READER
+   ===================================================== */
+
+function getValue(match, names){
+
+    if(!match){
+        return "";
+    }
+
+    const keys = Object.keys(match);
+
+    for(const name of names){
+
+        const foundKey = keys.find(function(key){
+
+            return String(key)
+                .trim()
+                .toLowerCase()
+                ===
+                String(name)
+                .trim()
+                .toLowerCase();
+
+        });
+
+        if(foundKey !== undefined){
+
+            const value = match[foundKey];
+
+            if(
+                value !== null &&
+                value !== undefined &&
+                String(value).trim() !== ""
+            ){
+
+                return value;
+
+            }
+
+        }
+
+    }
+
+    return "";
+
+}
+
+
+/* =====================================================
+   NUMBER READER
+   ===================================================== */
+
+function numberValue(value){
+
+    if(
+        value === null ||
+        value === undefined ||
+        value === ""
+    ){
+
+        return null;
+
+    }
+
+    const number =
+        Number(
+            String(value)
+                .replace("%","")
+                .replace(",","")
+                .trim()
+        );
+
+    return Number.isFinite(number)
+        ? number
+        : null;
+
+}
+
+
+/* =====================================================
+   SAFE HTML
+   ===================================================== */
+
+function escapeHTML(value){
+
+    if(
+        value === null ||
+        value === undefined
+    ){
+
+        return "";
+
+    }
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =====================================================
+   PERCENTAGE
+   ===================================================== */
+
+function percentage(value,total){
+
+    if(
+        !Number.isFinite(value) ||
+        !Number.isFinite(total) ||
+        total === 0
+    ){
+
+        return "Not available";
+
+    }
+
+    return (
+        (value / total) * 100
+    ).toFixed(1) + "%";
+
+}
+
+
+/* =====================================================
+   BUILD STATISTICS
+   ===================================================== */
+
+function calculateStatistics(matches){
+
+    let confidenceTotal = 0;
+    let confidenceCount = 0;
+
+    let expectedGoalsTotal = 0;
+    let expectedGoalsCount = 0;
+
+    let homeAdvantageTotal = 0;
+    let homeAdvantageCount = 0;
+
+    let oddsTotal = 0;
+    let oddsCount = 0;
+
+    let oddsValueTotal = 0;
+    let oddsValueCount = 0;
+
+    let over15 = 0;
+    let over25 = 0;
+    let lowRisk = 0;
+
+
+    matches.forEach(function(match){
+
+        const confidence =
+            numberValue(
+                getValue(
+                    match,
+                    [
+                        "Confidence %",
+                        "Confidence",
+                        "confidence %"
+                    ]
+                )
+            );
+
+        if(confidence !== null){
+
+            confidenceTotal += confidence;
+            confidenceCount++;
+
+        }
+
+
+        const expectedGoals =
+            numberValue(
+                getValue(
+                    match,
+                    [
+                        "Expected Goals",
+                        "Expected Goal",
+                        "Expected Goals %",
+                        "xG"
+                    ]
+                )
+            );
+
+        if(expectedGoals !== null){
+
+            expectedGoalsTotal += expectedGoals;
+            expectedGoalsCount++;
+
+        }
+
+
+        const homeAdvantage =
+            numberValue(
+                getValue(
+                    match,
+                    [
+                        "Home Advantage Score",
+                        "Home Advantage",
+                        "Home Advantage Rating"
+                    ]
+                )
+            );
+
+        if(homeAdvantage !== null){
+
+            homeAdvantageTotal += homeAdvantage;
+            homeAdvantageCount++;
+
+        }
+
+
+        const odds =
+            numberValue(
+                getValue(
+                    match,
+                    [
+                        "Bookmaker Odds",
+                        "Bookmaker Odd",
+                        "Odds"
+                    ]
+                )
+            );
+
+        if(odds !== null){
+
+            oddsTotal += odds;
+            oddsCount++;
+
+        }
+
+
+        const oddsValue =
+            numberValue(
+                getValue(
+                    match,
+                    [
+                        "Odds Value Score",
+                        "Odds Value",
+                        "Value Score"
+                    ]
+                )
+            );
+
+        if(oddsValue !== null){
+
+            oddsValueTotal += oddsValue;
+            oddsValueCount++;
+
+        }
+
+
+        const prediction =
+            String(
+                getValue(
+                    match,
+                    [
+                        "Prediction",
+                        "AI Prediction"
+                    ]
+                )
+            ).toLowerCase();
+
+
+        const market =
+            String(
+                getValue(
+                    match,
+                    [
+                        "Recommended Market",
+                        "recommended market",
+                        "Recommended market",
+                        "Market"
+                    ]
+                )
+            ).toLowerCase();
+
+
+        const combined =
+            prediction + " " + market;
+
+
+        if(
+            combined.includes("over 1.5")
+        ){
+
+            over15++;
+
+        }
+
+
+        if(
+            combined.includes("over 2.5")
+        ){
+
+            over25++;
+
+        }
+
+
+        const risk =
+            String(
+                getValue(
+                    match,
+                    [
+                        "Risk Level",
+                        "Risk"
+                    ]
+                )
+            ).toLowerCase();
+
+
+        if(risk === "low"){
+
+            lowRisk++;
+
+        }
+
+    });
+
+
+    return {
+
+        total: matches.length,
+
+        averageConfidence:
+            confidenceCount
+                ? (
+                    confidenceTotal /
+                    confidenceCount
+                ).toFixed(1) + "%"
+                : "Not available",
+
+        averageExpectedGoals:
+            expectedGoalsCount
+                ? (
+                    expectedGoalsTotal /
+                    expectedGoalsCount
+                ).toFixed(2)
+                : "Not available",
+
+        averageHomeAdvantage:
+            homeAdvantageCount
+                ? (
+                    homeAdvantageTotal /
+                    homeAdvantageCount
+                ).toFixed(2)
+                : "Not available",
+
+        averageOdds:
+            oddsCount
+                ? (
+                    oddsTotal /
+                    oddsCount
+                ).toFixed(2)
+                : "Not available",
+
+        averageOddsValue:
+            oddsValueCount
+                ? (
+                    oddsValueTotal /
+                    oddsValueCount
+                ).toFixed(2)
+                : "Not available",
+
+        over15:
+            percentage(
+                over15,
+                matches.length
+            ),
+
+        over25:
+            percentage(
+                over25,
+                matches.length
+            ),
+
+        lowRisk:
+            percentage(
+                lowRisk,
+                matches.length
+            )
+
+    };
+
+}
+
+
+/* =====================================================
+   CREATE DETAIL FIELD
+   ===================================================== */
+
+function detail(title,value){
+
+    if(
+        value === null ||
+        value === undefined ||
+        String(value).trim() === ""
+    ){
+
+        return "";
+
+    }
+
+    return `
+
+        <div class="match-detail">
+
+            <div class="match-detail-title">
+                ${escapeHTML(title)}
+            </div>
+
+            <div class="match-detail-value">
+                ${escapeHTML(value)}
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =====================================================
+   LOAD DATA
+   ===================================================== */
+
+async function loadStatistics(){
+
+    const status =
+        document.getElementById(
+            "connectionStatus"
+        );
 
     const container =
         document.getElementById(
@@ -342,483 +719,93 @@
         );
 
 
-    if(!container){
+    try{
 
-        return;
-
-    }
-
-
-    /*
-     * Read a value using several possible
-     * Google Sheets column names.
-     */
-
-    function getValue(
-        match,
-        names
-    ){
-
-        for(
-            let i = 0;
-            i < names.length;
-            i++
-        ){
-
-            const key =
-                Object.keys(match).find(
-                    function(existingKey){
-
-                        return existingKey
-                            .trim()
-                            .toLowerCase()
-                            ===
-                            names[i]
-                                .trim()
-                                .toLowerCase();
-
-                    }
-                );
+        status.textContent =
+            "🔄 Connecting to APEX AI...";
 
 
-            if(
-                key !== undefined &&
-                match[key] !== null &&
-                match[key] !== undefined &&
-                String(match[key]).trim() !== ""
-            ){
+        const response =
+            await fetch(
+                GOOGLE_SHEETS_API,
+                {
+                    method:"GET",
+                    cache:"no-store"
+                }
+            );
 
-                return match[key];
 
-            }
+        if(!response.ok){
+
+            throw new Error(
+                "HTTP " + response.status
+            );
 
         }
 
 
-        return null;
+        const data =
+            await response.json();
 
-    }
 
-
-    /*
-     * Format numbers safely.
-     */
-
-    function numberValue(value){
-
-        if(
-            value === null ||
-            value === undefined ||
-            value === ""
-        ){
-
-            return null;
-
-        }
-
-
-        const cleaned =
-            String(value)
-                .replace("%","")
-                .replace(",","")
-                .trim();
-
-
-        const number =
-            Number(cleaned);
-
-
-        return Number.isFinite(number)
-            ? number
-            : null;
-
-    }
-
-
-    /*
-     * Display values safely.
-     */
-
-    function displayValue(value){
-
-        if(
-            value === null ||
-            value === undefined ||
-            value === ""
-        ){
-
-            return "Not available";
-
-        }
-
-
-        return String(value);
-
-    }
-
-
-    /*
-     * Calculate percentage.
-     */
-
-    function percentage(
-        value,
-        total
-    ){
-
-        if(
-            !Number.isFinite(value) ||
-            !Number.isFinite(total) ||
-            total === 0
-        ){
-
-            return null;
-
-        }
-
-
-        return (
-            (value / total) * 100
-        ).toFixed(1) + "%";
-
-    }
-
-
-    /*
-     * Calculate statistics from
-     * the available Match Database.
-     */
-
-    function calculateStatistics(
-        matches
-    ){
-
-        const total =
-            matches.length;
-
-
-        let confidenceTotal = 0;
-        let confidenceCount = 0;
-
-        let expectedGoalsTotal = 0;
-        let expectedGoalsCount = 0;
-
-        let homeAdvantageTotal = 0;
-        let homeAdvantageCount = 0;
-
-        let oddsTotal = 0;
-        let oddsCount = 0;
-
-        let oddsValueTotal = 0;
-        let oddsValueCount = 0;
-
-        let over15Count = 0;
-        let over25Count = 0;
-
-        let lowRiskCount = 0;
-
-
-        matches.forEach(
-            function(match){
-
-                const confidence =
-                    numberValue(
-                        getValue(
-                            match,
-                            [
-                                "Confidence %",
-                                "Confidence",
-                                "confidence %"
-                            ]
-                        )
-                    );
-
-
-                if(
-                    confidence !== null
-                ){
-
-                    confidenceTotal +=
-                        confidence;
-
-                    confidenceCount++;
-
-                }
-
-
-                const expectedGoals =
-                    numberValue(
-                        getValue(
-                            match,
-                            [
-                                "Expected Goals",
-                                "Expected Goals %",
-                                "Expected Goal",
-                                "xG"
-                            ]
-                        )
-                    );
-
-
-                if(
-                    expectedGoals !== null
-                ){
-
-                    expectedGoalsTotal +=
-                        expectedGoals;
-
-                    expectedGoalsCount++;
-
-                }
-
-
-                const homeAdvantage =
-                    numberValue(
-                        getValue(
-                            match,
-                            [
-                                "Home Advantage Score",
-                                "Home Advantage",
-                                "Home Advantage Rating"
-                            ]
-                        )
-                    );
-
-
-                if(
-                    homeAdvantage !== null
-                ){
-
-                    homeAdvantageTotal +=
-                        homeAdvantage;
-
-                    homeAdvantageCount++;
-
-                }
-
-
-                const odds =
-                    numberValue(
-                        getValue(
-                            match,
-                            [
-                                "Bookmaker Odds",
-                                "Bookmaker Odd",
-                                "Odds"
-                            ]
-                        )
-                    );
-
-
-                if(
-                    odds !== null
-                ){
-
-                    oddsTotal +=
-                        odds;
-
-                    oddsCount++;
-
-                }
-
-
-                const oddsValue =
-                    numberValue(
-                        getValue(
-                            match,
-                            [
-                                "Odds Value Score",
-                                "Odds Value",
-                                "Value Score"
-                            ]
-                        )
-                    );
-
-
-                if(
-                    oddsValue !== null
-                ){
-
-                    oddsValueTotal +=
-                        oddsValue;
-
-                    oddsValueCount++;
-
-                }
-
-
-                const prediction =
-                    String(
-                        getValue(
-                            match,
-                            [
-                                "Prediction",
-                                "AI Prediction"
-                            ]
-                        ) || ""
-                    ).toLowerCase();
-
-
-                if(
-                    prediction.includes(
-                        "over 1.5"
-                    )
-                ){
-
-                    over15Count++;
-
-                }
-
-
-                if(
-                    prediction.includes(
-                        "over 2.5"
-                    )
-                ){
-
-                    over25Count++;
-
-                }
-
-
-                const risk =
-                    String(
-                        getValue(
-                            match,
-                            [
-                                "Risk Level",
-                                "Risk"
-                            ]
-                        ) || ""
-                    ).toLowerCase();
-
-
-                if(
-                    risk === "low"
-                ){
-
-                    lowRiskCount++;
-
-                }
-
-            }
+        console.log(
+            "APEX Statistics Data:",
+            data
         );
 
-
-        return {
-
-            total,
-
-            averageConfidence:
-                confidenceCount > 0
-                    ? (
-                        confidenceTotal /
-                        confidenceCount
-                    ).toFixed(1) + "%"
-                    : "Not available",
-
-            averageExpectedGoals:
-                expectedGoalsCount > 0
-                    ? (
-                        expectedGoalsTotal /
-                        expectedGoalsCount
-                    ).toFixed(2)
-                    : "Not available",
-
-            averageHomeAdvantage:
-                homeAdvantageCount > 0
-                    ? (
-                        homeAdvantageTotal /
-                        homeAdvantageCount
-                    ).toFixed(2)
-                    : "Not available",
-
-            averageOdds:
-                oddsCount > 0
-                    ? (
-                        oddsTotal /
-                        oddsCount
-                    ).toFixed(2)
-                    : "Not available",
-
-            averageOddsValue:
-                oddsValueCount > 0
-                    ? (
-                        oddsValueTotal /
-                        oddsValueCount
-                    ).toFixed(2)
-                    : "Not available",
-
-            over15:
-                percentage(
-                    over15Count,
-                    total
-                ) || "Not available",
-
-            over25:
-                percentage(
-                    over25Count,
-                    total
-                ) || "Not available",
-
-            lowRisk:
-                percentage(
-                    lowRiskCount,
-                    total
-                ) || "Not available"
-
-        };
-
-    }
-
-
-    /*
-     * Render the statistics page.
-     */
-
-    function renderStatistics(
-        data
-    ){
 
         if(
             !data ||
             !data.matchDatabase ||
-            !data.matchDatabase.exists ||
             !Array.isArray(
                 data.matchDatabase.objects
             )
         ){
 
-            container.innerHTML = `
-
-                <div class="error-box">
-
-                    ❌ MATCH DATABASE data
-                    could not be loaded.
-
-                </div>
-
-            `;
-
-            return;
+            throw new Error(
+                "APEX Match Database was not returned."
+            );
 
         }
 
 
-        const matches =
+        const allMatches =
             data.matchDatabase.objects;
 
 
-        if(
-            matches.length === 0
-        ){
+        /*
+         * IMPORTANT:
+         *
+         * The Smart Gate output is already ordered
+         * with the selected matches first.
+         *
+         * We therefore take only the first 10
+         * for the presentation layer.
+         *
+         * Nothing is deleted from Google Sheets.
+         */
+
+        const matches =
+            allMatches.slice(0,10);
+
+
+        if(matches.length === 0){
+
+            status.textContent =
+                "⚠️ No selected matches available.";
 
             container.innerHTML = `
 
                 <div class="empty-box">
 
-                    ⚽ No matches are currently
-                    available in the Match Database.
+                    <h2>
+                        ⚽ No Matches Available
+                    </h2>
+
+                    <p>
+                        APEX AI has not returned
+                        any selected matches yet.
+                    </p>
 
                 </div>
 
@@ -827,6 +814,12 @@
             return;
 
         }
+
+
+        status.textContent =
+            "✅ APEX AI Connected — " +
+            matches.length +
+            " statistics records";
 
 
         const stats =
@@ -835,30 +828,29 @@
             );
 
 
-        container.innerHTML = `
+        let html = `
 
             <div class="statistics-summary">
 
                 <h2>
-                    📊 APEX AI STATISTICS
+                    🤖 APEX AI STATISTICS
                 </h2>
 
                 <p>
+                    Showing statistics for the
                     <strong>
-                        ${matches.length}
+                        final ${matches.length}
                     </strong>
-                    match(es) loaded from
-                    Google Sheets.
+                    selected matches.
                 </p>
 
 
                 <div class="statistics-grid">
 
-
                     <div class="stat-card">
 
                         <div class="stat-card-title">
-                            Total Matches
+                            Selected Matches
                         </div>
 
                         <div class="stat-card-value">
@@ -936,7 +928,7 @@
                     <div class="stat-card">
 
                         <div class="stat-card-title">
-                            Over 1.5 Predictions
+                            Over 1.5
                         </div>
 
                         <div class="stat-card-value">
@@ -949,7 +941,7 @@
                     <div class="stat-card">
 
                         <div class="stat-card-title">
-                            Over 2.5 Predictions
+                            Over 2.5
                         </div>
 
                         <div class="stat-card-value">
@@ -962,7 +954,7 @@
                     <div class="stat-card">
 
                         <div class="stat-card-title">
-                            Low Risk Matches
+                            Low Risk
                         </div>
 
                         <div class="stat-card-value">
@@ -970,7 +962,6 @@
                         </div>
 
                     </div>
-
 
                 </div>
 
@@ -980,28 +971,69 @@
             <div class="match-statistics">
 
                 <h2>
-                    ⚽ MATCH-BY-MATCH STATISTICS
+                    ⚽ FINAL 10 MATCH STATISTICS
                 </h2>
 
-
-                ${matches.map(
-                    function(match,index){
-
-                        const homeTeam =
-                            getValue(
-                                match,
-                                [
-                                    "Home Team",
-                                    "HomeTeam",
-                                    "Home"
-                                ]
-                            );
+        `;
 
 
-                        const awayTeam =
-                            getValue(
-                                match,
-                                [
-                                    "Away Team",
-                                    "AwayTeam",
-                                    "Aw
+        matches.forEach(function(match,index){
+
+            const home =
+                getValue(
+                    match,
+                    [
+                        "Home Team",
+                        "HomeTeam",
+                        "Home"
+                    ]
+                );
+
+
+            const away =
+                getValue(
+                    match,
+                    [
+                        "Away Team",
+                        "AwayTeam",
+                        "Away"
+                    ]
+                );
+
+
+            const league =
+                getValue(
+                    match,
+                    [
+                        "League",
+                        "league"
+                    ]
+                );
+
+
+            const date =
+                getValue(
+                    match,
+                    [
+                        "Date",
+                        "Match Date",
+                        "date"
+                    ]
+                );
+
+
+            const prediction =
+                getValue(
+                    match,
+                    [
+                        "Prediction",
+                        "AI Prediction"
+                    ]
+                );
+
+
+            const confidence =
+                getValue(
+                    match,
+                    [
+               
