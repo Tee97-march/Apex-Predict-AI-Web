@@ -10,102 +10,232 @@
 
 <link rel="stylesheet" href="styles.css">
 
+<style>
+
+.live-header{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.live-header h1{
+    margin-bottom:8px;
+}
+
+.live-header p{
+    color:#cfd8e3;
+}
+
+.live-status{
+    text-align:center;
+    margin:15px 0 20px;
+    padding:14px;
+    border-radius:14px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.12);
+    font-weight:bold;
+}
+
+.live-summary{
+    background:#ffffff;
+    color:#111;
+    padding:22px;
+    border-radius:18px;
+    box-shadow:0 12px 35px rgba(0,0,0,.25);
+}
+
+.live-summary h2{
+    color:#061326;
+    margin-top:0;
+}
+
+.live-summary p{
+    color:#333;
+}
+
+.live-grid{
+    display:grid;
+    grid-template-columns:
+        repeat(auto-fit,minmax(280px,1fr));
+    gap:15px;
+    margin-top:20px;
+}
+
+.live-card{
+    background:#fafafa;
+    border:1px solid #e5e5e5;
+    border-radius:15px;
+    padding:18px;
+}
+
+.live-league{
+    color:#061326;
+    font-weight:bold;
+    margin-bottom:12px;
+}
+
+.live-status-badge{
+    display:inline-block;
+    background:#00a843;
+    color:white;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.live-teams{
+    background:#ffffff;
+    border:1px solid #eeeeee;
+    border-radius:10px;
+    padding:18px;
+    text-align:center;
+}
+
+.live-team{
+    color:#061326;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.live-vs{
+    color:#777;
+    margin:10px 0;
+}
+
+.live-score{
+    margin-top:12px;
+    color:#00a843;
+    font-size:25px;
+    font-weight:bold;
+}
+
+.live-details{
+    margin-top:12px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.live-detail{
+    background:#ffffff;
+    border:1px solid #dddddd;
+    border-radius:8px;
+    padding:10px;
+}
+
+.live-detail-label{
+    font-size:12px;
+    color:#777;
+    margin-bottom:4px;
+}
+
+.empty-box,
+.error-box{
+    background:#ffffff;
+    color:#222;
+    padding:25px;
+    border-radius:18px;
+    text-align:center;
+}
+
+.error-box{
+    background:#3a1515;
+    color:#ffb4ab;
+}
+
+.navigation{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:25px;
+    padding-bottom:30px;
+}
+
+.navigation button{
+    margin-top:0;
+}
+
+@media(max-width:500px){
+
+    .live-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+
 </head>
 
 
 <body>
 
+
 <div class="container">
 
-    <h1>⚽ Live Scores</h1>
 
-    <p>
-        Football match centre powered by APEX Predict AI
-    </p>
+    <div class="live-header">
 
+        <h1>⚽ Live Scores</h1>
 
-    <!-- CONNECTION STATUS -->
+        <p>
+            APEX Predict AI Match Centre
+        </p>
 
-    <div
-        id="liveScoreStatus"
-        style="
-            text-align:center;
-            margin:15px 0 20px;
-            padding:12px 15px;
-            border-radius:12px;
-            background:rgba(255,255,255,.08);
-            border:1px solid rgba(255,255,255,.12);
-            color:#ffd54f;
-            font-weight:bold;
-        "
-    >
-        🔄 Connecting to Match Database...
     </div>
 
 
-    <!-- LIVE SCORE CONTAINER -->
+    <div id="liveScoreStatus"
+         class="live-status">
 
-    <div
-        id="liveScoresContainer"
-        style="
-            width:100%;
-        "
-    >
+        🔄 Connecting to APEX AI...
 
-        <div
-            style="
-                background:#102847;
-                padding:25px;
-                border-radius:15px;
-                text-align:center;
-            "
-        >
+    </div>
 
-            ⚽ Loading football matches...
+
+    <div id="liveScoresContainer">
+
+        <div class="empty-box">
+
+            🔄 Loading selected matches...
 
         </div>
 
     </div>
 
 
-    <br>
+    <div class="navigation">
 
+        <button onclick="go('dashboard.html')">
+            🏠 Dashboard
+        </button>
 
-    <!-- NAVIGATION -->
+        <button onclick="go('predictions.html')">
+            🤖 Predictions
+        </button>
 
-    <button onclick="openDashboard()">
-        🏠 Dashboard
-    </button>
+        <button onclick="go('analysis.html')">
+            📊 Analysis
+        </button>
 
+        <button onclick="go('statistics.html')">
+            📈 Statistics
+        </button>
 
-    <button onclick="openPredictions()">
-        🤖 Predictions
-    </button>
+        <button onclick="go('leagues.html')">
+            🏆 Leagues
+        </button>
 
+        <button onclick="go('headtohead.html')">
+            ⚔ Head To Head
+        </button>
 
-    <button onclick="openAnalysis()">
-        📊 Analysis
-    </button>
+        <button onclick="go('settings.html')">
+            ⚙ Settings
+        </button>
 
+    </div>
 
-    <button onclick="openStatistics()">
-        📈 Statistics
-    </button>
-
-
-    <button onclick="openLeagues()">
-        🏆 Leagues
-    </button>
-
-
-    <button onclick="openHeadToHead()">
-        ⚔ Head To Head
-    </button>
-
-
-    <button onclick="openSettings()">
-        ⚙ Settings
-    </button>
 
 </div>
 
@@ -115,100 +245,76 @@
 "use strict";
 
 
-// ========================================
-// APEX PREDICT AI - LIVE SCORES
-// ========================================
-
 const APEX_GOOGLE_SHEETS_API =
 "https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
 
 
-// ========================================
-// HTML SECURITY
-// ========================================
+function safe(value){
 
-function liveEscape(value){
+    if(
+        value === null ||
+        value === undefined
+    ){
+        return "";
+    }
 
-    return String(value ?? "")
+    return String(value)
         .replace(/&/g,"&amp;")
         .replace(/</g,"&lt;")
         .replace(/>/g,"&gt;")
         .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#39;");
+        .replace(/'/g,"&#039;");
 
 }
 
 
-function liveValue(value){
+function getValue(match,names){
 
-    if(
-        value === null ||
-        value === undefined ||
-        String(value).trim() === ""
-    ){
+    for(const wanted of names){
 
-        return "—";
+        const key =
+            Object.keys(match).find(function(existingKey){
+
+                return existingKey
+                    .trim()
+                    .toLowerCase()
+                    ===
+                    wanted
+                        .trim()
+                        .toLowerCase();
+
+            });
+
+        if(key !== undefined){
+
+            const value =
+                match[key];
+
+            if(
+                value !== null &&
+                value !== undefined &&
+                String(value).trim() !== ""
+            ){
+
+                return value;
+
+            }
+
+        }
 
     }
 
-    return liveEscape(value);
+    return "";
 
 }
 
 
-// ========================================
-// STATUS
-// ========================================
-
-function setLiveStatus(
-    message,
-    type
-){
+async function loadLiveScores(){
 
     const status =
         document.getElementById(
             "liveScoreStatus"
         );
-
-
-    if(!status){
-        return;
-    }
-
-
-    status.textContent =
-        message;
-
-
-    if(type === "success"){
-
-        status.style.color =
-            "#b9f6ca";
-
-    }
-
-    else if(type === "error"){
-
-        status.style.color =
-            "#ffb4ab";
-
-    }
-
-    else{
-
-        status.style.color =
-            "#ffd54f";
-
-    }
-
-}
-
-
-// ========================================
-// LOAD MATCH DATABASE
-// ========================================
-
-async function loadLiveScores(){
 
     const container =
         document.getElementById(
@@ -216,17 +322,10 @@ async function loadLiveScores(){
         );
 
 
-    if(!container){
-        return;
-    }
-
-
     try{
 
-        setLiveStatus(
-            "🔄 Loading football matches from Google Sheets...",
-            "loading"
-        );
+        status.textContent =
+            "🔄 Connecting to APEX AI...";
 
 
         const response =
@@ -242,8 +341,7 @@ async function loadLiveScores(){
         if(!response.ok){
 
             throw new Error(
-                "Google Sheets HTTP " +
-                response.status
+                "HTTP " + response.status
             );
 
         }
@@ -253,54 +351,102 @@ async function loadLiveScores(){
             await response.json();
 
 
-        console.log(
-            "APEX Predict AI Live Scores data:",
-            data
-        );
-
-
-        const matchDatabase =
-            data.matchDatabase;
-
-
         if(
-            !matchDatabase ||
-            !matchDatabase.exists ||
+            !data ||
+            !data.matchDatabase ||
             !Array.isArray(
-                matchDatabase.objects
+                data.matchDatabase.objects
             )
         ){
 
             throw new Error(
-                "MATCH DATABASE was not returned."
+                "APEX Match Database was not returned."
             );
 
         }
 
 
+        const allMatches =
+            data.matchDatabase.objects;
+
+
+        /*
+         * Same lightweight selection approach
+         * used by our working web pages.
+         *
+         * We do NOT modify Google Sheets.
+         */
+
+        const completedMatches =
+            allMatches.filter(function(match){
+
+                const prediction =
+                    getValue(
+                        match,
+                        [
+                            "Prediction",
+                            "prediction",
+                            "AI Prediction"
+                        ]
+                    );
+
+                const confidence =
+                    getValue(
+                        match,
+                        [
+                            "Confidence %",
+                            "Confidence",
+                            "confidence %",
+                            "Final Confidence"
+                        ]
+                    );
+
+                const market =
+                    getValue(
+                        match,
+                        [
+                            "Recommended Market",
+                            "recommended market",
+                            "Market"
+                        ]
+                    );
+
+                return (
+                    prediction !== "" ||
+                    confidence !== "" ||
+                    market !== ""
+                );
+
+            });
+
+
         const matches =
-            matchDatabase.objects;
+            completedMatches
+                .slice()
+                .reverse()
+                .slice(0,10);
+
+
+        status.textContent =
+            "✅ APEX AI Connected — " +
+            matches.length +
+            " selected matches";
 
 
         if(matches.length === 0){
 
-            setLiveStatus(
-                "⚠️ Match Database is connected but contains no matches.",
-                "loading"
-            );
-
-
             container.innerHTML = `
 
-                <div style="
-                    background:#102847;
-                    padding:25px;
-                    border-radius:15px;
-                    text-align:center;
-                    color:white;
-                ">
+                <div class="empty-box">
 
-                    ⚽ No matches are currently available.
+                    <h2>
+                        ⚽ No Selected Matches
+                    </h2>
+
+                    <p>
+                        APEX has not produced completed
+                        match records yet.
+                    </p>
 
                 </div>
 
@@ -311,319 +457,221 @@ async function loadLiveScores(){
         }
 
 
-        // ========================================
-        // RENDER MATCHES
-        // ========================================
+        let html = `
 
-        container.innerHTML = `
+            <div class="live-summary">
 
-            <div style="
-                background:#ffffff;
-                color:#111;
-                padding:20px;
-                border-radius:15px;
-                box-shadow:0 12px 35px rgba(0,0,0,.25);
-            ">
-
-                <h2 style="
-                    margin-top:0;
-                    color:#061326;
-                ">
-
+                <h2>
                     ⚽ APEX MATCH CENTRE
-
                 </h2>
 
-
-                <p style="
-                    color:#444;
-                    margin-bottom:20px;
-                ">
-
+                <p>
+                    Showing the final
                     <strong>
                         ${matches.length}
                     </strong>
-
-                    match(es) loaded from the APEX Match Database.
-
+                    selected matches.
                 </p>
 
 
-                <div style="
-                    display:grid;
-                    grid-template-columns:
-                        repeat(
-                            auto-fit,
-                            minmax(280px,1fr)
-                        );
-                    gap:15px;
-                ">
+                <div class="live-grid">
+
+        `;
+
+
+        matches.forEach(function(match,index){
+
+            const league =
+                getValue(
+                    match,
+                    [
+                        "League",
+                        "league"
+                    ]
+                );
 
 
-                    ${matches.map(
-                        function(match,index){
+            const home =
+                getValue(
+                    match,
+                    [
+                        "Home Team",
+                        "HomeTeam",
+                        "Home"
+                    ]
+                );
 
-                            const league =
-                                match["League"] || "";
 
+            const away =
+                getValue(
+                    match,
+                    [
+                        "Away Team",
+                        "AwayTeam",
+                        "Away"
+                    ]
+                );
 
-                            const homeTeam =
-                                match["Home Team"] || "";
 
+            const date =
+                getValue(
+                    match,
+                    [
+                        "Date",
+                        "Match Date",
+                        "date"
+                    ]
+                );
 
-                            const awayTeam =
-                                match["Away Team"] || "";
 
+            const time =
+                getValue(
+                    match,
+                    [
+                        "Time",
+                        "Match Time",
+                        "time"
+                    ]
+                );
 
-                            const date =
-                                match["Date"] ||
-                                match["Match Date"] ||
-                                match["date"] ||
-                                "";
 
+            const homeScore =
+                getValue(
+                    match,
+                    [
+                        "Home Score",
+                        "Home Goals",
+                        "home score"
+                    ]
+                );
 
-                            const time =
-                                match["Time"] ||
-                                match["Match Time"] ||
-                                match["time"] ||
-                                "";
 
+            const awayScore =
+                getValue(
+                    match,
+                    [
+                        "Away Score",
+                        "Away Goals",
+                        "away score"
+                    ]
+                );
 
-                            const homeScore =
-                                match["Home Score"] ||
-                                match["Home Goals"] ||
-                                "";
 
+            const matchStatus =
+                getValue(
+                    match,
+                    [
+                        "Status",
+                        "Match Status",
+                        "status"
+                    ]
+                ) || "Scheduled";
 
-                            const awayScore =
-                                match["Away Score"] ||
-                                match["Away Goals"] ||
-                                "";
 
+            html += `
 
-                            const status =
-                                match["Status"] ||
-                                match["Match Status"] ||
-                                "Scheduled";
+                <div class="live-card">
 
+                    <div class="live-league">
 
-                            return `
+                        🏆 ${safe(
+                            league || "League"
+                        )}
 
-                                <div style="
-                                    border:
-                                        1px solid #e2e2e2;
-                                    border-radius:14px;
-                                    padding:18px;
-                                    background:#fafafa;
-                                ">
+                    </div>
 
 
-                                    <div style="
-                                        display:flex;
-                                        justify-content:
-                                            space-between;
-                                        align-items:center;
-                                        gap:10px;
-                                        margin-bottom:14px;
-                                    ">
+                    <span class="live-status-badge">
 
+                        ${safe(matchStatus)}
 
-                                        <strong style="
-                                            color:#061326;
-                                        ">
+                    </span>
 
-                                            🏆
-                                            ${liveValue(
-                                                league
-                                            )}
 
-                                        </strong>
+                    <div class="live-teams">
 
+                        <div class="live-team">
 
-                                        <span style="
-                                            background:#00c853;
-                                            color:white;
-                                            padding:
-                                                5px 10px;
-                                            border-radius:20px;
-                                            font-size:12px;
-                                            font-weight:bold;
-                                        ">
+                            ${safe(
+                                home || "Home Team"
+                            )}
 
-                                            ${liveValue(
-                                                status
-                                            )}
+                        </div>
 
-                                        </span>
 
+                        <div class="live-vs">
+                            VS
+                        </div>
 
-                                    </div>
 
+                        <div class="live-team">
 
-                                    <div style="
-                                        text-align:center;
-                                        padding:15px 5px;
-                                        background:#fff;
-                                        border-radius:10px;
-                                        border:
-                                            1px solid #eee;
-                                    ">
+                            ${safe(
+                                away || "Away Team"
+                            )}
 
+                        </div>
 
-                                        <div style="
-                                            font-size:17px;
-                                            font-weight:bold;
-                                            color:#061326;
-                                        ">
 
-                                            ${liveValue(
-                                                homeTeam
-                                            )}
+                        ${
+                            homeScore !== "" ||
+                            awayScore !== ""
+                            ?
+                            `
+                            <div class="live-score">
 
-                                        </div>
+                                ${safe(homeScore || "0")}
+                                -
+                                ${safe(awayScore || "0")}
 
-
-                                        <div style="
-                                            margin:10px 0;
-                                            font-size:14px;
-                                            color:#777;
-                                        ">
-
-                                            VS
-
-                                        </div>
-
-
-                                        <div style="
-                                            font-size:17px;
-                                            font-weight:bold;
-                                            color:#061326;
-                                        ">
-
-                                            ${liveValue(
-                                                awayTeam
-                                            )}
-
-                                        </div>
-
-
-                                        ${
-                                            (
-                                                homeScore !== "" ||
-                                                awayScore !== ""
-                                            )
-                                            ?
-
-                                            `
-
-                                            <div style="
-                                                margin-top:12px;
-                                                font-size:25px;
-                                                font-weight:bold;
-                                                color:#00a843;
-                                            ">
-
-                                                ${liveValue(
-                                                    homeScore
-                                                )}
-
-                                                -
-
-                                                ${liveValue(
-                                                    awayScore
-                                                )}
-
-                                            </div>
-
-                                            `
-
-                                            :
-
-                                            ""
-
-                                        }
-
-
-                                    </div>
-
-
-                                    <div style="
-                                        margin-top:14px;
-                                        display:grid;
-                                        grid-template-columns:
-                                            1fr 1fr;
-                                        gap:8px;
-                                    ">
-
-
-                                        <div style="
-                                            background:#fff;
-                                            border:
-                                                1px solid #ddd;
-                                            border-radius:8px;
-                                            padding:10px;
-                                        ">
-
-                                            <div style="
-                                                font-size:12px;
-                                                color:#777;
-                                            ">
-
-                                                Date
-
-                                            </div>
-
-
-                                            <strong>
-
-                                                ${liveValue(
-                                                    date
-                                                )}
-
-                                            </strong>
-
-                                        </div>
-
-
-                                        <div style="
-                                            background:#fff;
-                                            border:
-                                                1px solid #ddd;
-                                            border-radius:8px;
-                                            padding:10px;
-                                        ">
-
-                                            <div style="
-                                                font-size:12px;
-                                                color:#777;
-                                            ">
-
-                                                Time
-
-                                            </div>
-
-
-                                            <strong>
-
-                                                ${liveValue(
-                                                    time
-                                                )}
-
-                                            </strong>
-
-                                        </div>
-
-
-                                    </div>
-
-
-                                </div>
-
-                            `;
-
+                            </div>
+                            `
+                            :
+                            ""
                         }
-                    ).join("")}
 
+                    </div>
+
+
+                    <div class="live-details">
+
+
+                        <div class="live-detail">
+
+                            <div class="live-detail-label">
+                                Date
+                            </div>
+
+                            <strong>
+                                ${safe(date || "—")}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="live-detail">
+
+                            <div class="live-detail-label">
+                                Time
+                            </div>
+
+                            <strong>
+                                ${safe(time || "—")}
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            `;
+
+        });
+
+
+        html += `
 
                 </div>
 
@@ -632,44 +680,33 @@ async function loadLiveScores(){
         `;
 
 
-        setLiveStatus(
-            "✅ Match Database Connected",
-            "success"
-        );
+        container.innerHTML =
+            html;
 
 
-    }
-
-    catch(error){
+    }catch(error){
 
         console.error(
-            "APEX Predict AI Live Scores error:",
+            "APEX Live Scores Error:",
             error
         );
 
 
-        setLiveStatus(
-            "❌ Unable to load Match Database: " +
-            error.message,
-            "error"
-        );
+        status.textContent =
+            "❌ APEX Live Scores failed to load";
 
 
         container.innerHTML = `
 
-            <div style="
-                background:#102847;
-                padding:25px;
-                border-radius:15px;
-                text-align:center;
-                color:white;
-            ">
+            <div class="error-box">
 
-                ❌ Unable to load football matches.
+                <h2>
+                    ❌ Unable to Load Live Scores
+                </h2>
 
-                <br><br>
-
-                Please try again later.
+                <p>
+                    ${safe(error.message)}
+                </p>
 
             </div>
 
@@ -680,9 +717,13 @@ async function loadLiveScores(){
 }
 
 
-// ========================================
-// START
-// ========================================
+function go(page){
+
+    window.location.href =
+        page;
+
+}
+
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -694,4 +735,4 @@ document.addEventListener(
 
 </body>
 
-  </html>
+</html>
