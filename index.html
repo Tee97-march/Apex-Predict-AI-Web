@@ -3,19 +3,538 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <title>APEX Predict AI</title>
+<title>APEX Predict AI</title>
 
-    <link
-        rel="stylesheet"
-        href="./styles.css"
-    >
+<link
+    rel="stylesheet"
+    href="./styles.css"
+>
+
+<style>
+
+/* =====================================================
+   APEX PREDICT AI
+   MOBILE LOGIN EXPERIENCE
+   ===================================================== */
+
+:root{
+    --apex-bg:#071321;
+    --apex-card:#0d1c2d;
+    --apex-card-2:#10243a;
+    --apex-border:rgba(255,255,255,.09);
+    --apex-text:#ffffff;
+    --apex-muted:#aab7c6;
+    --apex-green:#00d66b;
+    --apex-green-dark:#00a950;
+    --apex-blue:#2f7cff;
+    --apex-yellow:#ffd54f;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html,
+body{
+    margin:0;
+    padding:0;
+    min-height:100%;
+}
+
+body{
+
+    min-height:100vh;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(0,214,107,.12),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at top right,
+            rgba(47,124,255,.14),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            #050d17 0%,
+            #071321 50%,
+            #0a1828 100%
+        );
+
+    color:var(--apex-text);
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+}
+
+#app{
+
+    min-height:100vh;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:24px 16px;
+
+}
+
+.login-container{
+
+    width:100%;
+    max-width:430px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(16,36,58,.97),
+            rgba(8,21,36,.98)
+        );
+
+    border:1px solid var(--apex-border);
+
+    border-radius:26px;
+
+    padding:32px 24px 24px;
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.45),
+        inset 0 1px 0 rgba(255,255,255,.04);
+
+    text-align:center;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.login-container::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:-90px;
+    right:-90px;
+
+    width:220px;
+    height:220px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(47,124,255,.18),
+            transparent 70%
+        );
+
+    pointer-events:none;
+
+}
+
+.login-container::after{
+
+    content:"";
+
+    position:absolute;
+
+    bottom:-100px;
+    left:-100px;
+
+    width:240px;
+    height:240px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(0,214,107,.13),
+            transparent 70%
+        );
+
+    pointer-events:none;
+
+}
+
+.brand-wrap{
+
+    position:relative;
+    z-index:1;
+
+}
+
+.logo{
+
+    width:78px;
+    height:78px;
+
+    margin:0 auto 16px;
+
+    border-radius:22px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    background:
+        linear-gradient(
+            145deg,
+            #18314b,
+            #0b1a2b
+        );
+
+    border:1px solid rgba(0,214,107,.35);
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,.3),
+        0 0 30px rgba(0,214,107,.08);
+
+    font-size:40px;
+
+}
+
+.brand-title{
+
+    margin:0;
+
+    font-size:32px;
+
+    font-weight:800;
+
+    letter-spacing:-.8px;
+
+}
+
+.brand-title .accent{
+
+    color:var(--apex-green);
+
+}
+
+.subtitle{
+
+    margin:10px 0 0;
+
+    color:var(--apex-muted);
+
+    font-size:15px;
+
+    line-height:1.5;
+
+}
+
+.version{
+
+    display:inline-block;
+
+    margin-top:14px;
+
+    padding:6px 11px;
+
+    border-radius:999px;
+
+    background:rgba(47,124,255,.11);
+
+    border:1px solid rgba(47,124,255,.22);
+
+    color:#9dbfff;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+.engine-status{
+
+    position:relative;
+    z-index:1;
+
+    margin:24px 0 18px;
+
+    padding:12px 14px;
+
+    border-radius:13px;
+
+    background:rgba(0,214,107,.07);
+
+    border:1px solid rgba(0,214,107,.18);
+
+    color:#9ff0c1;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.login-form{
+
+    position:relative;
+    z-index:1;
+
+}
+
+.input-wrap{
+
+    margin-bottom:13px;
+
+    text-align:left;
+
+}
+
+.input-wrap label{
+
+    display:block;
+
+    margin-bottom:7px;
+
+    color:#cbd6e2;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.input-wrap input{
+
+    width:100%;
+
+    min-height:52px;
+
+    border:1px solid rgba(255,255,255,.09);
+
+    border-radius:14px;
+
+    padding:0 15px;
+
+    background:#081624;
+
+    color:#ffffff;
+
+    font-size:16px;
+
+    outline:none;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+
+}
+
+.input-wrap input::placeholder{
+
+    color:#6f8091;
+
+}
+
+.input-wrap input:focus{
+
+    border-color:rgba(0,214,107,.7);
+
+    background:#0a1a2b;
+
+    box-shadow:
+        0 0 0 3px rgba(0,214,107,.09);
+
+}
+
+.login-button{
+
+    width:100%;
+
+    min-height:54px;
+
+    margin-top:6px;
+
+    border:0;
+
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--apex-green),
+            var(--apex-green-dark)
+        );
+
+    color:#06150d;
+
+    font-size:15px;
+
+    font-weight:800;
+
+    letter-spacing:.4px;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 12px 28px rgba(0,214,107,.18);
+
+    transition:
+        transform .15s ease,
+        filter .15s ease;
+
+}
+
+.login-button:hover{
+
+    filter:brightness(1.06);
+
+}
+
+.login-button:active{
+
+    transform:scale(.985);
+
+}
+
+.login-button:disabled{
+
+    opacity:.7;
+
+    cursor:wait;
+
+}
+
+.forgot{
+
+    position:relative;
+    z-index:1;
+
+    margin:17px 0 0;
+
+    color:#83b5ff;
+
+    font-size:13px;
+
+    cursor:pointer;
+
+}
+
+.forgot:hover{
+
+    text-decoration:underline;
+
+}
+
+.feature-row{
+
+    position:relative;
+    z-index:1;
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:8px;
+
+    margin-top:24px;
+
+}
+
+.feature{
+
+    padding:11px 6px;
+
+    border-radius:12px;
+
+    background:rgba(255,255,255,.035);
+
+    border:1px solid rgba(255,255,255,.06);
+
+}
+
+.feature-icon{
+
+    font-size:18px;
+
+    margin-bottom:5px;
+
+}
+
+.feature-text{
+
+    color:#9eacba;
+
+    font-size:10px;
+
+    line-height:1.3;
+
+}
+
+.footer{
+
+    position:relative;
+    z-index:1;
+
+    margin-top:24px;
+
+    padding-top:17px;
+
+    border-top:1px solid rgba(255,255,255,.07);
+
+    color:#667585;
+
+    font-size:11px;
+
+}
+
+@media(max-width:380px){
+
+    #app{
+
+        padding:15px 10px;
+
+    }
+
+    .login-container{
+
+        padding:
+            27px 18px 20px;
+
+        border-radius:22px;
+
+    }
+
+    .brand-title{
+
+        font-size:28px;
+
+    }
+
+    .logo{
+
+        width:68px;
+        height:68px;
+
+        font-size:34px;
+
+    }
+
+}
+
+</style>
 
 </head>
 
@@ -26,80 +545,83 @@
 
     <div class="login-container">
 
-        <div class="logo">
-            ⚽
-        </div>
+        <div class="brand-wrap">
 
+            <div class="logo">
+                ⚽
+            </div>
 
-        <h1>
-            APEX Predict AI
-        </h1>
+            <h1 class="brand-title">
+                APEX <span class="accent">PREDICT AI</span>
+            </h1>
 
+            <p class="subtitle">
+                Professional Football Prediction Platform
+            </p>
 
-        <p class="subtitle">
-            Professional Football Prediction Platform
-        </p>
+            <div class="version">
+                VERSION 2.1 XL
+            </div>
 
-
-        <div class="version">
-            Version 2.1 XL
         </div>
 
 
         <div
             id="status"
-            style="
-                color:#ffd54f;
-                margin-bottom:20px;
-                font-size:14px;
-            "
+            class="engine-status"
         >
-            APEX AI Engine Ready
+            🤖 APEX AI Engine Ready
         </div>
 
 
-        <!--
-        =========================================
-        LOGIN FORM
-        =========================================
-        The form itself points directly to the
-        dashboard. This provides a browser-level
-        fallback even if JavaScript has a problem.
-        =========================================
-        -->
-
         <form
             id="loginForm"
+            class="login-form"
             action="./dashboard.html"
             method="get"
         >
 
+            <div class="input-wrap">
 
-            <input
-                type="text"
-                id="username"
-                placeholder="Username"
-                autocomplete="username"
-                required
-            >
+                <label for="username">
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Enter username"
+                    autocomplete="username"
+                    required
+                >
+
+            </div>
 
 
-            <input
-                type="password"
-                id="password"
-                placeholder="Password"
-                autocomplete="current-password"
-                required
-            >
+            <div class="input-wrap">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter password"
+                    autocomplete="current-password"
+                    required
+                >
+
+            </div>
 
 
             <button
                 type="submit"
                 id="loginBtn"
+                class="login-button"
             >
-                LOGIN
+                LOGIN TO APEX
             </button>
-
 
         </form>
 
@@ -112,8 +634,53 @@
         </p>
 
 
+        <div class="feature-row">
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    🤖
+                </div>
+
+                <div class="feature-text">
+                    AI Predictions
+                </div>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    📊
+                </div>
+
+                <div class="feature-text">
+                    Smart Analysis
+                </div>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    🎯
+                </div>
+
+                <div class="feature-text">
+                    Smart Selection
+                </div>
+
+            </div>
+
+        </div>
+
+
         <div class="footer">
+
             © 2026 APEX Predict AI
+
         </div>
 
     </div>
@@ -121,50 +688,54 @@
 </div>
 
 
-
 <script>
 
 "use strict";
 
 
-/*
-=================================================
-APEX PREDICT AI
-LOGIN ENGINE
-=================================================
-*/
+/* =====================================================
+   APEX PREDICT AI
+   LOGIN ENGINE
+   ===================================================== */
 
 
 const loginForm =
-    document.getElementById("loginForm");
+    document.getElementById(
+        "loginForm"
+    );
 
 
 const username =
-    document.getElementById("username");
+    document.getElementById(
+        "username"
+    );
 
 
 const password =
-    document.getElementById("password");
+    document.getElementById(
+        "password"
+    );
 
 
 const loginButton =
-    document.getElementById("loginBtn");
+    document.getElementById(
+        "loginBtn"
+    );
 
 
 const status =
-    document.getElementById("status");
+    document.getElementById(
+        "status"
+    );
 
 
-
-/*
-=================================================
-LOGIN SUBMISSION
-=================================================
-*/
+/* =====================================================
+   LOGIN
+   ===================================================== */
 
 loginForm.addEventListener(
     "submit",
-    function (event) {
+    function(event){
 
         event.preventDefault();
 
@@ -177,17 +748,10 @@ loginForm.addEventListener(
             password.value.trim();
 
 
-
-        /*
-        =========================================
-        EMPTY LOGIN
-        =========================================
-        */
-
-        if (
+        if(
             usernameValue === "" ||
             passwordValue === ""
-        ) {
+        ){
 
             status.textContent =
                 "⚠️ Please enter your username and password.";
@@ -196,21 +760,15 @@ loginForm.addEventListener(
                 "#ffd54f";
 
             return;
+
         }
 
-
-
-        /*
-        =========================================
-        LOGIN ACCEPTED
-        =========================================
-        */
 
         status.textContent =
             "✅ Welcome to APEX Predict AI";
 
         status.style.color =
-            "#00c853";
+            "#00d66b";
 
 
         loginButton.textContent =
@@ -221,18 +779,9 @@ loginForm.addEventListener(
             true;
 
 
-
         /*
-        =========================================
-        DIRECT DASHBOARD NAVIGATION
-        =========================================
-
-        We deliberately do NOT use a long
-        setTimeout here.
-
-        The dashboard opens immediately.
-        =========================================
-        */
+         * Immediate navigation.
+         */
 
         window.location.assign(
             "./dashboard.html"
@@ -242,18 +791,15 @@ loginForm.addEventListener(
 );
 
 
-
-/*
-=================================================
-ENTER KEY SUPPORT
-=================================================
-*/
+/* =====================================================
+   ENTER KEY SUPPORT
+   ===================================================== */
 
 username.addEventListener(
     "keydown",
-    function (event) {
+    function(event){
 
-        if (event.key === "Enter") {
+        if(event.key === "Enter"){
 
             event.preventDefault();
 
@@ -267,9 +813,9 @@ username.addEventListener(
 
 password.addEventListener(
     "keydown",
-    function (event) {
+    function(event){
 
-        if (event.key === "Enter") {
+        if(event.key === "Enter"){
 
             event.preventDefault();
 
@@ -281,18 +827,15 @@ password.addEventListener(
 );
 
 
-
-/*
-=================================================
-FORGOT PASSWORD
-=================================================
-*/
+/* =====================================================
+   FORGOT PASSWORD
+   ===================================================== */
 
 document
     .getElementById("forgotPassword")
     .addEventListener(
         "click",
-        function () {
+        function(){
 
             alert(
                 "Password recovery will be available in a future APEX Predict AI update."
@@ -302,12 +845,9 @@ document
     );
 
 
-
-/*
-=================================================
-READY
-=================================================
-*/
+/* =====================================================
+   READY
+   ===================================================== */
 
 console.log(
     "APEX Predict AI Login Engine Ready."
@@ -318,4 +858,4 @@ console.log(
 
 </body>
 
-    </html>
+</html>
