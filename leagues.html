@@ -10,87 +10,183 @@
 
 <link rel="stylesheet" href="styles.css">
 
-</head>
+<style>
 
+.league-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.league-header h1 {
+    margin-bottom: 8px;
+}
+
+.league-header p {
+    color: #cfd8e3;
+}
+
+.league-status {
+    text-align: center;
+    margin: 15px 0 20px;
+    padding: 14px;
+    border-radius: 14px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.12);
+    font-weight: bold;
+}
+
+.league-summary {
+    background: #ffffff;
+    color: #111;
+    padding: 22px;
+    border-radius: 18px;
+    box-shadow: 0 12px 35px rgba(0,0,0,.25);
+}
+
+.league-summary h2 {
+    color: #061326;
+    margin-top: 0;
+}
+
+.league-summary p {
+    color: #333;
+}
+
+.league-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.league-card {
+    background: #f7f8fa;
+    border: 1px solid #e5e5e5;
+    border-radius: 15px;
+    padding: 18px;
+}
+
+.league-card h3 {
+    color: #061326;
+    margin: 0 0 10px;
+}
+
+.league-number {
+    font-size: 13px;
+    color: #777;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.league-count {
+    color: #444;
+    font-size: 15px;
+}
+
+.empty-box,
+.error-box {
+    background: #ffffff;
+    color: #222;
+    padding: 25px;
+    border-radius: 18px;
+    text-align: center;
+}
+
+.error-box {
+    background: #3a1515;
+    color: #ffb4ab;
+}
+
+.navigation {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 25px;
+    padding-bottom: 30px;
+}
+
+.navigation button {
+    margin-top: 0;
+}
+
+@media(max-width: 500px) {
+
+    .league-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+</head>
 
 <body>
 
 <div class="container">
 
-    <h1>🏆 Football Leagues</h1>
+    <div class="league-header">
 
-    <p>
-        Leagues available in the APEX Predict AI Match Database
-    </p>
+        <h1>🏆 Football Leagues</h1>
 
-
-    <div
-        id="leagueStatus"
-        style="
-            text-align:center;
-            margin:15px 0 20px;
-            padding:12px 15px;
-            border-radius:12px;
-            background:rgba(255,255,255,.08);
-            border:1px solid rgba(255,255,255,.12);
-            color:#ffd54f;
-            font-weight:bold;
-        "
-    >
-        🔄 Loading leagues from Google Sheets...
-    </div>
-
-
-    <div
-        id="leagueContainer"
-        style="
-            width:100%;
-        "
-    >
-
-        <p style="text-align:center;">
-            Loading supported leagues...
+        <p>
+            Leagues represented by the final APEX selections
         </p>
 
     </div>
 
 
-    <br>
+    <div id="leagueStatus"
+         class="league-status">
+
+        🔄 Connecting to APEX AI...
+
+    </div>
 
 
-    <button onclick="openDashboard()">
-        🏠 Dashboard
-    </button>
+    <div id="leagueContainer">
+
+        <div class="empty-box">
+
+            🔄 Loading selected leagues...
+
+        </div>
+
+    </div>
 
 
-    <button onclick="openPredictions()">
-        🤖 Predictions
-    </button>
+    <div class="navigation">
 
+        <button onclick="go('dashboard.html')">
+            🏠 Dashboard
+        </button>
 
-    <button onclick="openAnalysis()">
-        📊 Analysis
-    </button>
+        <button onclick="go('predictions.html')">
+            🤖 Predictions
+        </button>
 
+        <button onclick="go('analysis.html')">
+            📊 Analysis
+        </button>
 
-    <button onclick="openStatistics()">
-        📈 Statistics
-    </button>
+        <button onclick="go('statistics.html')">
+            📈 Statistics
+        </button>
 
+        <button onclick="go('livescores.html')">
+            ⚽ Live Scores
+        </button>
 
-    <button onclick="openLiveScores()">
-        ⚽ Live Scores
-    </button>
+        <button onclick="go('headtohead.html')">
+            ⚔ Head To Head
+        </button>
 
+        <button onclick="go('settings.html')">
+            ⚙ Settings
+        </button>
 
-    <button onclick="openHeadToHead()">
-        ⚔ Head To Head
-    </button>
-
-
-    <button onclick="openSettings()">
-        ⚙ Settings
-    </button>
+    </div>
 
 </div>
 
@@ -100,118 +196,98 @@
 "use strict";
 
 
-// ========================================
-// APEX PREDICT AI - LEAGUES
-// ========================================
-
 const APEX_GOOGLE_SHEETS_API =
 "https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
 
 
-// ========================================
-// HTML SECURITY
-// ========================================
+function escapeHTML(value) {
 
-function leagueEscape(value){
+    if (
+        value === null ||
+        value === undefined
+    ) {
+        return "";
+    }
 
-    return String(value ?? "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#39;");
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
 }
 
 
-// ========================================
-// STATUS
-// ========================================
+function getValue(match, names) {
 
-function setLeagueStatus(
-    message,
-    type
-){
+    for (const name of names) {
+
+        const key =
+            Object.keys(match).find(function(existingKey) {
+
+                return existingKey
+                    .trim()
+                    .toLowerCase()
+                    ===
+                    name
+                        .trim()
+                        .toLowerCase();
+
+            });
+
+        if (key !== undefined) {
+
+            const value = match[key];
+
+            if (
+                value !== null &&
+                value !== undefined &&
+                String(value).trim() !== ""
+            ) {
+
+                return value;
+
+            }
+
+        }
+
+    }
+
+    return "";
+
+}
+
+
+async function loadLeagues() {
 
     const status =
-        document.getElementById(
-            "leagueStatus"
-        );
-
-
-    if(!status){
-        return;
-    }
-
-
-    status.textContent =
-        message;
-
-
-    if(type === "success"){
-
-        status.style.color =
-            "#b9f6ca";
-
-    }
-
-    else if(type === "error"){
-
-        status.style.color =
-            "#ffb4ab";
-
-    }
-
-    else{
-
-        status.style.color =
-            "#ffd54f";
-
-    }
-
-}
-
-
-// ========================================
-// LOAD MATCH DATABASE
-// ========================================
-
-async function loadLeagues(){
+        document.getElementById("leagueStatus");
 
     const container =
-        document.getElementById(
-            "leagueContainer"
-        );
+        document.getElementById("leagueContainer");
 
 
-    if(!container){
-        return;
-    }
+    try {
 
-
-    try{
-
-        setLeagueStatus(
-            "🔄 Loading leagues from Google Sheets...",
-            "loading"
-        );
+        status.textContent =
+            "🔄 Connecting to APEX AI...";
 
 
         const response =
             await fetch(
                 APEX_GOOGLE_SHEETS_API,
                 {
-                    method:"GET",
-                    cache:"no-store"
+                    method: "GET",
+                    cache: "no-store"
                 }
             );
 
 
-        if(!response.ok){
+        if (!response.ok) {
 
             throw new Error(
-                "Google Sheets HTTP " +
-                response.status
+                "HTTP " + response.status
             );
 
         }
@@ -221,173 +297,200 @@ async function loadLeagues(){
             await response.json();
 
 
-        console.log(
-            "APEX Predict AI League Data:",
-            data
-        );
-
-
-        const matchDatabase =
-            data.matchDatabase;
-
-
-        if(
-            !matchDatabase ||
-            !matchDatabase.exists ||
+        if (
+            !data ||
+            !data.matchDatabase ||
             !Array.isArray(
-                matchDatabase.objects
+                data.matchDatabase.objects
             )
-        ){
+        ) {
 
             throw new Error(
-                "MATCH DATABASE was not returned."
+                "APEX Match Database was not returned."
             );
 
         }
 
 
-        const matches =
-            matchDatabase.objects;
+        const allMatches =
+            data.matchDatabase.objects;
 
 
-        if(matches.length === 0){
+        /*
+         * Same completed-prediction rule used
+         * by Predictions and Analysis.
+         */
 
-            setLeagueStatus(
-                "⚠️ Match Database is empty.",
-                "loading"
-            );
+        const completedMatches =
+            allMatches.filter(function(match) {
+
+                const prediction =
+                    getValue(
+                        match,
+                        [
+                            "Prediction",
+                            "prediction",
+                            "AI Prediction"
+                        ]
+                    );
+
+                const confidence =
+                    getValue(
+                        match,
+                        [
+                            "Confidence %",
+                            "Confidence",
+                            "confidence %",
+                            "Final Confidence"
+                        ]
+                    );
+
+                const market =
+                    getValue(
+                        match,
+                        [
+                            "Recommended Market",
+                            "recommended market",
+                            "Market"
+                        ]
+                    );
+
+                return (
+                    prediction !== "" ||
+                    confidence !== "" ||
+                    market !== ""
+                );
+
+            });
 
 
-            container.innerHTML = `
+        /*
+         * Same final-display approach as the
+         * working Predictions page.
+         */
 
-                <div style="
-                    background:#102847;
-                    padding:25px;
-                    border-radius:15px;
-                    text-align:center;
-                ">
+        const final10 =
+            completedMatches
+                .slice()
+                .reverse()
+                .slice(0, 10);
 
-                    No league data is currently available.
-
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-
-        // ========================================
-        // BUILD LEAGUE SUMMARY
-        // ========================================
 
         const leagueMap =
             new Map();
 
 
-        matches.forEach(
-            function(match){
+        final10.forEach(function(match) {
 
-                const league =
-                    String(
-                        match["League"] || ""
-                    ).trim();
-
-
-                if(!league){
-                    return;
-                }
+            const league =
+                String(
+                    getValue(
+                        match,
+                        ["League", "league"]
+                    )
+                ).trim();
 
 
-                if(!leagueMap.has(league)){
-
-                    leagueMap.set(
-                        league,
-                        {
-                            name:league,
-                            matches:0,
-                            teams:new Set()
-                        }
-                    );
-
-                }
+            if (!league) {
+                return;
+            }
 
 
-                const leagueData =
-                    leagueMap.get(
-                        league
-                    );
+            if (!leagueMap.has(league)) {
 
-
-                leagueData.matches++;
-
-
-                const homeTeam =
-                    String(
-                        match["Home Team"] || ""
-                    ).trim();
-
-
-                const awayTeam =
-                    String(
-                        match["Away Team"] || ""
-                    ).trim();
-
-
-                if(homeTeam){
-
-                    leagueData.teams.add(
-                        homeTeam
-                    );
-
-                }
-
-
-                if(awayTeam){
-
-                    leagueData.teams.add(
-                        awayTeam
-                    );
-
-                }
+                leagueMap.set(
+                    league,
+                    {
+                        name: league,
+                        matches: 0,
+                        teams: new Set()
+                    }
+                );
 
             }
-        );
+
+
+            const leagueData =
+                leagueMap.get(league);
+
+
+            leagueData.matches++;
+
+
+            const home =
+                String(
+                    getValue(
+                        match,
+                        [
+                            "Home Team",
+                            "HomeTeam",
+                            "Home"
+                        ]
+                    )
+                ).trim();
+
+
+            const away =
+                String(
+                    getValue(
+                        match,
+                        [
+                            "Away Team",
+                            "AwayTeam",
+                            "Away"
+                        ]
+                    )
+                ).trim();
+
+
+            if (home) {
+
+                leagueData.teams.add(home);
+
+            }
+
+
+            if (away) {
+
+                leagueData.teams.add(away);
+
+            }
+
+        });
 
 
         const leagues =
             Array.from(
                 leagueMap.values()
-            ).sort(
-                function(a,b){
+            ).sort(function(a, b) {
 
-                    return a.name.localeCompare(
-                        b.name
-                    );
+                return a.name.localeCompare(
+                    b.name
+                );
 
-                }
-            );
+            });
 
 
-        if(leagues.length === 0){
+        status.textContent =
+            "✅ APEX AI Connected — " +
+            final10.length +
+            " selected matches";
 
-            setLeagueStatus(
-                "⚠️ No league names found in MATCH DATABASE.",
-                "loading"
-            );
 
+        if (!leagues.length) {
 
             container.innerHTML = `
 
-                <div style="
-                    background:#102847;
-                    padding:25px;
-                    border-radius:15px;
-                    text-align:center;
-                ">
+                <div class="empty-box">
 
-                    No league names were found.
+                    <h2>
+                        🏆 No Selected League Data
+                    </h2>
+
+                    <p>
+                        The final APEX selections do not
+                        currently contain league information.
+                    </p>
 
                 </div>
 
@@ -398,169 +501,66 @@ async function loadLeagues(){
         }
 
 
-        // ========================================
-        // RENDER LEAGUES
-        // ========================================
+        let html = `
 
-        container.innerHTML = `
+            <div class="league-summary">
 
-            <div style="
-                background:#ffffff;
-                color:#111;
-                padding:20px;
-                border-radius:15px;
-                box-shadow:0 12px 35px rgba(0,0,0,.25);
-            ">
-
-                <h2 style="
-                    margin-top:0;
-                    color:#061326;
-                ">
-
-                    🏆 Supported Leagues
-
+                <h2>
+                    🏆 Selected Match Leagues
                 </h2>
 
-
-                <p style="
-                    color:#444;
-                    margin-bottom:20px;
-                ">
-
+                <p>
+                    Showing league information for the
                     <strong>
-                        ${leagues.length}
+                        ${final10.length}
                     </strong>
-
-                    league(s) found from
-
-                    <strong>
-                        ${matches.length}
-                    </strong>
-
-                    match(es) in the Match Database.
-
+                    final APEX matches.
                 </p>
 
+                <div class="league-grid">
 
-                <div style="
-                    display:grid;
-                    grid-template-columns:
-                        repeat(
-                            auto-fit,
-                            minmax(240px,1fr)
-                        );
-                    gap:15px;
-                ">
-
-                    ${leagues.map(
-                        function(league,index){
-
-                            return `
-
-                                <div style="
-                                    background:#fafafa;
-                                    border:
-                                        1px solid #e5e5e5;
-                                    border-radius:12px;
-                                    padding:18px;
-                                ">
-
-                                    <div style="
-                                        font-size:13px;
-                                        color:#777;
-                                        font-weight:bold;
-                                        margin-bottom:7px;
-                                    ">
-
-                                        LEAGUE
-                                        ${index + 1}
-
-                                    </div>
+        `;
 
 
-                                    <div style="
-                                        font-size:19px;
-                                        font-weight:bold;
-                                        color:#061326;
-                                        margin-bottom:12px;
-                                    ">
+        leagues.forEach(function(league, index) {
 
-                                        🏆
-                                        ${leagueEscape(
-                                            league.name
-                                        )}
+            html += `
 
-                                    </div>
+                <div class="league-card">
 
+                    <div class="league-number">
+                        LEAGUE ${index + 1}
+                    </div>
 
-                                    <div style="
-                                        display:grid;
-                                        grid-template-columns:
-                                            1fr 1fr;
-                                        gap:8px;
-                                    ">
+                    <h3>
+                        🏆 ${escapeHTML(league.name)}
+                    </h3>
 
+                    <div class="league-count">
+                        Matches selected:
+                        <strong>
+                            ${league.matches}
+                        </strong>
+                    </div>
 
-                                        <div style="
-                                            background:#fff;
-                                            border:
-                                                1px solid #ddd;
-                                            border-radius:8px;
-                                            padding:10px;
-                                        ">
+                    <div class="league-count"
+                         style="margin-top:6px;">
 
-                                            <div style="
-                                                font-size:12px;
-                                                color:#777;
-                                            ">
+                        Teams represented:
+                        <strong>
+                            ${league.teams.size}
+                        </strong>
 
-                                                Matches
+                    </div>
 
-                                            </div>
+                </div>
 
-                                            <strong>
+            `;
 
-                                                ${league.matches}
-
-                                            </strong>
-
-                                        </div>
+        });
 
 
-                                        <div style="
-                                            background:#fff;
-                                            border:
-                                                1px solid #ddd;
-                                            border-radius:8px;
-                                            padding:10px;
-                                        ">
-
-                                            <div style="
-                                                font-size:12px;
-                                                color:#777;
-                                            ">
-
-                                                Teams
-
-                                            </div>
-
-                                            <strong>
-
-                                                ${league.teams.size}
-
-                                            </strong>
-
-                                        </div>
-
-
-                                    </div>
-
-                                </div>
-
-                            `;
-
-                        }
-                    ).join("")}
+        html += `
 
                 </div>
 
@@ -569,47 +569,33 @@ async function loadLeagues(){
         `;
 
 
-        setLeagueStatus(
-            "✅ Leagues Connected to Match Database",
-            "success"
-        );
+        container.innerHTML =
+            html;
 
 
-    }
-
-    catch(error){
+    } catch (error) {
 
         console.error(
-            "APEX Predict AI Leagues error:",
+            "APEX Leagues Error:",
             error
         );
 
 
-        setLeagueStatus(
-            "❌ Unable to load leagues: " +
-            error.message,
-            "error"
-        );
+        status.textContent =
+            "❌ APEX Leagues failed to load";
 
 
         container.innerHTML = `
 
-            <div style="
-                background:#102847;
-                padding:25px;
-                border-radius:15px;
-                text-align:center;
-            ">
+            <div class="error-box">
 
-                ❌
+                <h2>
+                    ❌ Unable to Load Leagues
+                </h2>
 
-                <br><br>
-
-                Unable to load league data.
-
-                <br><br>
-
-                Please try again later.
+                <p>
+                    ${escapeHTML(error.message)}
+                </p>
 
             </div>
 
@@ -620,9 +606,12 @@ async function loadLeagues(){
 }
 
 
-// ========================================
-// START
-// ========================================
+function go(page) {
+
+    window.location.href = page;
+
+}
+
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -631,7 +620,6 @@ document.addEventListener(
 
 </script>
 
-
 </body>
 
-  </html>
+</html>
