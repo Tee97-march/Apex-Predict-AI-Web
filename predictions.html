@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
@@ -9,69 +10,668 @@
 
 <link rel="stylesheet" href="styles.css">
 
+<style>
+
+:root{
+    --bg:#071321;
+    --panel:#0d1c2d;
+    --panel2:#10243a;
+    --border:rgba(255,255,255,.08);
+    --text:#ffffff;
+    --muted:#9eacba;
+    --green:#00d66b;
+    --green-dark:#00a950;
+    --blue:#2f7cff;
+    --yellow:#ffbf22;
+    --red:#ff4d5f;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(0,214,107,.10),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at top right,
+            rgba(47,124,255,.10),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            #050d17,
+            #071321 50%,
+            #0a1828
+        );
+
+    color:var(--text);
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+}
+
+.app{
+    width:100%;
+    max-width:1100px;
+    margin:0 auto;
+    padding:14px;
+}
+
+.topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:16px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:11px;
+}
+
+.brand-icon{
+    width:46px;
+    height:46px;
+    border-radius:13px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:
+        linear-gradient(
+            145deg,
+            #19354e,
+            #0a1828
+        );
+
+    border:1px solid rgba(0,214,107,.22);
+
+    font-size:24px;
+}
+
+.brand-title{
+    margin:0;
+    font-size:22px;
+    font-weight:800;
+}
+
+.brand-title span{
+    color:var(--green);
+}
+
+.brand-subtitle{
+    color:var(--muted);
+    font-size:11px;
+    margin-top:2px;
+}
+
+.page-badge{
+    padding:7px 10px;
+    border-radius:999px;
+
+    background:rgba(0,214,107,.08);
+    border:1px solid rgba(0,214,107,.18);
+
+    color:#9ff0c1;
+    font-size:11px;
+    font-weight:700;
+}
+
+.status{
+    padding:12px 14px;
+    margin-bottom:15px;
+
+    border-radius:13px;
+
+    background:rgba(255,255,255,.035);
+    border:1px solid var(--border);
+
+    color:#a9f0c2;
+
+    text-align:center;
+    font-size:12px;
+    font-weight:700;
+}
+
+.page-header{
+    background:
+        linear-gradient(
+            145deg,
+            rgba(13,28,45,.98),
+            rgba(8,20,34,.98)
+        );
+
+    border:1px solid var(--border);
+    border-radius:19px;
+
+    padding:18px;
+
+    margin-bottom:15px;
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.24);
+}
+
+.page-header h1{
+    margin:0 0 7px;
+    font-size:23px;
+}
+
+.page-header p{
+    margin:0;
+    color:var(--muted);
+    font-size:12px;
+}
+
+.selection-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+
+    margin-top:15px;
+    padding-top:14px;
+
+    border-top:1px solid var(--border);
+}
+
+.selection-number{
+    color:var(--green);
+    font-size:21px;
+    font-weight:900;
+}
+
+.selection-label{
+    color:#8593a2;
+    font-size:11px;
+}
+
+.match-list{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.match-card{
+    background:
+        linear-gradient(
+            145deg,
+            rgba(13,28,45,.98),
+            rgba(8,20,34,.98)
+        );
+
+    border:1px solid var(--border);
+    border-radius:20px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 15px 38px rgba(0,0,0,.26);
+}
+
+.match-top{
+    padding:16px 17px 12px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.match-number{
+    color:#7f8d9d;
+    font-size:11px;
+    font-weight:800;
+}
+
+.league{
+    color:#c5d1dd;
+    font-size:11px;
+    font-weight:700;
+    text-align:right;
+}
+
+.match-main{
+    padding:4px 17px 18px;
+}
+
+.teams{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:10px;
+
+    text-align:center;
+}
+
+.team{
+    color:#ffffff;
+    font-size:18px;
+    font-weight:800;
+    line-height:1.3;
+}
+
+.vs{
+    color:#8390a0;
+    font-size:12px;
+    font-weight:900;
+}
+
+.match-date{
+    text-align:center;
+    color:#748394;
+    font-size:10px;
+    margin-top:10px;
+}
+
+.prediction-box{
+    margin:0 15px 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0,214,107,.10),
+            rgba(0,214,107,.035)
+        );
+
+    border:1px solid rgba(0,214,107,.15);
+    border-left:4px solid var(--green);
+
+    border-radius:14px;
+
+    padding:15px;
+}
+
+.prediction-label{
+    color:#8fdbae;
+    font-size:10px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+
+    margin-bottom:6px;
+}
+
+.prediction-text{
+    color:#ffffff;
+    font-size:16px;
+    font-weight:800;
+    line-height:1.4;
+}
+
+.metrics{
+    display:grid;
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:8px;
+
+    padding:0 15px 15px;
+}
+
+.metric{
+    min-height:76px;
+
+    background:rgba(255,255,255,.035);
+
+    border:1px solid rgba(255,255,255,.055);
+
+    border-radius:12px;
+
+    padding:12px;
+}
+
+.metric-label{
+    color:#7f8d9d;
+    font-size:10px;
+    font-weight:700;
+    margin-bottom:7px;
+}
+
+.metric-value{
+    color:#ffffff;
+    font-size:14px;
+    font-weight:800;
+    line-height:1.3;
+}
+
+.metric-value.confidence{
+    color:var(--green);
+    font-size:20px;
+}
+
+.metric-value.market{
+    color:#d9e7ff;
+}
+
+.risk-low{
+    color:#7ef0ad;
+}
+
+.risk-medium{
+    color:#ffd56d;
+}
+
+.risk-high{
+    color:#ff8d99;
+}
+
+.match-footer{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+
+    padding:12px 15px;
+
+    border-top:1px solid var(--border);
+
+    color:#768697;
+    font-size:10px;
+}
+
+.empty,
+.error{
+    padding:25px;
+    text-align:center;
+    border-radius:17px;
+}
+
+.empty{
+    background:#0d1c2d;
+    border:1px solid var(--border);
+    color:#b9c6d3;
+}
+
+.error{
+    background:#3a1515;
+    color:#ffb4ab;
+}
+
+.navigation{
+    display:grid;
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:9px;
+
+    margin-top:18px;
+    padding-bottom:25px;
+}
+
+.navigation button{
+    min-height:48px;
+
+    border:1px solid var(--border);
+    border-radius:12px;
+
+    background:#0d1c2d;
+    color:#e8edf3;
+
+    font-size:11px;
+    font-weight:700;
+}
+
+.navigation button:hover{
+    border-color:rgba(0,214,107,.35);
+}
+
+@media(max-width:650px){
+
+    .app{
+        padding:10px;
+    }
+
+    .brand-title{
+        font-size:19px;
+    }
+
+    .page-badge{
+        display:none;
+    }
+
+    .teams{
+        grid-template-columns:1fr;
+    }
+
+    .vs{
+        margin:-3px 0;
+    }
+
+    .metrics{
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+    .navigation{
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+}
+
+@media(max-width:390px){
+
+    .metrics{
+        grid-template-columns:
+            1fr;
+    }
+
+}
+
+</style>
+
 </head>
+
 
 <body>
 
-<div class="container">
+<div class="app">
 
-    <h1>🤖 Today's AI Predictions</h1>
 
-    <p>
-        APEX Predict AI — Final 10 Selected Matches
-    </p>
+    <div class="topbar">
 
-    <div id="connectionStatus">
+        <div class="brand">
+
+            <div class="brand-icon">
+                ⚽
+            </div>
+
+            <div>
+
+                <h2 class="brand-title">
+                    APEX <span>PREDICT AI</span>
+                </h2>
+
+                <div class="brand-subtitle">
+                    Professional Football Intelligence
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="page-badge">
+            AI PREDICTIONS
+        </div>
+
+    </div>
+
+
+    <div
+        id="connectionStatus"
+        class="status"
+    >
         🔄 Loading today's selected predictions...
     </div>
 
-    <div id="predictionContainer">
 
-        <p style="text-align:center;">
-            🔄 Loading predictions...
+    <div class="page-header">
+
+        <h1>
+            🤖 Today's AI Predictions
+        </h1>
+
+        <p>
+            Final APEX selections generated by the AI engine.
         </p>
+
+
+        <div class="selection-bar">
+
+            <div>
+
+                <div class="selection-number"
+                     id="selectionCount">
+                    —
+                </div>
+
+                <div class="selection-label">
+                    SELECTED MATCHES
+                </div>
+
+            </div>
+
+
+            <div style="
+                text-align:right;
+            ">
+
+                <div style="
+                    color:#8b98a7;
+                    font-size:11px;
+                ">
+                    APEX SMART GATE
+                </div>
+
+                <div style="
+                    color:#9ff0c1;
+                    font-size:12px;
+                    font-weight:800;
+                ">
+                    ACTIVE
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 
-    <br>
 
-    <button onclick="openDashboard()">🏠 Dashboard</button>
-    <button onclick="openAnalysis()">📊 Analysis</button>
-    <button onclick="openStatistics()">📈 Statistics</button>
-    <button onclick="openLiveScores()">⚽ Live Scores</button>
-    <button onclick="openLeagues()">🏆 Leagues</button>
-    <button onclick="openHeadToHead()">⚔ Head To Head</button>
-    <button onclick="openSettings()">⚙ Settings</button>
+    <div
+        id="predictionContainer"
+        class="match-list"
+    >
+
+        <div class="empty">
+
+            🔄 Loading APEX predictions...
+
+        </div>
+
+    </div>
+
+
+    <div class="navigation">
+
+        <button onclick="go('dashboard.html')">
+            🏠 Dashboard
+        </button>
+
+        <button onclick="go('analysis.html')">
+            📊 Analysis
+        </button>
+
+        <button onclick="go('statistics.html')">
+            📈 Statistics
+        </button>
+
+        <button onclick="go('livescores.html')">
+            ⚽ Live Scores
+        </button>
+
+        <button onclick="go('leagues.html')">
+            🏆 Leagues
+        </button>
+
+        <button onclick="go('headtohead.html')">
+            ⚔ Head To Head
+        </button>
+
+        <button onclick="go('settings.html')">
+            ⚙ Settings
+        </button>
+
+        <button onclick="go('index.html')">
+            🚪 Logout
+        </button>
+
+    </div>
 
 </div>
 
 
 <script>
 
-/* =========================================================
-   APEX PREDICT AI
-   PREDICTIONS PAGE
-   FINAL 10 DISPLAY
-   ========================================================= */
+"use strict";
+
 
 const GOOGLE_SHEETS_API =
 "https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
 
 
-/* =========================================================
-   HELPER
-   ========================================================= */
+function getValue(match,names){
 
-function getValue(match, names) {
+    for(const wanted of names){
 
-    for (const name of names) {
+        const key =
+            Object.keys(match).find(
+                function(existingKey){
 
-        if (
-            match[name] !== undefined &&
-            match[name] !== null &&
-            match[name] !== ""
-        ) {
-            return match[name];
+                    return existingKey
+                        .trim()
+                        .toLowerCase()
+                        ===
+                        wanted
+                            .trim()
+                            .toLowerCase();
+
+                }
+            );
+
+        if(key !== undefined){
+
+            const value =
+                match[key];
+
+            if(
+                value !== null &&
+                value !== undefined &&
+                String(value).trim() !== ""
+            ){
+
+                return value;
+
+            }
+
         }
 
     }
@@ -81,156 +681,152 @@ function getValue(match, names) {
 }
 
 
-/* =========================================================
-   LOAD ONLY FINAL 10
-   ========================================================= */
+function safe(value){
 
-async function loadPredictions() {
+    if(
+        value === null ||
+        value === undefined
+    ){
+
+        return "";
+
+    }
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+async function loadPredictions(){
 
     const container =
-        document.getElementById("predictionContainer");
+        document.getElementById(
+            "predictionContainer"
+        );
 
     const status =
-        document.getElementById("connectionStatus");
+        document.getElementById(
+            "connectionStatus"
+        );
 
-    try {
+    const count =
+        document.getElementById(
+            "selectionCount"
+        );
+
+
+    try{
 
         status.textContent =
             "🔄 Connecting to APEX Predict AI...";
 
-        const response =
-            await fetch(GOOGLE_SHEETS_API);
 
-        if (!response.ok) {
+        const response =
+            await fetch(
+                GOOGLE_SHEETS_API,
+                {
+                    method:"GET",
+                    cache:"no-store"
+                }
+            );
+
+
+        if(!response.ok){
+
             throw new Error(
                 "HTTP " + response.status
             );
+
         }
+
 
         const data =
             await response.json();
 
-        console.log(
-            "APEX DATA RECEIVED:",
-            data
-        );
 
+        if(
+            !data ||
+            !data.matchDatabase ||
+            !Array.isArray(
+                data.matchDatabase.objects
+            )
+        ){
 
-        /* =================================================
-           GET MATCH DATABASE
-           ================================================= */
-
-        let allMatches = [];
-
-        if (
-            data.matchDatabase &&
-            Array.isArray(data.matchDatabase.objects)
-        ) {
-
-            allMatches =
-                data.matchDatabase.objects;
+            throw new Error(
+                "APEX Match Database was not returned."
+            );
 
         }
 
 
-        if (allMatches.length === 0) {
-
-            status.textContent =
-                "⚠️ No matches available.";
-
-            container.innerHTML = `
-                <div style="
-                    background:white;
-                    color:#111;
-                    padding:25px;
-                    border-radius:16px;
-                    text-align:center;
-                ">
-                    <h2>⚠️ No Matches Available</h2>
-                    <p>
-                        APEX Predict AI could not find
-                        matches in the database.
-                    </p>
-                </div>
-            `;
-
-            return;
-
-        }
-
-
-        /* =================================================
-           IMPORTANT
-           
-           The Match Database may contain 1,870+ records.
-           We DO NOT display the whole database.
-
-           We take the most recent completed prediction
-           records and display ONLY 10.
-           ================================================= */
-
-        const completedMatches =
-            allMatches.filter(function(match) {
-
-                const prediction =
-                    getValue(match, [
-                        "Prediction",
-                        "prediction",
-                        "AI Prediction"
-                    ]);
-
-                const confidence =
-                    getValue(match, [
-                        "Confidence %",
-                        "Confidence",
-                        "confidence %",
-                        "Final Confidence"
-                    ]);
-
-                const market =
-                    getValue(match, [
-                        "Recommended Market",
-                        "recommended market",
-                        "Market"
-                    ]);
-
-                return (
-                    prediction !== "" ||
-                    confidence !== "" ||
-                    market !== ""
-                );
-
-            });
+        const allMatches =
+            data.matchDatabase.objects;
 
 
         /*
-         * Use the most recent records first.
-         * Then limit the WEB PAGE to 10.
-         *
-         * The Google Sheet remains untouched.
+         * Preserve the exact selection logic
+         * that is already working in production.
          */
+
+        const completedMatches =
+            allMatches.filter(
+                function(match){
+
+                    const prediction =
+                        getValue(
+                            match,
+                            [
+                                "Prediction",
+                                "prediction",
+                                "AI Prediction"
+                            ]
+                        );
+
+                    const confidence =
+                        getValue(
+                            match,
+                            [
+                                "Confidence %",
+                                "Confidence",
+                                "confidence %",
+                                "Final Confidence"
+                            ]
+                        );
+
+                    const market =
+                        getValue(
+                            match,
+                            [
+                                "Recommended Market",
+                                "recommended market",
+                                "Market"
+                            ]
+                        );
+
+                    return (
+                        prediction !== "" ||
+                        confidence !== "" ||
+                        market !== ""
+                    );
+
+                }
+            );
+
 
         const matches =
             completedMatches
                 .slice()
                 .reverse()
-                .slice(0, 10);
+                .slice(0,10);
 
 
-        console.log(
-            "APEX database records:",
-            allMatches.length
-        );
-
-        console.log(
-            "APEX prediction records:",
-            completedMatches.length
-        );
-
-        console.log(
-            "APEX FINAL DISPLAY:",
-            matches.length
-        );
+        count.textContent =
+            matches.length;
 
 
         status.textContent =
@@ -239,23 +835,23 @@ async function loadPredictions() {
             " selected matches";
 
 
-        if (matches.length === 0) {
+        if(!matches.length){
 
             container.innerHTML = `
-                <div style="
-                    background:white;
-                    color:#111;
-                    padding:25px;
-                    border-radius:16px;
-                    text-align:center;
-                ">
-                    <h2>⚠️ Predictions Not Ready</h2>
+
+                <div class="empty">
+
+                    <h3>
+                        ⚠️ Predictions Not Ready
+                    </h3>
+
                     <p>
-                        The database is connected, but
-                        completed predictions have not
-                        been found yet.
+                        No completed APEX predictions
+                        are currently available.
                     </p>
+
                 </div>
+
             `;
 
             return;
@@ -263,302 +859,332 @@ async function loadPredictions() {
         }
 
 
-        /* =================================================
-           PAGE HEADER
-           ================================================= */
-
-        let html = `
-
-        <div style="
-            background:#ffffff;
-            color:#111;
-            padding:20px;
-            border-radius:16px;
-            margin-top:20px;
-            box-shadow:0 12px 35px rgba(0,0,0,.25);
-        ">
-
-            <h2 style="
-                color:#061326;
-                margin-bottom:8px;
-            ">
-                🤖 APEX AI PREDICTIONS
-            </h2>
-
-            <p style="
-                color:#444;
-                margin:0;
-            ">
-                Showing the final ${matches.length}
-                selected matches.
-            </p>
-
-        </div>
-
-        `;
+        let html = "";
 
 
-        /* =================================================
-           BUILD THE 10 MATCH CARDS
-           ================================================= */
+        matches.forEach(
+            function(match,index){
 
-        matches.forEach(function(match, index) {
-
-            const date =
-                getValue(match, [
-                    "Date",
-                    "date",
-                    "Fixture Date"
-                ]);
-
-            const league =
-                getValue(match, [
-                    "League",
-                    "league",
-                    "League Name"
-                ]);
-
-            const homeTeam =
-                getValue(match, [
-                    "Home Team",
-                    "home team",
-                    "Home",
-                    "home"
-                ]);
-
-            const awayTeam =
-                getValue(match, [
-                    "Away Team",
-                    "away team",
-                    "Away",
-                    "away"
-                ]);
-
-            const prediction =
-                getValue(match, [
-                    "Prediction",
-                    "prediction",
-                    "AI Prediction"
-                ]);
-
-            const confidence =
-                getValue(match, [
-                    "Confidence %",
-                    "Confidence",
-                    "confidence %",
-                    "Final Confidence"
-                ]);
-
-            const risk =
-                getValue(match, [
-                    "Risk Level",
-                    "Risk",
-                    "risk level"
-                ]);
-
-            const market =
-                getValue(match, [
-                    "Recommended Market",
-                    "recommended market",
-                    "Market"
-                ]);
+                const date =
+                    getValue(
+                        match,
+                        [
+                            "Date",
+                            "date",
+                            "Fixture Date",
+                            "Match Date"
+                        ]
+                    );
 
 
-            html += `
-
-            <div style="
-                background:#ffffff;
-                color:#111;
-                margin-top:20px;
-                padding:25px;
-                border-radius:16px;
-                box-shadow:0 12px 35px rgba(0,0,0,.25);
-            ">
-
-                <h2 style="
-                    color:#061326;
-                    margin-bottom:15px;
-                ">
-                    ⚽ Match ${index + 1}
-                </h2>
+                const league =
+                    getValue(
+                        match,
+                        [
+                            "League",
+                            "league",
+                            "League Name"
+                        ]
+                    );
 
 
-                <div style="
-                    background:#f5f7fa;
-                    padding:18px;
-                    border-radius:12px;
-                    margin-bottom:18px;
-                ">
-
-                    <h3 style="
-                        color:#061326;
-                        font-size:22px;
-                        margin-bottom:10px;
-                    ">
-
-                        ${homeTeam || "Home Team"}
-
-                        <span style="
-                            color:#777;
-                            font-weight:normal;
-                        ">
-                            vs
-                        </span>
-
-                        ${awayTeam || "Away Team"}
-
-                    </h3>
-
-                    <p style="
-                        color:#333;
-                        margin:6px 0;
-                    ">
-                        <strong>League:</strong>
-                        ${league || "—"}
-                    </p>
-
-                    <p style="
-                        color:#333;
-                        margin:6px 0;
-                    ">
-                        <strong>Date:</strong>
-                        ${date || "—"}
-                    </p>
-
-                </div>
+                const home =
+                    getValue(
+                        match,
+                        [
+                            "Home Team",
+                            "home team",
+                            "HomeTeam",
+                            "Home"
+                        ]
+                    );
 
 
-                <div style="
-                    background:#e8f5e9;
-                    border-left:5px solid #00c853;
-                    padding:18px;
-                    border-radius:10px;
-                    margin-bottom:15px;
-                ">
-
-                    <h3 style="
-                        color:#061326;
-                        margin-bottom:8px;
-                    ">
-                        🤖 AI Prediction
-                    </h3>
-
-                    <p style="
-                        color:#111;
-                        font-size:20px;
-                        font-weight:bold;
-                    ">
-                        ${prediction || "—"}
-                    </p>
-
-                </div>
+                const away =
+                    getValue(
+                        match,
+                        [
+                            "Away Team",
+                            "away team",
+                            "AwayTeam",
+                            "Away"
+                        ]
+                    );
 
 
-                <div style="
-                    display:grid;
-                    grid-template-columns:
-                    repeat(auto-fit,minmax(180px,1fr));
-                    gap:12px;
-                ">
+                const prediction =
+                    getValue(
+                        match,
+                        [
+                            "Prediction",
+                            "prediction",
+                            "AI Prediction"
+                        ]
+                    );
 
 
-                    <div style="
-                        background:#f5f5f5;
-                        padding:16px;
-                        border-radius:12px;
-                    ">
+                const confidence =
+                    getValue(
+                        match,
+                        [
+                            "Confidence %",
+                            "Confidence",
+                            "confidence %",
+                            "Final Confidence"
+                        ]
+                    );
 
-                        <strong>Confidence</strong>
 
-                        <p style="
-                            color:#111;
-                            font-size:20px;
-                            margin-top:8px;
-                        ">
-                            ${confidence || "—"}
-                            ${confidence !== "" ? "%" : ""}
-                        </p>
+                const risk =
+                    getValue(
+                        match,
+                        [
+                            "Risk Level",
+                            "Risk",
+                            "risk level"
+                        ]
+                    );
+
+
+                const market =
+                    getValue(
+                        match,
+                        [
+                            "Recommended Market",
+                            "recommended market",
+                            "Market"
+                        ]
+                    );
+
+
+                const riskText =
+                    String(
+                        risk || ""
+                    ).toLowerCase();
+
+
+                let riskClass =
+                    "risk-high";
+
+
+                if(
+                    riskText === "low"
+                ){
+
+                    riskClass =
+                        "risk-low";
+
+                }
+                else if(
+                    riskText === "medium"
+                ){
+
+                    riskClass =
+                        "risk-medium";
+
+                }
+
+
+                html += `
+
+                    <div class="match-card">
+
+
+                        <div class="match-top">
+
+                            <div class="match-number">
+                                MATCH ${index + 1}
+                            </div>
+
+                            <div class="league">
+                                🏆 ${safe(
+                                    league || "League"
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <div class="match-main">
+
+                            <div class="teams">
+
+                                <div class="team">
+
+                                    ${safe(
+                                        home || "Home Team"
+                                    )}
+
+                                </div>
+
+
+                                <div class="vs">
+                                    VS
+                                </div>
+
+
+                                <div class="team">
+
+                                    ${safe(
+                                        away || "Away Team"
+                                    )}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="match-date">
+
+                                ${safe(
+                                    date || "Date unavailable"
+                                )}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="prediction-box">
+
+                            <div class="prediction-label">
+                                🤖 AI Prediction
+                            </div>
+
+                            <div class="prediction-text">
+
+                                ${safe(
+                                    prediction || "—"
+                                )}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="metrics">
+
+
+                            <div class="metric">
+
+                                <div class="metric-label">
+                                    CONFIDENCE
+                                </div>
+
+                                <div class="metric-value confidence">
+
+                                    ${
+                                        confidence !== ""
+                                            ? safe(
+                                                confidence
+                                            ) + "%"
+                                            : "—"
+                                    }
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="metric">
+
+                                <div class="metric-label">
+                                    RISK
+                                </div>
+
+                                <div
+                                    class="
+                                        metric-value
+                                        ${riskClass}
+                                    "
+                                >
+
+                                    ${safe(
+                                        risk || "—"
+                                    )}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="metric">
+
+                                <div class="metric-label">
+                                    MARKET
+                                </div>
+
+                                <div class="
+                                    metric-value market
+                                ">
+
+                                    ${safe(
+                                        market || "—"
+                                    )}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="match-footer">
+
+                            <span>
+                                APEX AI ENGINE
+                            </span>
+
+                            <span>
+                                SMART GATE
+                            </span>
+
+                        </div>
+
 
                     </div>
 
+                `;
 
-                    <div style="
-                        background:#f5f5f5;
-                        padding:16px;
-                        border-radius:12px;
-                    ">
-
-                        <strong>Risk Level</strong>
-
-                        <p style="
-                            color:#111;
-                            font-size:20px;
-                            margin-top:8px;
-                        ">
-                            ${risk || "—"}
-                        </p>
-
-                    </div>
-
-
-                    <div style="
-                        background:#f5f5f5;
-                        padding:16px;
-                        border-radius:12px;
-                    ">
-
-                        <strong>Recommended Market</strong>
-
-                        <p style="
-                            color:#111;
-                            font-size:18px;
-                            margin-top:8px;
-                        ">
-                            ${market || "—"}
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            `;
-
-        });
+            }
+        );
 
 
         container.innerHTML =
             html;
 
 
-    } catch (error) {
+    }
+    catch(error){
 
         console.error(
             "APEX Predictions Error:",
             error
         );
 
+
         status.textContent =
-            "❌ APEX connection error";
+            "❌ APEX Predictions failed to load";
+
+
+        count.textContent =
+            "—";
+
 
         container.innerHTML = `
-            <div style="
-                background:white;
-                color:#111;
-                padding:25px;
-                border-radius:16px;
-                text-align:center;
-            ">
 
-                <h2>❌ Unable to Load Predictions</h2>
+            <div class="error">
+
+                <h3>
+                    ❌ Unable to Load Predictions
+                </h3>
 
                 <p>
-                    APEX could not retrieve the
-                    prediction data.
+                    ${safe(error.message)}
                 </p>
 
             </div>
+
         `;
 
     }
@@ -566,49 +1192,22 @@ async function loadPredictions() {
 }
 
 
-/* =========================================================
-   START
-   ========================================================= */
+function go(page){
+
+    window.location.href =
+        page;
+
+}
+
 
 document.addEventListener(
     "DOMContentLoaded",
     loadPredictions
 );
 
-
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
-
-function openDashboard() {
-    window.location.href = "dashboard.html";
-}
-
-function openAnalysis() {
-    window.location.href = "analysis.html";
-}
-
-function openStatistics() {
-    window.location.href = "statistics.html";
-}
-
-function openLiveScores() {
-    window.location.href = "livescores.html";
-}
-
-function openLeagues() {
-    window.location.href = "leagues.html";
-}
-
-function openHeadToHead() {
-    window.location.href = "headtohead.html";
-}
-
-function openSettings() {
-    window.location.href = "settings.html";
-}
-
 </script>
 
+
 </body>
-    </html>
+
+</html>
