@@ -17,17 +17,20 @@
     margin-bottom:25px;
 }
 
+.h2h-header h1{
+    margin-bottom:8px;
+}
+
+.h2h-header p{
+    color:#cfd8e3;
+}
+
 .h2h-card{
     background:#102847;
     border-radius:15px;
     padding:20px;
     margin-bottom:20px;
     box-shadow:0 8px 20px rgba(0,0,0,.25);
-}
-
-.h2h-card h2,
-.h2h-card h3{
-    margin-top:0;
 }
 
 .h2h-controls{
@@ -65,10 +68,6 @@
     cursor:pointer;
 }
 
-.h2h-button:hover{
-    background:#00b248;
-}
-
 .h2h-status{
     text-align:center;
     padding:12px;
@@ -102,7 +101,8 @@
 
 .h2h-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    grid-template-columns:
+        repeat(auto-fit,minmax(200px,1fr));
     gap:12px;
 }
 
@@ -131,6 +131,14 @@
     text-align:center;
     padding:25px;
     color:#cfd8e3;
+}
+
+.h2h-error{
+    background:#3a1515;
+    color:#ffb4ab;
+    text-align:center;
+    padding:20px;
+    border-radius:12px;
 }
 
 .h2h-navigation{
@@ -166,12 +174,13 @@
 
 <div class="container">
 
+
     <div class="h2h-header">
 
         <h1>⚔ Head To Head</h1>
 
         <p>
-            Compare two football teams using APEX Predict AI match data
+            Compare teams from the final APEX selections
         </p>
 
     </div>
@@ -183,7 +192,7 @@
             id="h2hStatus"
             class="h2h-status"
         >
-            🔄 Connecting to Google Sheets...
+            🔄 Connecting to APEX AI...
         </div>
 
 
@@ -192,13 +201,13 @@
             <div>
 
                 <label for="homeTeamSelect">
-                    Home Team
+                    Team 1
                 </label>
 
                 <select id="homeTeamSelect">
 
                     <option value="">
-                        Loading teams...
+                        Loading selected teams...
                     </option>
 
                 </select>
@@ -209,13 +218,13 @@
             <div>
 
                 <label for="awayTeamSelect">
-                    Away Team
+                    Team 2
                 </label>
 
                 <select id="awayTeamSelect">
 
                     <option value="">
-                        Loading teams...
+                        Loading selected teams...
                     </option>
 
                 </select>
@@ -250,31 +259,31 @@
 
     <div class="h2h-navigation">
 
-        <button onclick="openDashboard()">
+        <button onclick="go('dashboard.html')">
             🏠 Dashboard
         </button>
 
-        <button onclick="openPredictions()">
+        <button onclick="go('predictions.html')">
             🤖 Predictions
         </button>
 
-        <button onclick="openAnalysis()">
+        <button onclick="go('analysis.html')">
             📊 Analysis
         </button>
 
-        <button onclick="openStatistics()">
+        <button onclick="go('statistics.html')">
             📈 Statistics
         </button>
 
-        <button onclick="openLiveScores()">
+        <button onclick="go('livescores.html')">
             ⚽ Live Scores
         </button>
 
-        <button onclick="openLeagues()">
+        <button onclick="go('leagues.html')">
             🏆 Leagues
         </button>
 
-        <button onclick="openSettings()">
+        <button onclick="go('settings.html')">
             ⚙ Settings
         </button>
 
@@ -288,10 +297,6 @@
 "use strict";
 
 
-// ========================================
-// APEX HEAD TO HEAD
-// ========================================
-
 const APEX_GOOGLE_SHEETS_API =
 "https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
 
@@ -299,80 +304,131 @@ const APEX_GOOGLE_SHEETS_API =
 let apexMatches = [];
 
 
-// ========================================
-// HTML SECURITY
-// ========================================
+/* =====================================================
+   SAFE HTML
+   ===================================================== */
 
 function h2hEscape(value){
 
-    return String(value ?? "")
+    if(
+        value === null ||
+        value === undefined
+    ){
+
+        return "";
+
+    }
+
+    return String(value)
         .replace(/&/g,"&amp;")
         .replace(/</g,"&lt;")
         .replace(/>/g,"&gt;")
         .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#39;");
+        .replace(/'/g,"&#039;");
+
 }
 
 
-function h2hValue(value){
+/* =====================================================
+   VALUE READER
+   ===================================================== */
 
-    if(
-        value === null ||
-        value === undefined ||
-        String(value).trim() === ""
-    ){
+function h2hValue(match,names){
 
-        return "—";
+    if(!match){
+        return "";
+    }
+
+    const keys =
+        Object.keys(match);
+
+    for(const wanted of names){
+
+        const wantedName =
+            wanted.trim().toLowerCase();
+
+        const key =
+            keys.find(function(existingKey){
+
+                return existingKey
+                    .trim()
+                    .toLowerCase()
+                    === wantedName;
+
+            });
+
+        if(key !== undefined){
+
+            const value =
+                match[key];
+
+            if(
+                value !== null &&
+                value !== undefined &&
+                String(value).trim() !== ""
+            ){
+
+                return value;
+
+            }
+
+        }
 
     }
 
-    return h2hEscape(value);
+    return "";
 
 }
 
 
-// ========================================
-// STATUS
-// ========================================
+/* =====================================================
+   STATUS
+   ===================================================== */
 
 function setH2HStatus(message,type){
 
     const element =
-        document.getElementById("h2hStatus");
+        document.getElementById(
+            "h2hStatus"
+        );
 
     if(!element){
         return;
     }
 
-    element.textContent = message;
+    element.textContent =
+        message;
 
     if(type === "success"){
 
-        element.style.color = "#b9f6ca";
+        element.style.color =
+            "#b9f6ca";
 
     }else if(type === "error"){
 
-        element.style.color = "#ffb4ab";
+        element.style.color =
+            "#ffb4ab";
 
     }else{
 
-        element.style.color = "#ffd54f";
+        element.style.color =
+            "#ffd54f";
 
     }
 
 }
 
 
-// ========================================
-// LOAD GOOGLE SHEETS
-// ========================================
+/* =====================================================
+   LOAD ONLY FINAL 10
+   ===================================================== */
 
 async function loadH2HData(){
 
     try{
 
         setH2HStatus(
-            "🔄 Loading Match Database from Google Sheets...",
+            "🔄 Loading final 10 APEX matches...",
             "loading"
         );
 
@@ -390,8 +446,7 @@ async function loadH2HData(){
         if(!response.ok){
 
             throw new Error(
-                "Google Sheets HTTP " +
-                response.status
+                "HTTP " + response.status
             );
 
         }
@@ -401,42 +456,94 @@ async function loadH2HData(){
             await response.json();
 
 
-        console.log(
-            "APEX Head To Head Google Sheets data:",
-            data
-        );
-
-
-        const database =
-            data.matchDatabase;
-
-
         if(
-            !database ||
-            !database.exists ||
-            !Array.isArray(database.objects)
+            !data ||
+            !data.matchDatabase ||
+            !Array.isArray(
+                data.matchDatabase.objects
+            )
         ){
 
             throw new Error(
-                "MATCH DATABASE was not returned."
+                "APEX Match Database was not returned."
             );
 
         }
 
 
+        const allMatches =
+            data.matchDatabase.objects;
+
+
+        /*
+         * Use the same completed-prediction
+         * filter used by the other pages.
+         */
+
+        const completedMatches =
+            allMatches.filter(function(match){
+
+                const prediction =
+                    h2hValue(
+                        match,
+                        [
+                            "Prediction",
+                            "prediction",
+                            "AI Prediction"
+                        ]
+                    );
+
+                const confidence =
+                    h2hValue(
+                        match,
+                        [
+                            "Confidence %",
+                            "Confidence",
+                            "confidence %",
+                            "Final Confidence"
+                        ]
+                    );
+
+                const market =
+                    h2hValue(
+                        match,
+                        [
+                            "Recommended Market",
+                            "recommended market",
+                            "Market"
+                        ]
+                    );
+
+                return (
+                    prediction !== "" ||
+                    confidence !== "" ||
+                    market !== ""
+                );
+
+            });
+
+
+        /*
+         * Keep only the 10 records used by
+         * the lightweight web pages.
+         */
+
         apexMatches =
-            database.objects;
+            completedMatches
+                .slice()
+                .reverse()
+                .slice(0,10);
 
 
         if(apexMatches.length === 0){
 
             setH2HStatus(
-                "⚠️ Match Database is currently empty.",
+                "⚠️ No selected matches available.",
                 "loading"
             );
 
             showEmptyMessage(
-                "No match data is currently available."
+                "No completed APEX matches are currently available."
             );
 
             return;
@@ -448,7 +555,9 @@ async function loadH2HData(){
 
 
         setH2HStatus(
-            "✅ Match Database Connected",
+            "✅ APEX AI Connected — " +
+            apexMatches.length +
+            " selected matches",
             "success"
         );
 
@@ -462,14 +571,13 @@ async function loadH2HData(){
 
 
         setH2HStatus(
-            "❌ Unable to load Match Database: " +
-            error.message,
+            "❌ APEX Head To Head failed",
             "error"
         );
 
 
         showEmptyMessage(
-            "The Match Database could not be loaded. Please try again."
+            error.message
         );
 
     }
@@ -477,26 +585,41 @@ async function loadH2HData(){
 }
 
 
-// ========================================
-// GET TEAM NAMES
-// ========================================
+/* =====================================================
+   TEAM LIST
+   ===================================================== */
 
 function getTeams(){
 
-    const teams = new Set();
+    const teams =
+        new Set();
 
 
     apexMatches.forEach(function(match){
 
         const home =
             String(
-                match["Home Team"] || ""
+                h2hValue(
+                    match,
+                    [
+                        "Home Team",
+                        "HomeTeam",
+                        "Home"
+                    ]
+                )
             ).trim();
 
 
         const away =
             String(
-                match["Away Team"] || ""
+                h2hValue(
+                    match,
+                    [
+                        "Away Team",
+                        "AwayTeam",
+                        "Away"
+                    ]
+                )
             ).trim();
 
 
@@ -512,20 +635,20 @@ function getTeams(){
     });
 
 
-    return Array.from(teams).sort(
-        function(a,b){
+    return Array.from(
+        teams
+    ).sort(function(a,b){
 
-            return a.localeCompare(b);
+        return a.localeCompare(b);
 
-        }
-    );
+    });
 
 }
 
 
-// ========================================
-// POPULATE SELECTORS
-// ========================================
+/* =====================================================
+   SELECTORS
+   ===================================================== */
 
 function populateTeamSelectors(){
 
@@ -534,23 +657,17 @@ function populateTeamSelectors(){
             "homeTeamSelect"
         );
 
-
     const awaySelect =
         document.getElementById(
             "awayTeamSelect"
         );
 
 
-    if(!homeSelect || !awaySelect){
-        return;
-    }
-
-
     const teams =
         getTeams();
 
 
-    if(teams.length === 0){
+    if(!teams.length){
 
         homeSelect.innerHTML =
             '<option value="">No teams available</option>';
@@ -582,53 +699,64 @@ function populateTeamSelectors(){
     homeSelect.innerHTML =
         options;
 
-
     awaySelect.innerHTML =
         options;
 
 }
 
 
-// ========================================
-// FIND MATCH
-// ========================================
+/* =====================================================
+   FIND MATCH
+   ===================================================== */
 
 function findMatch(homeTeam,awayTeam){
 
-    return apexMatches.find(
-        function(match){
+    return apexMatches.find(function(match){
 
-            const home =
-                String(
-                    match["Home Team"] || ""
-                ).trim()
-                .toLowerCase();
+        const home =
+            String(
+                h2hValue(
+                    match,
+                    [
+                        "Home Team",
+                        "HomeTeam",
+                        "Home"
+                    ]
+                )
+            ).trim()
+            .toLowerCase();
 
 
-            const away =
-                String(
-                    match["Away Team"] || ""
-                ).trim()
-                .toLowerCase();
+        const away =
+            String(
+                h2hValue(
+                    match,
+                    [
+                        "Away Team",
+                        "AwayTeam",
+                        "Away"
+                    ]
+                )
+            ).trim()
+            .toLowerCase();
 
 
-            return (
-                home ===
-                homeTeam.trim().toLowerCase()
-                &&
-                away ===
-                awayTeam.trim().toLowerCase()
-            );
+        return (
+            home ===
+            homeTeam.trim().toLowerCase()
+            &&
+            away ===
+            awayTeam.trim().toLowerCase()
+        );
 
-        }
-    );
+    });
 
 }
 
 
-// ========================================
-// DISPLAY MATCH
-// ========================================
+/* =====================================================
+   COMPARE
+   ===================================================== */
 
 function compareTeams(){
 
@@ -636,7 +764,6 @@ function compareTeams(){
         document.getElementById(
             "homeTeamSelect"
         );
-
 
     const awaySelect =
         document.getElementById(
@@ -650,20 +777,8 @@ function compareTeams(){
         );
 
 
-    if(
-        !homeSelect ||
-        !awaySelect ||
-        !container
-    ){
-
-        return;
-
-    }
-
-
     const homeTeam =
         homeSelect.value.trim();
-
 
     const awayTeam =
         awaySelect.value.trim();
@@ -681,7 +796,8 @@ function compareTeams(){
 
 
     if(
-        homeTeam.toLowerCase() ===
+        homeTeam.toLowerCase()
+        ===
         awayTeam.toLowerCase()
     ){
 
@@ -704,7 +820,7 @@ function compareTeams(){
     if(!match){
 
         showEmptyMessage(
-            "No exact match between these two teams was found in the current Match Database."
+            "No exact match between these two teams was found among the final 10 APEX selections."
         );
 
         return;
@@ -721,9 +837,9 @@ function compareTeams(){
 }
 
 
-// ========================================
-// RENDER COMPARISON
-// ========================================
+/* =====================================================
+   RENDER
+   ===================================================== */
 
 function renderComparison(
     match,
@@ -737,125 +853,97 @@ function renderComparison(
         );
 
 
-    if(!container){
-        return;
-    }
+    const league =
+        h2hValue(
+            match,
+            ["League","league"]
+        );
 
 
-    const preferredFields = [
-
-        "League",
-        "Home Team",
-        "Away Team",
-        "Head to Head",
-        "Head To Head",
-        "Head-to-Head",
-        "Head to Head Score",
-        "Head To Head Score",
-        "Head-to-Head Score",
-        "Head-to-Head Avg Goals",
-        "Head To Head Avg Goals",
-        "Home Advantage",
-        "Home Advantage Score",
-        "Prediction",
-        "Confidence %",
-        "Risk Level",
-        "recommended market"
-
-    ];
+    const date =
+        h2hValue(
+            match,
+            ["Date","Match Date","date"]
+        );
 
 
-    const used =
-        new Set();
+    const prediction =
+        h2hValue(
+            match,
+            ["Prediction","AI Prediction"]
+        );
 
 
-    let statsHtml = "";
+    const confidence =
+        h2hValue(
+            match,
+            [
+                "Confidence %",
+                "Confidence",
+                "Final Confidence"
+            ]
+        );
 
 
-    preferredFields.forEach(
-        function(field){
-
-            if(
-                Object.prototype.hasOwnProperty.call(
-                    match,
-                    field
-                )
-            ){
-
-                used.add(field);
+    const risk =
+        h2hValue(
+            match,
+            ["Risk Level","Risk"]
+        );
 
 
-                statsHtml += `
-
-                    <div class="h2h-stat">
-
-                        <div class="h2h-stat-title">
-
-                            ${h2hEscape(field)}
-
-                        </div>
-
-                        <div class="h2h-stat-value">
-
-                            ${h2hValue(match[field])}
-
-                        </div>
-
-                    </div>
-
-                `;
-
-            }
-
-        }
-    );
+    const market =
+        h2hValue(
+            match,
+            [
+                "Recommended Market",
+                "recommended market",
+                "Market"
+            ]
+        );
 
 
-    const additionalFields =
-        Object.entries(match);
+    const h2h =
+        h2hValue(
+            match,
+            [
+                "Head to Head",
+                "Head To Head",
+                "H2H"
+            ]
+        );
 
 
-    additionalFields.forEach(
-        function(entry){
-
-            const key =
-                entry[0];
-
-            const value =
-                entry[1];
-
-
-            if(
-                used.has(key)
-            ){
-
-                return;
-
-            }
+    const h2hScore =
+        h2hValue(
+            match,
+            [
+                "Head to Head Score",
+                "Head To Head Score",
+                "H2H Score"
+            ]
+        );
 
 
-            statsHtml += `
+    const homeAdvantage =
+        h2hValue(
+            match,
+            [
+                "Home Advantage Score",
+                "Home Advantage"
+            ]
+        );
 
-                <div class="h2h-stat">
 
-                    <div class="h2h-stat-title">
-
-                        ${h2hEscape(key)}
-
-                    </div>
-
-                    <div class="h2h-stat-value">
-
-                        ${h2hValue(value)}
-
-                    </div>
-
-                </div>
-
-            `;
-
-        }
-    );
+    const odds =
+        h2hValue(
+            match,
+            [
+                "Bookmaker Odds",
+                "Bookmaker odds",
+                "Odds"
+            ]
+        );
 
 
     container.innerHTML = `
@@ -869,8 +957,7 @@ function renderComparison(
 
             <div class="h2h-team">
 
-                🏠
-                ${h2hEscape(homeTeam)}
+                🏠 ${h2hEscape(homeTeam)}
 
             </div>
 
@@ -882,8 +969,7 @@ function renderComparison(
 
             <div class="h2h-team">
 
-                🛡
-                ${h2hEscape(awayTeam)}
+                🛡 ${h2hEscape(awayTeam)}
 
             </div>
 
@@ -892,7 +978,136 @@ function renderComparison(
 
         <div class="h2h-grid">
 
-            ${statsHtml}
+
+            <div class="h2h-stat">
+
+                <div class="h2h-stat-title">
+                    League
+                </div>
+
+                <div class="h2h-stat-value">
+                    ${h2hValue(match,["League"]) || "—"}
+                </div>
+
+            </div>
+
+
+            <div class="h2h-stat">
+
+                <div class="h2h-stat-title">
+                    Date
+                </div>
+
+                <div class="h2h-stat-value">
+                    ${h2hValue(match,["Date"]) || "—"}
+                </div>
+
+            </div>
+
+
+            <div class="h2h-stat">
+
+                <div class="h2h-stat-title">
+                    Head To Head
+                </div>
+
+                <div class="h2h-stat-value">
+                    ${h2h || "—"}
+                </div>
+
+            </div>
+
+
+            <div class="h2h-stat">
+
+                <div class="h2h-stat-title">
+                    Head To Head Score
+                </div>
+
+                <div class="h2h-stat-value">
+                    ${h2hScore || "—"}
+                </div>
+
+            </div>
+
+
+            <div class="h2h-stat">
+
+                <div class="h2h-stat-title">
+                    Home Advantage
+                </div>
+
+                <div class="h2h-stat-value">
+                    ${homeAdvantage || "—"}
+                </div>
+
+            </div>
+
+
+            <div class="h2h-stat">
+
+                <div class="h2h-stat-title">
+                    AI Prediction
+                </div>
+
+                <div class="h2h-stat-value">
+                    ${prediction || "—"}
+                </div>
+
+            </div>
+
+
+            <div class="h2h-stat">
+
+                <div class="h2h-stat-title">
+                    Confidence
+                </div>
+
+                <div class="h2h-stat-value">
+                    ${confidence || "—"}
+                </div>
+
+            </div>
+
+
+            <div class="h2h-stat">
+
+                <div class="h2h-stat-title">
+                    Risk
+                </div>
+
+                <div class="h2h-stat-value">
+                    ${risk || "—"}
+                </div>
+
+            </div>
+
+
+            <div class="h2h-stat">
+
+                <div class="h2h-stat-title">
+                    Recommended Market
+                </div>
+
+                <div class="h2h-stat-value">
+                    ${market || "—"}
+                </div>
+
+            </div>
+
+
+            <div class="h2h-stat">
+
+                <div class="h2h-stat-title">
+                    Bookmaker Odds
+                </div>
+
+                <div class="h2h-stat-value">
+                    ${odds || "—"}
+                </div>
+
+            </div>
+
 
         </div>
 
@@ -901,9 +1116,9 @@ function renderComparison(
 }
 
 
-// ========================================
-// EMPTY STATE
-// ========================================
+/* =====================================================
+   EMPTY MESSAGE
+   ===================================================== */
 
 function showEmptyMessage(message){
 
@@ -911,11 +1126,6 @@ function showEmptyMessage(message){
         document.getElementById(
             "headToHeadContainer"
         );
-
-
-    if(!container){
-        return;
-    }
 
 
     container.innerHTML = `
@@ -931,9 +1141,21 @@ function showEmptyMessage(message){
 }
 
 
-// ========================================
-// BUTTON
-// ========================================
+/* =====================================================
+   NAVIGATION
+   ===================================================== */
+
+function go(page){
+
+    window.location.href =
+        page;
+
+}
+
+
+/* =====================================================
+   START
+   ===================================================== */
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -964,4 +1186,4 @@ document.addEventListener(
 
 </body>
 
-                  </html>
+</html>
