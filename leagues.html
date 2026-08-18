@@ -6,114 +6,328 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>APEX Predict AI - Football Leagues</title>
+<title>APEX Predict AI - Leagues</title>
 
 <link rel="stylesheet" href="styles.css">
 
 <style>
 
-.league-header {
-    text-align: center;
-    margin-bottom: 20px;
+/* =========================================================
+   APEX LEAGUES — FINAL UI
+   ========================================================= */
+
+.league-page-header{
+    margin-bottom:20px;
 }
 
-.league-header h1 {
-    margin-bottom: 8px;
+.league-page-header h1{
+    margin:0 0 6px;
+    font-size:28px;
 }
 
-.league-header p {
-    color: #cfd8e3;
+.league-page-header p{
+    margin:0;
+    color:#aebccc;
 }
 
-.league-status {
-    text-align: center;
-    margin: 15px 0 20px;
-    padding: 14px;
-    border-radius: 14px;
-    background: rgba(255,255,255,.08);
-    border: 1px solid rgba(255,255,255,.12);
-    font-weight: bold;
+
+/* STATUS */
+
+.league-status{
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:14px;
+    padding:13px;
+    text-align:center;
+    color:#dce6f2;
+    font-weight:bold;
+    margin-bottom:20px;
 }
 
-.league-summary {
-    background: #ffffff;
-    color: #111;
-    padding: 22px;
-    border-radius: 18px;
-    box-shadow: 0 12px 35px rgba(0,0,0,.25);
-}
 
-.league-summary h2 {
-    color: #061326;
-    margin-top: 0;
-}
+/* SUMMARY */
 
-.league-summary p {
-    color: #333;
-}
-
-.league-grid {
-    display: grid;
+.league-overview{
+    display:grid;
     grid-template-columns:
-        repeat(auto-fit, minmax(220px, 1fr));
-    gap: 15px;
-    margin-top: 20px;
+        repeat(3,1fr);
+    gap:12px;
+    margin-bottom:20px;
 }
 
-.league-card {
-    background: #f7f8fa;
-    border: 1px solid #e5e5e5;
-    border-radius: 15px;
-    padding: 18px;
+.overview-card{
+    background:
+        linear-gradient(
+            145deg,
+            rgba(20,36,55,.95),
+            rgba(9,21,34,.95)
+        );
+
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:16px;
+    padding:18px 12px;
+    text-align:center;
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.22);
+
+    position:relative;
+    overflow:hidden;
 }
 
-.league-card h3 {
-    color: #061326;
-    margin: 0 0 10px;
+.overview-card::after{
+    content:"";
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+    height:3px;
+    background:#00d26a;
 }
 
-.league-number {
-    font-size: 13px;
-    color: #777;
-    font-weight: bold;
-    margin-bottom: 8px;
+.overview-number{
+    color:#00d26a;
+    font-size:27px;
+    font-weight:800;
 }
 
-.league-count {
-    color: #444;
-    font-size: 15px;
+.overview-label{
+    color:#aebccc;
+    font-size:12px;
+    margin-top:5px;
 }
 
-.empty-box,
-.error-box {
-    background: #ffffff;
-    color: #222;
-    padding: 25px;
-    border-radius: 18px;
-    text-align: center;
+
+/* MAIN PANEL */
+
+.league-panel{
+    background:
+        linear-gradient(
+            145deg,
+            rgba(17,32,49,.98),
+            rgba(7,18,30,.98)
+        );
+
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:18px;
+    padding:20px;
+
+    box-shadow:
+        0 14px 35px rgba(0,0,0,.28);
 }
 
-.error-box {
-    background: #3a1515;
-    color: #ffb4ab;
+.league-panel-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    margin-bottom:5px;
 }
 
-.navigation {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 25px;
-    padding-bottom: 30px;
+.league-panel-title h2{
+    margin:0;
+    font-size:20px;
+    color:#ffffff;
 }
 
-.navigation button {
-    margin-top: 0;
+.league-panel-subtitle{
+    color:#93a4b7;
+    font-size:13px;
+    margin-bottom:20px;
 }
 
-@media(max-width: 500px) {
 
-    .league-grid {
-        grid-template-columns: 1fr;
+/* LEAGUE GRID */
+
+.league-grid{
+    display:grid;
+    grid-template-columns:
+        repeat(auto-fit,minmax(230px,1fr));
+
+    gap:14px;
+}
+
+
+/* LEAGUE CARD */
+
+.league-card{
+    background:
+        linear-gradient(
+            145deg,
+            rgba(26,43,61,.98),
+            rgba(12,26,41,.98)
+        );
+
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:15px;
+
+    padding:18px;
+
+    transition:
+        transform .2s ease,
+        border-color .2s ease;
+
+    position:relative;
+    overflow:hidden;
+}
+
+.league-card:hover{
+    transform:translateY(-2px);
+    border-color:
+        rgba(0,210,106,.45);
+}
+
+.league-card::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:0;
+    bottom:0;
+    width:4px;
+    background:#00d26a;
+}
+
+.league-number{
+    color:#6f8194;
+    font-size:11px;
+    font-weight:bold;
+    letter-spacing:1px;
+    margin-bottom:10px;
+}
+
+.league-name{
+    color:#ffffff;
+    font-size:18px;
+    font-weight:700;
+    line-height:1.3;
+    margin-bottom:15px;
+}
+
+.league-stat-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:9px 0;
+
+    border-top:
+        1px solid rgba(255,255,255,.07);
+
+    color:#aebccc;
+    font-size:13px;
+}
+
+.league-stat-value{
+    color:#ffffff;
+    font-weight:700;
+}
+
+.league-stat-value.green{
+    color:#00d26a;
+}
+
+
+/* EMPTY / ERROR */
+
+.empty-box{
+    background:
+        linear-gradient(
+            145deg,
+            rgba(17,32,49,.98),
+            rgba(7,18,30,.98)
+        );
+
+    border:1px solid rgba(255,255,255,.08);
+    color:#dce6f2;
+
+    padding:30px 20px;
+    border-radius:18px;
+    text-align:center;
+}
+
+.empty-box h2{
+    color:#ffffff;
+}
+
+.error-box{
+    background:#32171b;
+    border:1px solid #6d292f;
+    color:#ffb4ab;
+    padding:25px;
+    border-radius:18px;
+    text-align:center;
+}
+
+
+/* NAVIGATION */
+
+.navigation{
+    display:grid;
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:10px;
+
+    margin-top:22px;
+    padding-bottom:30px;
+}
+
+.navigation button{
+    margin-top:0;
+}
+
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+    .league-page-header h1{
+        font-size:24px;
+    }
+
+    .league-overview{
+        grid-template-columns:
+            repeat(3,1fr);
+
+        gap:8px;
+    }
+
+    .overview-card{
+        padding:14px 6px;
+    }
+
+    .overview-number{
+        font-size:23px;
+    }
+
+    .overview-label{
+        font-size:10px;
+    }
+
+    .league-panel{
+        padding:15px;
+    }
+
+    .league-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+
+/* VERY SMALL PHONES */
+
+@media(max-width:360px){
+
+    .league-overview{
+        grid-template-columns:1fr;
+    }
+
+    .overview-card{
+        padding:15px;
+    }
+
+    .overview-number{
+        font-size:25px;
     }
 
 }
@@ -122,28 +336,44 @@
 
 </head>
 
+
 <body>
 
 <div class="container">
 
-    <div class="league-header">
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <div class="league-page-header">
 
         <h1>🏆 Football Leagues</h1>
 
         <p>
-            Leagues represented by the final APEX selections
+            APEX AI — Final Selection Overview
         </p>
 
     </div>
 
 
-    <div id="leagueStatus"
-         class="league-status">
+    <!-- =====================================================
+         CONNECTION STATUS
+         ===================================================== -->
+
+    <div
+        id="leagueStatus"
+        class="league-status"
+    >
 
         🔄 Connecting to APEX AI...
 
     </div>
 
+
+    <!-- =====================================================
+         CONTENT
+         ===================================================== -->
 
     <div id="leagueContainer">
 
@@ -155,6 +385,10 @@
 
     </div>
 
+
+    <!-- =====================================================
+         NAVIGATION
+         ===================================================== -->
 
     <div class="navigation">
 
@@ -188,6 +422,7 @@
 
     </div>
 
+
 </div>
 
 
@@ -196,55 +431,74 @@
 "use strict";
 
 
+/* =========================================================
+   APEX GOOGLE SHEETS API
+   ========================================================= */
+
 const APEX_GOOGLE_SHEETS_API =
 "https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
 
 
-function escapeHTML(value) {
+/* =========================================================
+   ESCAPE HTML
+   ========================================================= */
 
-    if (
+function escapeHTML(value){
+
+    if(
         value === null ||
         value === undefined
-    ) {
+    ){
+
         return "";
+
     }
 
     return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 
 }
 
 
-function getValue(match, names) {
+/* =========================================================
+   FLEXIBLE VALUE READER
+   ========================================================= */
 
-    for (const name of names) {
+function getValue(match,names){
+
+    for(const name of names){
 
         const key =
-            Object.keys(match).find(function(existingKey) {
+            Object.keys(match).find(
+                function(existingKey){
 
-                return existingKey
-                    .trim()
-                    .toLowerCase()
-                    ===
-                    name
+                    return existingKey
                         .trim()
-                        .toLowerCase();
+                        .toLowerCase()
+                        ===
+                        name
+                            .trim()
+                            .toLowerCase();
 
-            });
+                }
+            );
 
-        if (key !== undefined) {
 
-            const value = match[key];
+        if(key !== undefined){
 
-            if (
+            const value =
+                match[key];
+
+
+            if(
                 value !== null &&
                 value !== undefined &&
                 String(value).trim() !== ""
-            ) {
+            ){
 
                 return value;
 
@@ -259,16 +513,25 @@ function getValue(match, names) {
 }
 
 
-async function loadLeagues() {
+/* =========================================================
+   LOAD LEAGUES
+   ========================================================= */
+
+async function loadLeagues(){
 
     const status =
-        document.getElementById("leagueStatus");
+        document.getElementById(
+            "leagueStatus"
+        );
+
 
     const container =
-        document.getElementById("leagueContainer");
+        document.getElementById(
+            "leagueContainer"
+        );
 
 
-    try {
+    try{
 
         status.textContent =
             "🔄 Connecting to APEX AI...";
@@ -278,13 +541,13 @@ async function loadLeagues() {
             await fetch(
                 APEX_GOOGLE_SHEETS_API,
                 {
-                    method: "GET",
-                    cache: "no-store"
+                    method:"GET",
+                    cache:"no-store"
                 }
             );
 
 
-        if (!response.ok) {
+        if(!response.ok){
 
             throw new Error(
                 "HTTP " + response.status
@@ -297,13 +560,13 @@ async function loadLeagues() {
             await response.json();
 
 
-        if (
+        if(
             !data ||
             !data.matchDatabase ||
             !Array.isArray(
                 data.matchDatabase.objects
             )
-        ) {
+        ){
 
             throw new Error(
                 "APEX Match Database was not returned."
@@ -316,168 +579,233 @@ async function loadLeagues() {
             data.matchDatabase.objects;
 
 
-        /*
-         * Same completed-prediction rule used
-         * by Predictions and Analysis.
-         */
+        /* =================================================
+           FIND COMPLETED PREDICTIONS
+           ================================================= */
 
         const completedMatches =
-            allMatches.filter(function(match) {
+            allMatches.filter(
+                function(match){
 
-                const prediction =
-                    getValue(
-                        match,
-                        [
-                            "Prediction",
-                            "prediction",
-                            "AI Prediction"
-                        ]
+                    const prediction =
+                        getValue(
+                            match,
+                            [
+                                "Prediction",
+                                "prediction",
+                                "AI Prediction"
+                            ]
+                        );
+
+
+                    const confidence =
+                        getValue(
+                            match,
+                            [
+                                "Confidence %",
+                                "Confidence",
+                                "confidence %",
+                                "Final Confidence"
+                            ]
+                        );
+
+
+                    const market =
+                        getValue(
+                            match,
+                            [
+                                "Recommended Market",
+                                "recommended market",
+                                "Market"
+                            ]
+                        );
+
+
+                    return(
+                        prediction !== "" ||
+                        confidence !== "" ||
+                        market !== ""
                     );
 
-                const confidence =
-                    getValue(
-                        match,
-                        [
-                            "Confidence %",
-                            "Confidence",
-                            "confidence %",
-                            "Final Confidence"
-                        ]
-                    );
-
-                const market =
-                    getValue(
-                        match,
-                        [
-                            "Recommended Market",
-                            "recommended market",
-                            "Market"
-                        ]
-                    );
-
-                return (
-                    prediction !== "" ||
-                    confidence !== "" ||
-                    market !== ""
-                );
-
-            });
+                }
+            );
 
 
-        /*
-         * Same final-display approach as the
-         * working Predictions page.
-         */
+        /* =================================================
+           FINAL 10
+           ================================================= */
 
         const final10 =
             completedMatches
                 .slice()
                 .reverse()
-                .slice(0, 10);
+                .slice(0,10);
 
+
+        /* =================================================
+           BUILD LEAGUE MAP
+           ================================================= */
 
         const leagueMap =
             new Map();
 
 
-        final10.forEach(function(match) {
+        final10.forEach(
+            function(match){
 
-            const league =
-                String(
-                    getValue(
-                        match,
-                        ["League", "league"]
-                    )
-                ).trim();
+                const league =
+                    String(
+                        getValue(
+                            match,
+                            [
+                                "League",
+                                "league"
+                            ]
+                        )
+                    ).trim();
 
 
-            if (!league) {
-                return;
+                if(!league){
+
+                    return;
+
+                }
+
+
+                if(!leagueMap.has(league)){
+
+                    leagueMap.set(
+                        league,
+                        {
+                            name:league,
+                            matches:0,
+                            teams:new Set()
+                        }
+                    );
+
+                }
+
+
+                const leagueData =
+                    leagueMap.get(league);
+
+
+                leagueData.matches++;
+
+
+                const home =
+                    String(
+                        getValue(
+                            match,
+                            [
+                                "Home Team",
+                                "HomeTeam",
+                                "Home"
+                            ]
+                        )
+                    ).trim();
+
+
+                const away =
+                    String(
+                        getValue(
+                            match,
+                            [
+                                "Away Team",
+                                "AwayTeam",
+                                "Away"
+                            ]
+                        )
+                    ).trim();
+
+
+                if(home){
+
+                    leagueData.teams.add(home);
+
+                }
+
+
+                if(away){
+
+                    leagueData.teams.add(away);
+
+                }
+
             }
-
-
-            if (!leagueMap.has(league)) {
-
-                leagueMap.set(
-                    league,
-                    {
-                        name: league,
-                        matches: 0,
-                        teams: new Set()
-                    }
-                );
-
-            }
-
-
-            const leagueData =
-                leagueMap.get(league);
-
-
-            leagueData.matches++;
-
-
-            const home =
-                String(
-                    getValue(
-                        match,
-                        [
-                            "Home Team",
-                            "HomeTeam",
-                            "Home"
-                        ]
-                    )
-                ).trim();
-
-
-            const away =
-                String(
-                    getValue(
-                        match,
-                        [
-                            "Away Team",
-                            "AwayTeam",
-                            "Away"
-                        ]
-                    )
-                ).trim();
-
-
-            if (home) {
-
-                leagueData.teams.add(home);
-
-            }
-
-
-            if (away) {
-
-                leagueData.teams.add(away);
-
-            }
-
-        });
+        );
 
 
         const leagues =
             Array.from(
                 leagueMap.values()
-            ).sort(function(a, b) {
+            )
+            .sort(
+                function(a,b){
 
-                return a.name.localeCompare(
-                    b.name
-                );
+                    return a.name.localeCompare(
+                        b.name
+                    );
 
-            });
+                }
+            );
+
+
+        /* =================================================
+           SUMMARY VALUES
+           ================================================= */
+
+        const totalMatches =
+            final10.length;
+
+
+        const totalLeagues =
+            leagues.length;
+
+
+        const totalTeams =
+            new Set(
+                final10.flatMap(
+                    function(match){
+
+                        return [
+
+                            String(
+                                getValue(
+                                    match,
+                                    [
+                                        "Home Team",
+                                        "HomeTeam",
+                                        "Home"
+                                    ]
+                                )
+                            ).trim(),
+
+                            String(
+                                getValue(
+                                    match,
+                                    [
+                                        "Away Team",
+                                        "AwayTeam",
+                                        "Away"
+                                    ]
+                                )
+                            ).trim()
+
+                        ];
+
+                    }
+                )
+            );
 
 
         status.textContent =
             "✅ APEX AI Connected — " +
-            final10.length +
+            totalMatches +
             " selected matches";
 
 
-        if (!leagues.length) {
+        if(!leagues.length){
 
             container.innerHTML = `
 
@@ -501,63 +829,144 @@ async function loadLeagues() {
         }
 
 
+        /* =================================================
+           BUILD FINAL UI
+           ================================================= */
+
         let html = `
 
-            <div class="league-summary">
+            <div class="league-overview">
 
-                <h2>
-                    🏆 Selected Match Leagues
-                </h2>
+                <div class="overview-card">
 
-                <p>
-                    Showing league information for the
-                    <strong>
-                        ${final10.length}
-                    </strong>
-                    final APEX matches.
-                </p>
+                    <div class="overview-number">
+                        ${totalMatches}
+                    </div>
+
+                    <div class="overview-label">
+                        SELECTED MATCHES
+                    </div>
+
+                </div>
+
+
+                <div class="overview-card">
+
+                    <div class="overview-number">
+                        ${totalLeagues}
+                    </div>
+
+                    <div class="overview-label">
+                        LEAGUES
+                    </div>
+
+                </div>
+
+
+                <div class="overview-card">
+
+                    <div class="overview-number">
+                        ${totalTeams.size}
+                    </div>
+
+                    <div class="overview-label">
+                        TEAMS
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="league-panel">
+
+                <div class="league-panel-title">
+
+                    <span>🏆</span>
+
+                    <h2>
+                        Selected Leagues
+                    </h2>
+
+                </div>
+
+
+                <div class="league-panel-subtitle">
+
+                    Leagues represented across the
+                    final APEX AI selections.
+
+                </div>
+
 
                 <div class="league-grid">
 
         `;
 
 
-        leagues.forEach(function(league, index) {
+        /* =================================================
+           LEAGUE CARDS
+           ================================================= */
 
-            html += `
+        leagues.forEach(
+            function(league,index){
 
-                <div class="league-card">
+                html += `
 
-                    <div class="league-number">
-                        LEAGUE ${index + 1}
+                    <div class="league-card">
+
+                        <div class="league-number">
+
+                            LEAGUE ${index + 1}
+
+                        </div>
+
+
+                        <div class="league-name">
+
+                            🏆
+                            ${escapeHTML(
+                                league.name
+                            )}
+
+                        </div>
+
+
+                        <div class="league-stat-row">
+
+                            <span>
+                                Selected matches
+                            </span>
+
+                            <span class="league-stat-value green">
+
+                                ${league.matches}
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="league-stat-row">
+
+                            <span>
+                                Teams represented
+                            </span>
+
+                            <span class="league-stat-value">
+
+                                ${league.teams.size}
+
+                            </span>
+
+                        </div>
+
                     </div>
 
-                    <h3>
-                        🏆 ${escapeHTML(league.name)}
-                    </h3>
+                `;
 
-                    <div class="league-count">
-                        Matches selected:
-                        <strong>
-                            ${league.matches}
-                        </strong>
-                    </div>
-
-                    <div class="league-count"
-                         style="margin-top:6px;">
-
-                        Teams represented:
-                        <strong>
-                            ${league.teams.size}
-                        </strong>
-
-                    </div>
-
-                </div>
-
-            `;
-
-        });
+            }
+        );
 
 
         html += `
@@ -573,7 +982,7 @@ async function loadLeagues() {
             html;
 
 
-    } catch (error) {
+    }catch(error){
 
         console.error(
             "APEX Leagues Error:",
@@ -594,7 +1003,9 @@ async function loadLeagues() {
                 </h2>
 
                 <p>
-                    ${escapeHTML(error.message)}
+                    ${escapeHTML(
+                        error.message
+                    )}
                 </p>
 
             </div>
@@ -606,12 +1017,21 @@ async function loadLeagues() {
 }
 
 
-function go(page) {
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
 
-    window.location.href = page;
+function go(page){
+
+    window.location.href =
+        page;
 
 }
 
+
+/* =========================================================
+   START
+   ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -619,6 +1039,7 @@ document.addEventListener(
 );
 
 </script>
+
 
 </body>
 
