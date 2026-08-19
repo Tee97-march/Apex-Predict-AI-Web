@@ -6,46 +6,798 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Settings</title>
+<title>APEX Predict AI - Settings</title>
 
 <link rel="stylesheet" href="styles.css">
-<script src="script.js"></script>
+
+<style>
+
+:root{
+    --bg:#071321;
+    --panel:#0d1c2d;
+    --panel2:#10243a;
+    --border:rgba(255,255,255,.08);
+    --text:#ffffff;
+    --muted:#9eacba;
+    --green:#00d66b;
+    --green-dark:#00a950;
+    --blue:#2f7cff;
+    --yellow:#ffbf22;
+    --red:#ff4d5f;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(0,214,107,.10),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at top right,
+            rgba(47,124,255,.10),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            #050d17,
+            #071321 50%,
+            #0a1828
+        );
+
+    color:var(--text);
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+}
+
+.app{
+    width:100%;
+    max-width:900px;
+    margin:0 auto;
+    padding:14px;
+}
+
+.topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:18px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:11px;
+}
+
+.brand-icon{
+    width:46px;
+    height:46px;
+    border-radius:13px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:
+        linear-gradient(
+            145deg,
+            #19354e,
+            #0a1828
+        );
+
+    border:1px solid rgba(0,214,107,.22);
+
+    font-size:24px;
+}
+
+.brand-title{
+    margin:0;
+    font-size:21px;
+    font-weight:800;
+}
+
+.brand-title span{
+    color:var(--green);
+}
+
+.brand-subtitle{
+    color:var(--muted);
+    font-size:11px;
+    margin-top:2px;
+}
+
+.page-badge{
+    padding:7px 10px;
+    border-radius:999px;
+
+    background:rgba(47,124,255,.08);
+    border:1px solid rgba(47,124,255,.18);
+
+    color:#a9c7ff;
+    font-size:10px;
+    font-weight:800;
+}
+
+.status{
+    padding:12px 14px;
+    margin-bottom:15px;
+
+    border-radius:13px;
+
+    background:rgba(255,255,255,.035);
+    border:1px solid var(--border);
+
+    color:#a9f0c2;
+
+    text-align:center;
+    font-size:12px;
+    font-weight:700;
+}
+
+.panel{
+    background:
+        linear-gradient(
+            145deg,
+            rgba(13,28,45,.98),
+            rgba(8,20,34,.98)
+        );
+
+    border:1px solid var(--border);
+    border-radius:20px;
+
+    padding:18px;
+
+    margin-bottom:15px;
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.24);
+}
+
+.panel-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    color:#ffffff;
+    font-size:18px;
+    font-weight:800;
+
+    margin-bottom:14px;
+}
+
+.panel-subtitle{
+    color:#8998a8;
+    font-size:12px;
+    margin-bottom:16px;
+}
+
+.setting-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:14px;
+
+    padding:14px 0;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.06);
+}
+
+.setting-row:last-child{
+    border-bottom:none;
+}
+
+.setting-name{
+    color:#ffffff;
+    font-size:13px;
+    font-weight:700;
+}
+
+.setting-description{
+    color:#7e8d9d;
+    font-size:10px;
+    margin-top:4px;
+    line-height:1.4;
+}
+
+.setting-value{
+    color:#aebccb;
+    font-size:12px;
+    text-align:right;
+    word-break:break-word;
+}
+
+.info-card{
+    background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,255,255,.06);
+
+    border-radius:13px;
+
+    padding:14px;
+    margin-top:10px;
+}
+
+.info-label{
+    color:#778797;
+    font-size:10px;
+    font-weight:700;
+    margin-bottom:5px;
+}
+
+.info-value{
+    color:#ffffff;
+    font-size:13px;
+    font-weight:700;
+}
+
+.green{
+    color:#7ef0ad;
+}
+
+.blue{
+    color:#a9c7ff;
+}
+
+.yellow{
+    color:#ffd66d;
+}
+
+.navigation{
+    display:grid;
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:9px;
+
+    margin-top:18px;
+    padding-bottom:25px;
+}
+
+.navigation button{
+    min-height:48px;
+
+    border:1px solid var(--border);
+    border-radius:12px;
+
+    background:#0d1c2d;
+    color:#e8edf3;
+
+    font-size:11px;
+    font-weight:700;
+}
+
+.navigation button:hover{
+    border-color:rgba(0,214,107,.35);
+}
+
+.danger{
+    border-color:rgba(255,77,95,.18) !important;
+    color:#ff9aa4 !important;
+}
+
+@media(max-width:650px){
+
+    .app{
+        padding:10px;
+    }
+
+    .page-badge{
+        display:none;
+    }
+
+    .navigation{
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+}
+
+</style>
 
 </head>
 
+
 <body>
 
-<div class="container">
+<div class="app">
 
-<h1>⚙ Settings</h1>
 
-<p>Manage your Apex Predict AI account</p>
+    <!-- =================================================
+         TOP BAR
+         ================================================= -->
 
-<div id="settingsContainer">
+    <div class="topbar">
 
-<p>Loading settings...</p>
+        <div class="brand">
+
+            <div class="brand-icon">
+                ⚽
+            </div>
+
+            <div>
+
+                <h1 class="brand-title">
+                    APEX <span>PREDICT AI</span>
+                </h1>
+
+                <div class="brand-subtitle">
+                    Professional Football Intelligence
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="page-badge">
+            SETTINGS
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         STATUS
+         ================================================= -->
+
+    <div
+        id="settingsStatus"
+        class="status"
+    >
+        ✅ APEX Predict AI is ready
+    </div>
+
+
+    <!-- =================================================
+         ACCOUNT / APP
+         ================================================= -->
+
+    <div class="panel">
+
+        <div class="panel-title">
+            ⚙️ Application Settings
+        </div>
+
+        <div class="panel-subtitle">
+            Current APEX Predict AI configuration.
+        </div>
+
+
+        <div class="setting-row">
+
+            <div>
+
+                <div class="setting-name">
+                    Application
+                </div>
+
+                <div class="setting-description">
+                    Active APEX platform
+                </div>
+
+            </div>
+
+            <div class="setting-value blue">
+                APEX Predict AI
+            </div>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <div>
+
+                <div class="setting-name">
+                    Version
+                </div>
+
+                <div class="setting-description">
+                    Current application version
+                </div>
+
+            </div>
+
+            <div class="setting-value">
+                2.1 XL
+            </div>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <div>
+
+                <div class="setting-name">
+                    Prediction Mode
+                </div>
+
+                <div class="setting-description">
+                    APEX AI final selection workflow
+                </div>
+
+            </div>
+
+            <div class="setting-value green">
+                ACTIVE
+            </div>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <div>
+
+                <div class="setting-name">
+                    Smart Selection
+                </div>
+
+                <div class="setting-description">
+                    Maximum final selections
+                </div>
+
+            </div>
+
+            <div class="setting-value green">
+                10 MATCHES
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         DATA SYSTEM
+         ================================================= -->
+
+    <div class="panel">
+
+        <div class="panel-title">
+            🧠 APEX AI System
+        </div>
+
+        <div class="panel-subtitle">
+            Current production data flow.
+        </div>
+
+
+        <div class="info-card">
+
+            <div class="info-label">
+                FIXTURE SOURCE
+            </div>
+
+            <div class="info-value green">
+                API-Football
+            </div>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <div class="info-label">
+                DATA STORAGE
+            </div>
+
+            <div class="info-value">
+                Google Sheets
+            </div>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <div class="info-label">
+                AI ENGINE
+            </div>
+
+            <div class="info-value green">
+                APEX AI ENGINE
+            </div>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <div class="info-label">
+                SELECTION
+            </div>
+
+            <div class="info-value green">
+                SMART GATE
+            </div>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <div class="info-label">
+                WEB OUTPUT
+            </div>
+
+            <div class="info-value">
+                APEX Predict AI Web App
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         PRODUCTION WORKFLOW
+         ================================================= -->
+
+    <div class="panel">
+
+        <div class="panel-title">
+            🔄 Daily Workflow
+        </div>
+
+        <div class="panel-subtitle">
+            The production sequence used by APEX.
+        </div>
+
+
+        <div class="setting-row">
+
+            <div>
+
+                <div class="setting-name">
+                    01. Import Fixtures
+                </div>
+
+            </div>
+
+            <div class="setting-value green">
+                READY
+            </div>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <div>
+
+                <div class="setting-name">
+                    02. Calculate Predictions
+                </div>
+
+            </div>
+
+            <div class="setting-value green">
+                READY
+            </div>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <div>
+
+                <div class="setting-name">
+                    03. Smart Gate
+                </div>
+
+            </div>
+
+            <div class="setting-value green">
+                ACTIVE
+            </div>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <div>
+
+                <div class="setting-name">
+                    04. APEX AI Engine
+                </div>
+
+            </div>
+
+            <div class="setting-value green">
+                ACTIVE
+            </div>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <div>
+
+                <div class="setting-name">
+                    05. Web App
+                </div>
+
+            </div>
+
+            <div class="setting-value green">
+                ONLINE
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         ACCOUNT
+         ================================================= -->
+
+    <div class="panel">
+
+        <div class="panel-title">
+            👤 Account
+        </div>
+
+        <div class="panel-subtitle">
+            Account controls.
+        </div>
+
+
+        <div class="setting-row">
+
+            <div>
+
+                <div class="setting-name">
+                    Session
+                </div>
+
+                <div class="setting-description">
+                    Current browser session
+                </div>
+
+            </div>
+
+            <div class="setting-value green">
+                ACTIVE
+            </div>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <div>
+
+                <div class="setting-name">
+                    Password Recovery
+                </div>
+
+                <div class="setting-description">
+                    Recovery option
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                onclick="showPasswordMessage()"
+            >
+                VIEW
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         NAVIGATION
+         ================================================= -->
+
+    <div class="navigation">
+
+        <button onclick="go('dashboard.html')">
+            🏠 Dashboard
+        </button>
+
+        <button onclick="go('predictions.html')">
+            🤖 Predictions
+        </button>
+
+        <button onclick="go('analysis.html')">
+            📊 Analysis
+        </button>
+
+        <button onclick="go('statistics.html')">
+            📈 Statistics
+        </button>
+
+        <button onclick="go('livescores.html')">
+            ⚽ Live Scores
+        </button>
+
+        <button onclick="go('leagues.html')">
+            🏆 Leagues
+        </button>
+
+        <button onclick="go('headtohead.html')">
+            ⚔ Head To Head
+        </button>
+
+        <button
+            class="danger"
+            onclick="logout()"
+        >
+            🚪 Logout
+        </button>
+
+    </div>
 
 </div>
 
-<br>
 
-<button onclick="openDashboard()">🏠 Dashboard</button>
+<script>
 
-<button onclick="openPredictions()">🤖 Predictions</button>
+/* =====================================================
+   NAVIGATION
+   ===================================================== */
 
-<button onclick="openAnalysis()">📊 Analysis</button>
+function go(page){
 
-<button onclick="openStatistics()">📈 Statistics</button>
+    window.location.href =
+        page;
 
-<button onclick="openLiveScores()">⚽ Live Scores</button>
+}
 
-<button onclick="openLeagues()">🏆 Leagues</button>
 
-<button onclick="openHeadToHead()">⚔ Head To Head</button>
+/* =====================================================
+   LOGOUT
+   ===================================================== */
 
-<button onclick="logout()">🚪 Logout</button>
+function logout(){
 
-</div>
+    window.location.href =
+        "index.html";
+
+}
+
+
+/* =====================================================
+   PASSWORD MESSAGE
+   ===================================================== */
+
+function showPasswordMessage(){
+
+    alert(
+        "Password recovery will be available in a future APEX Predict AI update."
+    );
+
+}
+
+</script>
+
 
 </body>
 
