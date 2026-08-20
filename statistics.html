@@ -4,9 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>APEX Predict AI - Statistics</title>
 
@@ -14,207 +12,539 @@
 
 <style>
 
-body {
-    margin: 0;
+:root{
+    --bg:#071321;
+    --panel:#0d1c2d;
+    --panel2:#10243a;
+    --border:rgba(255,255,255,.08);
+    --text:#ffffff;
+    --muted:#9eacba;
+    --green:#00d66b;
+    --green-dark:#00a950;
+    --blue:#2f7cff;
+    --purple:#9b45ff;
+    --yellow:#ffbf22;
+    --red:#ff4d5f;
 }
 
-.statistics-header {
-    text-align: center;
-    margin-bottom: 20px;
+*{
+    box-sizing:border-box;
 }
 
-.statistics-header h1 {
-    margin-bottom: 8px;
+body{
+    margin:0;
+    min-height:100vh;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(0,214,107,.10),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at top right,
+            rgba(47,124,255,.10),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            #050d17,
+            #071321 50%,
+            #0a1828
+        );
+
+    color:var(--text);
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
 }
 
-.statistics-header p {
-    color: #cfd8e3;
+.app{
+    width:100%;
+    max-width:1100px;
+    margin:0 auto;
+    padding:14px;
 }
 
-#connectionStatus {
-    text-align: center;
-    padding: 14px;
-    margin: 15px 0;
-    border-radius: 14px;
-    font-weight: bold;
+.topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:16px;
 }
 
-.loading-box {
-    background: rgba(255,255,255,.08);
-    color: #ffd54f;
-    padding: 25px;
-    border-radius: 16px;
-    text-align: center;
+.brand{
+    display:flex;
+    align-items:center;
+    gap:11px;
 }
 
-.error-box {
-    background: #3a1515;
-    color: #ffb4ab;
-    padding: 25px;
-    border-radius: 16px;
-    text-align: center;
+.brand-icon{
+    width:46px;
+    height:46px;
+    border-radius:13px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:
+        linear-gradient(
+            145deg,
+            #19354e,
+            #0a1828
+        );
+
+    border:1px solid rgba(0,214,107,.22);
+
+    font-size:24px;
 }
 
-.summary {
-    background: #ffffff;
-    color: #111;
-    padding: 22px;
-    border-radius: 18px;
-    margin-top: 20px;
-    box-shadow: 0 12px 35px rgba(0,0,0,.25);
+.brand-title{
+    margin:0;
+    font-size:21px;
+    font-weight:800;
 }
 
-.summary h2 {
-    color: #061326;
-    margin-top: 0;
+.brand-title span{
+    color:var(--green);
 }
 
-.summary p {
-    color: #333;
+.brand-subtitle{
+    color:var(--muted);
+    font-size:11px;
+    margin-top:2px;
 }
 
-.stats-grid {
-    display: grid;
+.page-badge{
+    padding:7px 10px;
+    border-radius:999px;
+
+    background:rgba(47,124,255,.08);
+    border:1px solid rgba(47,124,255,.18);
+
+    color:#a9c7ff;
+    font-size:10px;
+    font-weight:800;
+}
+
+.status{
+    padding:12px 14px;
+    margin-bottom:15px;
+
+    border-radius:13px;
+
+    background:rgba(255,255,255,.035);
+    border:1px solid var(--border);
+
+    color:#a9f0c2;
+
+    text-align:center;
+    font-size:12px;
+    font-weight:700;
+}
+
+.hero{
+    background:
+        linear-gradient(
+            145deg,
+            rgba(13,28,45,.98),
+            rgba(8,20,34,.98)
+        );
+
+    border:1px solid var(--border);
+    border-radius:20px;
+
+    padding:20px;
+
+    margin-bottom:15px;
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.24);
+}
+
+.hero-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+}
+
+.hero h1{
+    margin:0 0 7px;
+    font-size:24px;
+}
+
+.hero p{
+    margin:0;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.5;
+}
+
+.hero-number{
+    color:var(--green);
+    font-size:36px;
+    font-weight:900;
+    line-height:1;
+}
+
+.hero-label{
+    color:#7d8b9a;
+    font-size:10px;
+    text-align:right;
+    margin-top:5px;
+}
+
+.stat-grid{
+    display:grid;
     grid-template-columns:
-        repeat(auto-fit, minmax(160px, 1fr));
-    gap: 12px;
-    margin-top: 18px;
+        repeat(4,1fr);
+    gap:12px;
+    margin-bottom:15px;
 }
 
-.stat-card {
-    background: #f5f7fa;
-    border: 1px solid #e1e5ea;
-    border-radius: 14px;
-    padding: 16px;
+.stat-card{
+    background:
+        linear-gradient(
+            145deg,
+            rgba(16,36,58,.97),
+            rgba(8,20,34,.97)
+        );
+
+    border:1px solid var(--border);
+    border-radius:16px;
+
+    padding:16px;
+
+    min-height:108px;
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.20);
+
+    position:relative;
+    overflow:hidden;
 }
 
-.stat-title {
-    color: #555;
-    font-size: 14px;
-    font-weight: bold;
+.stat-card::after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:3px;
+    background:var(--green);
 }
 
-.stat-value {
-    color: #061326;
-    font-size: 23px;
-    font-weight: bold;
-    margin-top: 8px;
+.stat-card.blue::after{
+    background:var(--blue);
 }
 
-.matches-box {
-    background: #ffffff;
-    color: #111;
-    padding: 22px;
-    border-radius: 18px;
-    margin-top: 20px;
-    box-shadow: 0 12px 35px rgba(0,0,0,.25);
+.stat-card.purple::after{
+    background:var(--purple);
 }
 
-.matches-box h2 {
-    color: #061326;
-    margin-top: 0;
+.stat-card.yellow::after{
+    background:var(--yellow);
 }
 
-.match-card {
-    background: #f7f8fa;
-    border: 1px solid #e1e5ea;
-    border-radius: 15px;
-    padding: 18px;
-    margin-top: 15px;
+.stat-label{
+    color:#8e9dab;
+    font-size:11px;
+    font-weight:700;
+    margin-bottom:10px;
 }
 
-.match-number {
-    color: #777;
-    font-size: 14px;
-    font-weight: bold;
+.stat-value{
+    color:#fff;
+    font-size:25px;
+    font-weight:900;
 }
 
-.teams {
-    color: #061326;
-    font-size: 20px;
-    font-weight: bold;
-    margin: 8px 0 12px;
+.stat-note{
+    color:#6f7f90;
+    font-size:10px;
+    margin-top:7px;
 }
 
-.detail-grid {
-    display: grid;
+.content-grid{
+    display:grid;
     grid-template-columns:
-        repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px;
+        1fr 1fr;
+    gap:15px;
+    margin-bottom:15px;
 }
 
-.detail {
-    background: #ffffff;
-    border: 1px solid #e5e5e5;
-    border-radius: 10px;
-    padding: 12px;
+.panel{
+    background:
+        linear-gradient(
+            145deg,
+            rgba(13,28,45,.98),
+            rgba(8,20,34,.98)
+        );
+
+    border:1px solid var(--border);
+    border-radius:19px;
+
+    padding:18px;
+
+    box-shadow:
+        0 14px 32px rgba(0,0,0,.23);
 }
 
-.detail strong {
-    display: block;
-    color: #555;
-    font-size: 13px;
-    margin-bottom: 5px;
+.panel-title{
+    font-size:18px;
+    font-weight:800;
+    margin-bottom:13px;
 }
 
-.detail span {
-    color: #111;
-    font-size: 16px;
-    word-break: break-word;
+.panel-subtitle{
+    color:#7f8d9d;
+    font-size:11px;
+    margin-top:-7px;
+    margin-bottom:14px;
 }
 
-.prediction {
-    background: #e8f7eb;
-    border-left: 5px solid #00c853;
+.metric-line{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+
+    padding:11px 0;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.06);
 }
 
-.confidence {
-    background: #eef4ff;
+.metric-line:last-child{
+    border-bottom:none;
 }
 
-.risk-low {
-    background: #e8f7eb;
-    border-left: 5px solid #00c853;
+.metric-name{
+    color:#bcc8d4;
+    font-size:12px;
 }
 
-.risk-medium {
-    background: #fff8e1;
-    border-left: 5px solid #ffb300;
+.metric-value{
+    color:var(--green);
+    font-size:14px;
+    font-weight:800;
+    text-align:right;
 }
 
-.risk-high {
-    background: #ffebee;
-    border-left: 5px solid #e53935;
+.progress{
+    height:8px;
+    background:#132437;
+    border-radius:999px;
+    overflow:hidden;
+    margin-top:12px;
 }
 
-.navigation {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 25px;
-    padding-bottom: 30px;
+.progress-bar{
+    height:100%;
+    border-radius:999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--green-dark),
+            var(--green)
+        );
 }
 
-.navigation button {
-    margin-top: 0;
+.match-panel{
+    background:
+        linear-gradient(
+            145deg,
+            rgba(13,28,45,.98),
+            rgba(8,20,34,.98)
+        );
+
+    border:1px solid var(--border);
+    border-radius:19px;
+
+    padding:18px;
+
+    box-shadow:
+        0 14px 32px rgba(0,0,0,.23);
 }
 
-@media(max-width:600px) {
+.match-list{
+    display:flex;
+    flex-direction:column;
+    gap:11px;
+}
 
-    .stats-grid {
-        grid-template-columns: 1fr 1fr;
+.match-row{
+    display:grid;
+    grid-template-columns:
+        1.6fr .8fr .85fr;
+    gap:10px;
+    align-items:center;
+
+    padding:13px;
+
+    background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,255,255,.055);
+
+    border-radius:13px;
+}
+
+.match-teams{
+    color:#fff;
+    font-size:12px;
+    font-weight:800;
+}
+
+.match-league{
+    color:#748393;
+    font-size:9px;
+    margin-top:4px;
+}
+
+.match-prediction{
+    color:#cbd7e2;
+    font-size:11px;
+}
+
+.match-confidence{
+    color:var(--green);
+    font-size:15px;
+    font-weight:900;
+    text-align:right;
+}
+
+.navigation{
+    display:grid;
+    grid-template-columns:
+        repeat(4,1fr);
+    gap:9px;
+
+    margin-top:18px;
+    padding-bottom:25px;
+}
+
+.navigation button{
+    min-height:48px;
+
+    border:1px solid var(--border);
+    border-radius:12px;
+
+    background:#0d1c2d;
+    color:#e8edf3;
+
+    font-size:11px;
+    font-weight:700;
+}
+
+.navigation button:hover{
+    border-color:rgba(0,214,107,.35);
+}
+
+.empty,
+.error{
+    padding:25px;
+    border-radius:17px;
+    text-align:center;
+}
+
+.empty{
+    background:#0d1c2d;
+    border:1px solid var(--border);
+    color:#b9c6d3;
+}
+
+.error{
+    background:#3a1515;
+    color:#ffb4ab;
+}
+
+@media(max-width:900px){
+
+    .stat-grid{
+        grid-template-columns:
+            repeat(2,1fr);
     }
 
-    .teams {
-        font-size: 18px;
+    .content-grid{
+        grid-template-columns:1fr;
+    }
+
+    .match-row{
+        grid-template-columns:
+            1fr .8fr;
+    }
+
+    .match-confidence{
+        text-align:left;
     }
 
 }
 
-@media(max-width:380px) {
+@media(max-width:600px){
 
-    .stats-grid {
-        grid-template-columns: 1fr;
+    .app{
+        padding:10px;
+    }
+
+    .page-badge{
+        display:none;
+    }
+
+    .hero-top{
+        align-items:flex-start;
+    }
+
+    .hero h1{
+        font-size:21px;
+    }
+
+    .hero-number{
+        font-size:30px;
+    }
+
+    .stat-grid{
+        grid-template-columns:
+            1fr 1fr;
+        gap:9px;
+    }
+
+    .stat-card{
+        min-height:98px;
+        padding:13px;
+    }
+
+    .stat-value{
+        font-size:22px;
+    }
+
+    .match-row{
+        grid-template-columns:1fr;
+    }
+
+    .match-confidence{
+        text-align:left;
+    }
+
+    .navigation{
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+}
+
+@media(max-width:370px){
+
+    .stat-grid{
+        grid-template-columns:1fr;
     }
 
 }
@@ -226,39 +556,169 @@ body {
 
 <body>
 
+<div class="app">
 
-<div class="container">
+    <!-- TOP BAR -->
+
+    <div class="topbar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                ⚽
+            </div>
+
+            <div>
+
+                <h1 class="brand-title">
+                    APEX <span>PREDICT AI</span>
+                </h1>
+
+                <div class="brand-subtitle">
+                    Professional Football Intelligence
+                </div>
+
+            </div>
+
+        </div>
 
 
-    <!-- HEADER -->
-
-    <div class="statistics-header">
-
-        <h1>📈 AI Statistics</h1>
-
-        <p>
-            Statistics generated from APEX Predict AI
-        </p>
+        <div class="page-badge">
+            STATISTICS
+        </div>
 
     </div>
 
 
-    <!-- CONNECTION STATUS -->
+    <!-- STATUS -->
 
-    <div id="connectionStatus">
-
+    <div
+        id="connectionStatus"
+        class="status"
+    >
         🔄 Connecting to APEX AI...
+    </div>
+
+
+    <!-- HERO -->
+
+    <div id="heroContainer">
+
+        <div class="hero">
+
+            <div class="hero-top">
+
+                <div>
+
+                    <h1>
+                        📈 AI Statistics
+                    </h1>
+
+                    <p>
+                        Statistical overview of the
+                        final APEX AI selections.
+                    </p>
+
+                </div>
+
+                <div style="text-align:right;">
+
+                    <div class="hero-number">
+                        —
+                    </div>
+
+                    <div class="hero-label">
+                        SELECTED
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 
 
-    <!-- MAIN OUTPUT -->
+    <!-- STAT CARDS -->
 
-    <div id="statisticsContainer">
+    <div id="statCards"
+         class="stat-grid">
 
-        <div class="loading-box">
+        <div class="stat-card">
+            <div class="stat-label">
+                Average Confidence
+            </div>
+            <div class="stat-value">—</div>
+        </div>
 
-            🔄 Loading the final 10 selected matches...
+    </div>
+
+
+    <!-- ANALYTICS -->
+
+    <div class="content-grid">
+
+        <div class="panel">
+
+            <div class="panel-title">
+                🎯 Confidence Overview
+            </div>
+
+            <div class="panel-subtitle">
+                Overall confidence across the selected matches.
+            </div>
+
+            <div
+                id="confidencePanel"
+            >
+                Loading...
+            </div>
+
+        </div>
+
+
+        <div class="panel">
+
+            <div class="panel-title">
+                📊 Market & Risk Profile
+            </div>
+
+            <div class="panel-subtitle">
+                Distribution of the current APEX selections.
+            </div>
+
+            <div
+                id="riskPanel"
+            >
+                Loading...
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MATCH STATISTICS -->
+
+    <div class="match-panel">
+
+        <div class="panel-title">
+            ⚽ Match Statistics
+        </div>
+
+        <div class="panel-subtitle">
+            Metrics from the final APEX-selected matches.
+        </div>
+
+        <div
+            id="matchList"
+            class="match-list"
+        >
+
+            <div class="empty">
+                🔄 Loading match statistics...
+            </div>
 
         </div>
 
@@ -289,7 +749,7 @@ body {
             🏆 Leagues
         </button>
 
-        <button onclick="go('head2head.html')">
+        <button onclick="go('headtohead.html')">
             ⚔ Head To Head
         </button>
 
@@ -297,8 +757,11 @@ body {
             ⚙ Settings
         </button>
 
-    </div>
+        <button onclick="go('index.html')">
+            🚪 Logout
+        </button>
 
+    </div>
 
 </div>
 
@@ -308,79 +771,41 @@ body {
 "use strict";
 
 
-/* =====================================================
-   APEX PREDICT AI
-   STATISTICS ENGINE
-   ===================================================== */
-
-
-const GOOGLE_SHEETS_API =
+const APEX_GOOGLE_SHEETS_API =
 "https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
 
 
-const statusElement =
-document.getElementById("connectionStatus");
+function getValue(match,names){
 
-
-const container =
-document.getElementById("statisticsContainer");
-
-
-/* =====================================================
-   NAVIGATION
-   ===================================================== */
-
-function go(page) {
-
-    window.location.href = page;
-
-}
-
-
-/* =====================================================
-   SAFE VALUE
-   ===================================================== */
-
-function value(match, names) {
-
-    if (!match || typeof match !== "object") {
-
-        return "";
-
-    }
-
-
-    for (const wanted of names) {
-
-        const wantedLower =
-            String(wanted)
-                .trim()
-                .toLowerCase();
-
+    for(const wanted of names){
 
         const key =
-            Object.keys(match).find(function(k) {
+            Object.keys(match).find(
+                function(existingKey){
 
-                return String(k)
-                    .trim()
-                    .toLowerCase()
-                    === wantedLower;
+                    return existingKey
+                        .trim()
+                        .toLowerCase()
+                        ===
+                        wanted
+                            .trim()
+                            .toLowerCase();
 
-            });
+                }
+            );
 
+        if(key !== undefined){
 
-        if (key !== undefined) {
+            const value =
+                match[key];
 
-            const v = match[key];
+            if(
+                value !== null &&
+                value !== undefined &&
+                String(value).trim() !== ""
+            ){
 
-
-            if (
-                v !== null &&
-                v !== undefined &&
-                String(v).trim() !== ""
-            ) {
-
-                return v;
+                return value;
 
             }
 
@@ -388,186 +813,101 @@ function value(match, names) {
 
     }
 
-
     return "";
 
 }
 
 
-/* =====================================================
-   SAFE HTML
-   ===================================================== */
+function safe(value){
 
-function safe(input) {
-
-    if (
-        input === null ||
-        input === undefined
-    ) {
-
+    if(value === null || value === undefined){
         return "";
-
     }
 
-
-    return String(input)
-
-        .replace(/&/g, "&amp;")
-
-        .replace(/</g, "&lt;")
-
-        .replace(/>/g, "&gt;")
-
-        .replace(/"/g, "&quot;")
-
-        .replace(/'/g, "&#039;");
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 
 }
 
 
-/* =====================================================
-   NUMBER
-   ===================================================== */
+function numberValue(value){
 
-function number(input) {
-
-    if (
-        input === null ||
-        input === undefined ||
-        input === ""
-    ) {
+    if(
+        value === null ||
+        value === undefined ||
+        value === ""
+    ){
 
         return null;
 
     }
 
+    const number =
+        parseFloat(
+            String(value)
+                .replace("%","")
+                .replace(",","")
+                .trim()
+        );
 
-    const cleaned =
-        String(input)
-            .replace("%", "")
-            .replace(",", "")
-            .trim();
-
-
-    const n =
-        parseFloat(cleaned);
-
-
-    return Number.isFinite(n)
-        ? n
+    return Number.isFinite(number)
+        ? number
         : null;
 
 }
 
 
-/* =====================================================
-   AVERAGE
-   ===================================================== */
+function average(values){
 
-function average(values) {
-
-    const valid =
-        values.filter(function(v) {
-
-            return Number.isFinite(v);
-
-        });
-
-
-    if (!valid.length) {
-
-        return "—";
-
+    if(!values.length){
+        return null;
     }
-
 
     const total =
-        valid.reduce(function(a, b) {
+        values.reduce(
+            function(sum,value){
+                return sum + value;
+            },
+            0
+        );
 
-            return a + b;
-
-        }, 0);
-
-
-    return (
-        total / valid.length
-    ).toFixed(1);
+    return total / values.length;
 
 }
 
 
-/* =====================================================
-   RISK CLASS
-   ===================================================== */
+async function loadStatistics(){
 
-function riskClass(risk) {
-
-    const r =
-        String(risk)
-            .toLowerCase()
-            .trim();
+    const status =
+        document.getElementById(
+            "connectionStatus"
+        );
 
 
-    if (r === "low") {
+    try{
 
-        return "risk-low";
-
-    }
-
-
-    if (
-        r === "medium" ||
-        r === "moderate"
-    ) {
-
-        return "risk-medium";
-
-    }
-
-
-    if (r === "high") {
-
-        return "risk-high";
-
-    }
-
-
-    return "";
-
-}
-
-
-/* =====================================================
-   LOAD STATISTICS
-   ===================================================== */
-
-async function loadStatistics() {
-
-    try {
-
-        statusElement.textContent =
+        status.textContent =
             "🔄 Connecting to APEX AI...";
 
 
         const response =
             await fetch(
-
-                GOOGLE_SHEETS_API +
-                "?page=statistics&final10=true",
-
+                APEX_GOOGLE_SHEETS_API,
                 {
-                    method: "GET",
-                    cache: "no-store"
+                    method:"GET",
+                    cache:"no-store"
                 }
-
             );
 
 
-        if (!response.ok) {
+        if(!response.ok){
 
             throw new Error(
-                "Connection returned HTTP " +
-                response.status
+                "HTTP " + response.status
             );
 
         }
@@ -577,25 +917,16 @@ async function loadStatistics() {
             await response.json();
 
 
-        console.log(
-            "APEX Statistics Data:",
-            data
-        );
-
-
-        /* =================================================
-           CHECK MATCH DATABASE
-           ================================================= */
-
-        if (
+        if(
+            !data ||
             !data.matchDatabase ||
             !Array.isArray(
                 data.matchDatabase.objects
             )
-        ) {
+        ){
 
             throw new Error(
-                "Match Database was not returned."
+                "APEX Match Database was not returned."
             );
 
         }
@@ -605,734 +936,772 @@ async function loadStatistics() {
             data.matchDatabase.objects;
 
 
-        if (!allMatches.length) {
+        /*
+         * Keep the exact working selection logic.
+         */
 
-            statusElement.textContent =
-                "⚠️ No APEX matches available.";
+        const completedMatches =
+            allMatches.filter(
+                function(match){
+
+                    const prediction =
+                        getValue(
+                            match,
+                            [
+                                "Prediction",
+                                "prediction",
+                                "AI Prediction"
+                            ]
+                        );
 
 
-            container.innerHTML = `
+                    const confidence =
+                        getValue(
+                            match,
+                            [
+                                "Confidence %",
+                                "Confidence",
+                                "confidence %",
+                                "Final Confidence"
+                            ]
+                        );
 
-                <div class="error-box">
 
-                    ⚽ No matches are currently
-                    available.
+                    const market =
+                        getValue(
+                            match,
+                            [
+                                "Recommended Market",
+                                "recommended market",
+                                "Market"
+                            ]
+                        );
 
-                </div>
 
-            `;
+                    return(
+                        prediction !== "" ||
+                        confidence !== "" ||
+                        market !== ""
+                    );
+
+                }
+            );
 
 
-            return;
+        const matches =
+            completedMatches
+                .slice()
+                .reverse()
+                .slice(0,10);
+
+
+        if(!matches.length){
+
+            throw new Error(
+                "No completed APEX selections are available."
+            );
 
         }
 
 
-        /* =================================================
-           FINAL 10
-           ================================================= */
-
-        const matches =
-            allMatches.slice(0, 10);
-
-
-        /* =================================================
-           METRICS
-           ================================================= */
-
-        const confidenceValues = [];
-
-        const oddsValues = [];
-
-        const homeAdvantageValues = [];
-
-        const oddsValueValues = [];
-
-
-        let lowRisk = 0;
-
-        let over15 = 0;
-
-        let over25 = 0;
-
-
-        matches.forEach(function(match) {
-
-
-            /* CONFIDENCE */
-
-            const confidence =
-                number(
-                    value(
-                        match,
-                        [
-                            "Confidence %",
-                            "Confidence"
-                        ]
-                    )
-                );
-
-
-            if (confidence !== null) {
-
-                confidenceValues.push(
-                    confidence
-                );
-
-            }
-
-
-            /* ODDS */
-
-            const odds =
-                number(
-                    value(
-                        match,
-                        [
-                            "Bookmaker Odds",
-                            "Odds"
-                        ]
-                    )
-                );
-
-
-            if (odds !== null) {
-
-                oddsValues.push(
-                    odds
-                );
-
-            }
-
-
-            /* HOME ADVANTAGE */
-
-            const homeAdvantage =
-                number(
-                    value(
-                        match,
-                        [
-                            "Home Advantage Score",
-                            "Home Advantage",
-                            "Home Advantage Rating"
-                        ]
-                    )
-                );
-
-
-            if (homeAdvantage !== null) {
-
-                homeAdvantageValues.push(
-                    homeAdvantage
-                );
-
-            }
-
-
-            /* ODDS VALUE */
-
-            const oddsValue =
-                number(
-                    value(
-                        match,
-                        [
-                            "Odds Value Score",
-                            "Odds Value",
-                            "Value Score"
-                        ]
-                    )
-                );
-
-
-            if (oddsValue !== null) {
-
-                oddsValueValues.push(
-                    oddsValue
-                );
-
-            }
-
-
-            /* RISK */
-
-            const risk =
-                String(
-                    value(
-                        match,
-                        [
-                            "Risk Level",
-                            "Risk"
-                        ]
-                    )
-                ).toLowerCase();
-
-
-            if (risk === "low") {
-
-                lowRisk++;
-
-            }
-
-
-            /* PREDICTION */
-
-            const prediction =
-                String(
-                    value(
-                        match,
-                        [
-                            "Prediction",
-                            "AI Prediction"
-                        ]
-                    )
-                ).toLowerCase();
-
-
-            if (
-                prediction.includes("over 1.5")
-            ) {
-
-                over15++;
-
-            }
-
-
-            if (
-                prediction.includes("over 2.5")
-            ) {
-
-                over25++;
-
-            }
-
-        });
-
-
-        /* =================================================
-           HEADER
-           ================================================= */
-
-        statusElement.textContent =
+        status.textContent =
             "✅ APEX AI Connected — " +
             matches.length +
             " selected matches";
 
 
-        let html = `
+        /* =================================================
+           VALUES
+           ================================================= */
 
-            <div class="summary">
+        const confidenceValues =
+            matches.map(
+                function(match){
 
-                <h2>
-                    🤖 APEX AI STATISTICS
-                </h2>
+                    return numberValue(
+                        getValue(
+                            match,
+                            [
+                                "Confidence %",
+                                "Confidence",
+                                "Final Confidence"
+                            ]
+                        )
+                    );
 
-                <p>
-
-                    Showing statistics for the
-
-                    <strong>
-                        final ${matches.length}
-                        selected matches.
-                    </strong>
-
-                </p>
+                }
+            )
+            .filter(
+                function(value){
+                    return value !== null;
+                }
+            );
 
 
-                <div class="stats-grid">
+        const oddsValues =
+            matches.map(
+                function(match){
+
+                    return numberValue(
+                        getValue(
+                            match,
+                            [
+                                "Bookmaker Odds",
+                                "Bookmaker odds",
+                                "Odds"
+                            ]
+                        )
+                    );
+
+                }
+            )
+            .filter(
+                function(value){
+                    return value !== null;
+                }
+            );
 
 
-                    <div class="stat-card">
+        const homeAdvantageValues =
+            matches.map(
+                function(match){
 
-                        <div class="stat-title">
-                            Selected Matches
-                        </div>
+                    return numberValue(
+                        getValue(
+                            match,
+                            [
+                                "Home Advantage Score",
+                                "Home Advantage",
+                                "Home Advantage Rating"
+                            ]
+                        )
+                    );
 
-                        <div class="stat-value">
+                }
+            )
+            .filter(
+                function(value){
+                    return value !== null;
+                }
+            );
+
+
+        const oddsValueValues =
+            matches.map(
+                function(match){
+
+                    return numberValue(
+                        getValue(
+                            match,
+                            [
+                                "Odds Value Score",
+                                "Odds Value",
+                                "Value Score"
+                            ]
+                        )
+                    );
+
+                }
+            )
+            .filter(
+                function(value){
+                    return value !== null;
+                }
+            );
+
+
+        const avgConfidence =
+            average(
+                confidenceValues
+            );
+
+
+        const avgOdds =
+            average(
+                oddsValues
+            );
+
+
+        const avgHomeAdvantage =
+            average(
+                homeAdvantageValues
+            );
+
+
+        const avgOddsValue =
+            average(
+                oddsValueValues
+            );
+
+
+        const lowRisk =
+            matches.filter(
+                function(match){
+
+                    return String(
+                        getValue(
+                            match,
+                            [
+                                "Risk Level",
+                                "Risk"
+                            ]
+                        )
+                    ).toLowerCase()
+                    === "low";
+
+                }
+            ).length;
+
+
+        const mediumRisk =
+            matches.filter(
+                function(match){
+
+                    return String(
+                        getValue(
+                            match,
+                            [
+                                "Risk Level",
+                                "Risk"
+                            ]
+                        )
+                    ).toLowerCase()
+                    === "medium";
+
+                }
+            ).length;
+
+
+        const highRisk =
+            matches.filter(
+                function(match){
+
+                    return String(
+                        getValue(
+                            match,
+                            [
+                                "Risk Level",
+                                "Risk"
+                            ]
+                        )
+                    ).toLowerCase()
+                    === "high";
+
+                }
+            ).length;
+
+
+        const over15 =
+            matches.filter(
+                function(match){
+
+                    const prediction =
+                        String(
+                            getValue(
+                                match,
+                                [
+                                    "Prediction",
+                                    "AI Prediction"
+                                ]
+                            )
+                        ).toLowerCase();
+
+
+                    const market =
+                        String(
+                            getValue(
+                                match,
+                                [
+                                    "Recommended Market",
+                                    "recommended market",
+                                    "Market"
+                                ]
+                            )
+                        ).toLowerCase();
+
+
+                    return(
+                        prediction.includes("over 1.5")
+                        ||
+                        market.includes("over 1.5")
+                    );
+
+                }
+            ).length;
+
+
+        const over25 =
+            matches.filter(
+                function(match){
+
+                    const prediction =
+                        String(
+                            getValue(
+                                match,
+                                [
+                                    "Prediction",
+                                    "AI Prediction"
+                                ]
+                            )
+                        ).toLowerCase();
+
+
+                    const market =
+                        String(
+                            getValue(
+                                match,
+                                [
+                                    "Recommended Market",
+                                    "recommended market",
+                                    "Market"
+                                ]
+                            )
+                        ).toLowerCase();
+
+
+                    return(
+                        prediction.includes("over 2.5")
+                        ||
+                        market.includes("over 2.5")
+                    );
+
+                }
+            ).length;
+
+
+        /* =================================================
+           HERO
+           ================================================= */
+
+        document.getElementById(
+            "heroContainer"
+        ).innerHTML = `
+
+            <div class="hero">
+
+                <div class="hero-top">
+
+                    <div>
+
+                        <h1>
+                            📈 AI Statistics
+                        </h1>
+
+                        <p>
+                            Statistical overview of the
+                            final APEX AI selections.
+                        </p>
+
+                    </div>
+
+                    <div>
+
+                        <div class="hero-number">
                             ${matches.length}
                         </div>
 
-                    </div>
-
-
-                    <div class="stat-card">
-
-                        <div class="stat-title">
-                            Average Confidence
+                        <div class="hero-label">
+                            SELECTED
                         </div>
-
-                        <div class="stat-value">
-                            ${average(confidenceValues)}%
-                        </div>
-
-                    </div>
-
-
-                    <div class="stat-card">
-
-                        <div class="stat-title">
-                            Average Bookmaker Odds
-                        </div>
-
-                        <div class="stat-value">
-                            ${average(oddsValues)}
-                        </div>
-
-                    </div>
-
-
-                    <div class="stat-card">
-
-                        <div class="stat-title">
-                            Average Home Advantage
-                        </div>
-
-                        <div class="stat-value">
-                            ${average(homeAdvantageValues)}
-                        </div>
-
-                    </div>
-
-
-                    <div class="stat-card">
-
-                        <div class="stat-title">
-                            Average Odds Value
-                        </div>
-
-                        <div class="stat-value">
-                            ${average(oddsValueValues)}
-                        </div>
-
-                    </div>
-
-
-                    <div class="stat-card">
-
-                        <div class="stat-title">
-                            Low Risk Matches
-                        </div>
-
-                        <div class="stat-value">
-                            ${lowRisk}
-                        </div>
-
-                    </div>
-
-
-                    <div class="stat-card">
-
-                        <div class="stat-title">
-                            Over 1.5 Predictions
-                        </div>
-
-                        <div class="stat-value">
-                            ${over15}
-                        </div>
-
-                    </div>
-
-
-                    <div class="stat-card">
-
-                        <div class="stat-title">
-                            Over 2.5 Predictions
-                        </div>
-
-                        <div class="stat-value">
-                            ${over25}
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-
-            <div class="matches-box">
-
-                <h2>
-                    ⚽ FINAL ${matches.length}
-                    MATCH STATISTICS
-                </h2>
-
-        `;
-
-
-        /* =================================================
-           MATCH CARDS
-           ================================================= */
-
-        matches.forEach(function(match, index) {
-
-
-            const home =
-                value(
-                    match,
-                    [
-                        "Home Team",
-                        "HomeTeam",
-                        "Home"
-                    ]
-                );
-
-
-            const away =
-                value(
-                    match,
-                    [
-                        "Away Team",
-                        "AwayTeam",
-                        "Away"
-                    ]
-                );
-
-
-            const league =
-                value(
-                    match,
-                    [
-                        "League"
-                    ]
-                );
-
-
-            const date =
-                value(
-                    match,
-                    [
-                        "Date",
-                        "Match Date"
-                    ]
-                );
-
-
-            const prediction =
-                value(
-                    match,
-                    [
-                        "Prediction",
-                        "AI Prediction"
-                    ]
-                );
-
-
-            const confidence =
-                value(
-                    match,
-                    [
-                        "Confidence %",
-                        "Confidence"
-                    ]
-                );
-
-
-            const risk =
-                value(
-                    match,
-                    [
-                        "Risk Level",
-                        "Risk"
-                    ]
-                );
-
-
-            const market =
-                value(
-                    match,
-                    [
-                        "Recommended Market",
-                        "recommended market",
-                        "Market"
-                    ]
-                );
-
-
-            const xg =
-                value(
-                    match,
-                    [
-                        "Expected Goals",
-                        "Expected Goal",
-                        "xG"
-                    ]
-                );
-
-
-            const odds =
-                value(
-                    match,
-                    [
-                        "Bookmaker Odds",
-                        "Bookmaker odds",
-                        "Odds"
-                    ]
-                );
-
-
-            const homeAdvantage =
-                value(
-                    match,
-                    [
-                        "Home Advantage Score",
-                        "Home Advantage",
-                        "Home Advantage Rating"
-                    ]
-                );
-
-
-            const h2h =
-                value(
-                    match,
-                    [
-                        "Head to Head",
-                        "Head To Head",
-                        "H2H"
-                    ]
-                );
-
-
-            const oddsValue =
-                value(
-                    match,
-                    [
-                        "Odds Value Score",
-                        "Odds Value",
-                        "Value Score"
-                    ]
-                );
-
-
-            html += `
-
-                <div class="match-card">
-
-                    <div class="match-number">
-
-                        MATCH ${index + 1}
-
-                    </div>
-
-
-                    <div class="teams">
-
-                        ${safe(
-                            home || "Home Team"
-                        )}
-
-                        <span style="
-                            color:#777;
-                            font-weight:normal;
-                        ">
-
-                            vs
-
-                        </span>
-
-                        ${safe(
-                            away || "Away Team"
-                        )}
-
-                    </div>
-
-
-                    <div class="detail-grid">
-
-
-                        <div class="detail">
-
-                            <strong>
-                                League
-                            </strong>
-
-                            <span>
-                                ${safe(
-                                    league || "—"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail">
-
-                            <strong>
-                                Date
-                            </strong>
-
-                            <span>
-                                ${safe(
-                                    date || "—"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail prediction">
-
-                            <strong>
-                                AI Prediction
-                            </strong>
-
-                            <span>
-                                ${safe(
-                                    prediction || "—"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail confidence">
-
-                            <strong>
-                                Confidence
-                            </strong>
-
-                            <span>
-                                ${safe(
-                                    confidence !== ""
-                                        ? confidence + "%"
-                                        : "—"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail ${riskClass(risk)}">
-
-                            <strong>
-                                Risk Level
-                            </strong>
-
-                            <span>
-                                ${safe(
-                                    risk || "—"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail">
-
-                            <strong>
-                                Recommended Market
-                            </strong>
-
-                            <span>
-                                ${safe(
-                                    market || "—"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail">
-
-                            <strong>
-                                Expected Goals
-                            </strong>
-
-                            <span>
-                                ${safe(
-                                    xg || "—"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail">
-
-                            <strong>
-                                Bookmaker Odds
-                            </strong>
-
-                            <span>
-                                ${safe(
-                                    odds || "—"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail">
-
-                            <strong>
-                                Home Advantage
-                            </strong>
-
-                            <span>
-                                ${safe(
-                                    homeAdvantage || "—"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail">
-
-                            <strong>
-                                Head To Head
-                            </strong>
-
-                            <span>
-                                ${safe(
-                                    h2h || "—"
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="detail">
-
-                            <strong>
-                                Odds Value
-                            </strong>
-
-                            <span>
-                                ${safe(
-                                    oddsValue || "—"
-                                )}
-                            </span>
-
-                        </div>
-
 
                     </div>
 
                 </div>
-
-            `;
-
-        });
-
-
-        /* =================================================
-           CLOSE MATCH BOX
-           ================================================= */
-
-        html += `
 
             </div>
 
         `;
 
 
-        container.innerHTML =
-            html;
+        /* =================================================
+           STAT CARDS
+           ================================================= */
+
+        document.getElementById(
+            "statCards"
+        ).innerHTML = `
+
+            <div class="stat-card green">
+
+                <div class="stat-label">
+                    🎯 Average Confidence
+                </div>
+
+                <div class="stat-value">
+                    ${
+                        avgConfidence !== null
+                            ? avgConfidence.toFixed(1) + "%"
+                            : "—"
+                    }
+                </div>
+
+                <div class="stat-note">
+                    Across selected matches
+                </div>
+
+            </div>
 
 
-    } catch (error) {
+            <div class="stat-card blue">
 
+                <div class="stat-label">
+                    ⚽ Average Odds
+                </div>
+
+                <div class="stat-value">
+                    ${
+                        avgOdds !== null
+                            ? avgOdds.toFixed(2)
+                            : "—"
+                    }
+                </div>
+
+                <div class="stat-note">
+                    Bookmaker data
+                </div>
+
+            </div>
+
+
+            <div class="stat-card purple">
+
+                <div class="stat-label">
+                    🏠 Home Advantage
+                </div>
+
+                <div class="stat-value">
+                    ${
+                        avgHomeAdvantage !== null
+                            ? avgHomeAdvantage.toFixed(1)
+                            : "—"
+                    }
+                </div>
+
+                <div class="stat-note">
+                    Average score
+                </div>
+
+            </div>
+
+
+            <div class="stat-card yellow">
+
+                <div class="stat-label">
+                    💎 Odds Value
+                </div>
+
+                <div class="stat-value">
+                    ${
+                        avgOddsValue !== null
+                            ? avgOddsValue.toFixed(1)
+                            : "—"
+                    }
+                </div>
+
+                <div class="stat-note">
+                    Value score
+                </div>
+
+            </div>
+
+        `;
+
+
+        /* =================================================
+           CONFIDENCE
+           ================================================= */
+
+        const confidenceWidth =
+            avgConfidence !== null
+                ? Math.max(
+                    0,
+                    Math.min(
+                        100,
+                        avgConfidence
+                    )
+                )
+                : 0;
+
+
+        document.getElementById(
+            "confidencePanel"
+        ).innerHTML = `
+
+            <div class="metric-line">
+
+                <span class="metric-name">
+                    Average Confidence
+                </span>
+
+                <span class="metric-value">
+
+                    ${
+                        avgConfidence !== null
+                            ? avgConfidence.toFixed(1) + "%"
+                            : "—"
+                    }
+
+                </span>
+
+            </div>
+
+
+            <div class="progress">
+
+                <div
+                    class="progress-bar"
+                    style="
+                        width:${confidenceWidth}%;
+                    "
+                ></div>
+
+            </div>
+
+
+            <div class="metric-line">
+
+                <span class="metric-name">
+                    Selected Matches
+                </span>
+
+                <span class="metric-value">
+                    ${matches.length}/10
+                </span>
+
+            </div>
+
+
+            <div class="metric-line">
+
+                <span class="metric-name">
+                    Predictions Available
+                </span>
+
+                <span class="metric-value">
+                    ${
+                        matches.filter(function(match){
+
+                            return getValue(
+                                match,
+                                [
+                                    "Prediction",
+                                    "AI Prediction"
+                                ]
+                            ) !== "";
+
+                        }).length
+                    }
+                </span>
+
+            </div>
+
+        `;
+
+
+        /* =================================================
+           RISK / MARKET
+           ================================================= */
+
+        document.getElementById(
+            "riskPanel"
+        ).innerHTML = `
+
+            <div class="metric-line">
+
+                <span class="metric-name">
+                    🟢 Low Risk
+                </span>
+
+                <span class="metric-value">
+                    ${lowRisk}
+                </span>
+
+            </div>
+
+
+            <div class="metric-line">
+
+                <span class="metric-name">
+                    🟡 Medium Risk
+                </span>
+
+                <span class="metric-value">
+                    ${mediumRisk}
+                </span>
+
+            </div>
+
+
+            <div class="metric-line">
+
+                <span class="metric-name">
+                    🔴 High Risk
+                </span>
+
+                <span class="metric-value">
+                    ${highRisk}
+                </span>
+
+            </div>
+
+
+            <div class="metric-line">
+
+                <span class="metric-name">
+                    Over 1.5 Indicators
+                </span>
+
+                <span class="metric-value">
+                    ${over15}
+                </span>
+
+            </div>
+
+
+            <div class="metric-line">
+
+                <span class="metric-name">
+                    Over 2.5 Indicators
+                </span>
+
+                <span class="metric-value">
+                    ${over25}
+                </span>
+
+            </div>
+
+        `;
+
+
+        /* =================================================
+           MATCH LIST
+           ================================================= */
+
+        let matchHtml = "";
+
+
+        matches.forEach(
+            function(match,index){
+
+                const home =
+                    getValue(
+                        match,
+                        [
+                            "Home Team",
+                            "HomeTeam",
+                            "Home"
+                        ]
+                    );
+
+
+                const away =
+                    getValue(
+                        match,
+                        [
+                            "Away Team",
+                            "AwayTeam",
+                            "Away"
+                        ]
+                    );
+
+
+                const league =
+                    getValue(
+                        match,
+                        [
+                            "League",
+                            "league"
+                        ]
+                    );
+
+
+                const prediction =
+                    getValue(
+                        match,
+                        [
+                            "Prediction",
+                            "AI Prediction"
+                        ]
+                    );
+
+
+                const confidence =
+                    getValue(
+                        match,
+                        [
+                            "Confidence %",
+                            "Confidence",
+                            "Final Confidence"
+                        ]
+                    );
+
+
+                matchHtml += `
+
+                    <div class="match-row">
+
+                        <div>
+
+                            <div class="match-teams">
+
+                                ${safe(
+                                    home || "Home"
+                                )}
+
+                                vs
+
+                                ${safe(
+                                    away || "Away"
+                                )}
+
+                            </div>
+
+                            <div class="match-league">
+
+                                ${safe(
+                                    league || "League"
+                                )}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="match-prediction">
+
+                            ${safe(
+                                prediction || "—"
+                            )}
+
+                        </div>
+
+
+                        <div class="match-confidence">
+
+                            ${
+                                confidence !== ""
+                                    ? safe(confidence) + "%"
+                                    : "—"
+                            }
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+
+        document.getElementById(
+            "matchList"
+        ).innerHTML =
+            matchHtml;
+
+
+    }
+    catch(error){
 
         console.error(
             "APEX Statistics Error:",
@@ -1340,41 +1709,65 @@ async function loadStatistics() {
         );
 
 
-        statusElement.textContent =
-            "❌ APEX Statistics Connection Error";
+        status.textContent =
+            "❌ APEX Statistics failed to load";
 
 
-        container.innerHTML = `
+        document.getElementById(
+            "heroContainer"
+        ).innerHTML = `
 
-            <div class="error-box">
+            <div class="error">
 
-                <h3>
-                    ⚠️ Statistics could not be loaded
-                </h3>
+                <h2>
+                    ❌ Unable to Load Statistics
+                </h2>
 
                 <p>
                     ${safe(error.message)}
-                </p>
-
-                <p>
-                    Please refresh the page and try again.
                 </p>
 
             </div>
 
         `;
 
+
+        document.getElementById(
+            "statCards"
+        ).innerHTML = "";
+
+
+        document.getElementById(
+            "confidencePanel"
+        ).innerHTML = "";
+
+
+        document.getElementById(
+            "riskPanel"
+        ).innerHTML = "";
+
+
+        document.getElementById(
+            "matchList"
+        ).innerHTML = "";
+
     }
 
 }
 
 
-/* =====================================================
-   START
-   ===================================================== */
+function go(page){
 
-loadStatistics();
+    window.location.href =
+        page;
 
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    loadStatistics
+);
 
 </script>
 
