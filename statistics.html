@@ -172,6 +172,21 @@ body {
     background: #eef4ff;
 }
 
+.risk-low {
+    background: #e8f7eb;
+    border-left: 5px solid #00c853;
+}
+
+.risk-medium {
+    background: #fff8e1;
+    border-left: 5px solid #ffb300;
+}
+
+.risk-high {
+    background: #ffebee;
+    border-left: 5px solid #e53935;
+}
+
 .navigation {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -274,7 +289,7 @@ body {
             🏆 Leagues
         </button>
 
-        <button onclick="go('headtohead.html')">
+        <button onclick="go('head2head.html')">
             ⚔ Head To Head
         </button>
 
@@ -296,7 +311,6 @@ body {
 /* =====================================================
    APEX PREDICT AI
    STATISTICS ENGINE
-   FINAL 10 MATCHES
    ===================================================== */
 
 
@@ -313,27 +327,52 @@ document.getElementById("statisticsContainer");
 
 
 /* =====================================================
+   NAVIGATION
+   ===================================================== */
+
+function go(page) {
+
+    window.location.href = page;
+
+}
+
+
+/* =====================================================
    SAFE VALUE
    ===================================================== */
 
 function value(match, names) {
 
+    if (!match || typeof match !== "object") {
+
+        return "";
+
+    }
+
+
     for (const wanted of names) {
 
         const wantedLower =
-            wanted.trim().toLowerCase();
+            String(wanted)
+                .trim()
+                .toLowerCase();
+
 
         const key =
             Object.keys(match).find(function(k) {
 
-                return k.trim().toLowerCase()
+                return String(k)
+                    .trim()
+                    .toLowerCase()
                     === wantedLower;
 
             });
 
+
         if (key !== undefined) {
 
             const v = match[key];
+
 
             if (
                 v !== null &&
@@ -349,6 +388,7 @@ function value(match, names) {
 
     }
 
+
     return "";
 
 }
@@ -358,20 +398,28 @@ function value(match, names) {
    SAFE HTML
    ===================================================== */
 
-function safe(value) {
+function safe(input) {
 
     if (
-        value === null ||
-        value === undefined
+        input === null ||
+        input === undefined
     ) {
+
         return "";
+
     }
 
-    return String(value)
+
+    return String(input)
+
         .replace(/&/g, "&amp;")
+
         .replace(/</g, "&lt;")
+
         .replace(/>/g, "&gt;")
+
         .replace(/"/g, "&quot;")
+
         .replace(/'/g, "&#039;");
 
 }
@@ -381,25 +429,29 @@ function safe(value) {
    NUMBER
    ===================================================== */
 
-function number(value) {
+function number(input) {
 
     if (
-        value === null ||
-        value === undefined ||
-        value === ""
+        input === null ||
+        input === undefined ||
+        input === ""
     ) {
 
         return null;
 
     }
 
+
+    const cleaned =
+        String(input)
+            .replace("%", "")
+            .replace(",", "")
+            .trim();
+
+
     const n =
-        parseFloat(
-            String(value)
-                .replace("%", "")
-                .replace(",", "")
-                .trim()
-        );
+        parseFloat(cleaned);
+
 
     return Number.isFinite(n)
         ? n
@@ -415,9 +467,12 @@ function number(value) {
 function average(values) {
 
     const valid =
-        values.filter(
-            v => Number.isFinite(v)
-        );
+        values.filter(function(v) {
+
+            return Number.isFinite(v);
+
+        });
+
 
     if (!valid.length) {
 
@@ -425,11 +480,14 @@ function average(values) {
 
     }
 
+
     const total =
-        valid.reduce(
-            (a,b) => a + b,
-            0
-        );
+        valid.reduce(function(a, b) {
+
+            return a + b;
+
+        }, 0);
+
 
     return (
         total / valid.length
@@ -439,7 +497,48 @@ function average(values) {
 
 
 /* =====================================================
-   LOAD DATA
+   RISK CLASS
+   ===================================================== */
+
+function riskClass(risk) {
+
+    const r =
+        String(risk)
+            .toLowerCase()
+            .trim();
+
+
+    if (r === "low") {
+
+        return "risk-low";
+
+    }
+
+
+    if (
+        r === "medium" ||
+        r === "moderate"
+    ) {
+
+        return "risk-medium";
+
+    }
+
+
+    if (r === "high") {
+
+        return "risk-high";
+
+    }
+
+
+    return "";
+
+}
+
+
+/* =====================================================
+   LOAD STATISTICS
    ===================================================== */
 
 async function loadStatistics() {
@@ -452,12 +551,15 @@ async function loadStatistics() {
 
         const response =
             await fetch(
+
                 GOOGLE_SHEETS_API +
                 "?page=statistics&final10=true",
+
                 {
                     method: "GET",
                     cache: "no-store"
                 }
+
             );
 
 
@@ -482,7 +584,7 @@ async function loadStatistics() {
 
 
         /* =================================================
-           GET MATCH DATABASE
+           CHECK MATCH DATABASE
            ================================================= */
 
         if (
@@ -499,7 +601,7 @@ async function loadStatistics() {
         }
 
 
-        let allMatches =
+        const allMatches =
             data.matchDatabase.objects;
 
 
@@ -507,6 +609,7 @@ async function loadStatistics() {
 
             statusElement.textContent =
                 "⚠️ No APEX matches available.";
+
 
             container.innerHTML = `
 
@@ -519,6 +622,7 @@ async function loadStatistics() {
 
             `;
 
+
             return;
 
         }
@@ -526,11 +630,6 @@ async function loadStatistics() {
 
         /* =================================================
            FINAL 10
-           
-           We DO NOT modify Google Sheets.
-           
-           We only use the first 10 selected
-           records for the Statistics page.
            ================================================= */
 
         const matches =
@@ -538,7 +637,7 @@ async function loadStatistics() {
 
 
         /* =================================================
-           CALCULATE METRICS
+           METRICS
            ================================================= */
 
         const confidenceValues = [];
@@ -549,6 +648,7 @@ async function loadStatistics() {
 
         const oddsValueValues = [];
 
+
         let lowRisk = 0;
 
         let over15 = 0;
@@ -558,22 +658,22 @@ async function loadStatistics() {
 
         matches.forEach(function(match) {
 
+
+            /* CONFIDENCE */
+
             const confidence =
                 number(
                     value(
                         match,
                         [
                             "Confidence %",
-                            "Confidence",
-                            "confidence %"
+                            "Confidence"
                         ]
                     )
                 );
 
 
-            if (
-                confidence !== null
-            ) {
+            if (confidence !== null) {
 
                 confidenceValues.push(
                     confidence
@@ -582,22 +682,21 @@ async function loadStatistics() {
             }
 
 
+            /* ODDS */
+
             const odds =
                 number(
                     value(
                         match,
                         [
                             "Bookmaker Odds",
-                            "Bookmaker odds",
                             "Odds"
                         ]
                     )
                 );
 
 
-            if (
-                odds !== null
-            ) {
+            if (odds !== null) {
 
                 oddsValues.push(
                     odds
@@ -605,6 +704,8 @@ async function loadStatistics() {
 
             }
 
+
+            /* HOME ADVANTAGE */
 
             const homeAdvantage =
                 number(
@@ -619,9 +720,7 @@ async function loadStatistics() {
                 );
 
 
-            if (
-                homeAdvantage !== null
-            ) {
+            if (homeAdvantage !== null) {
 
                 homeAdvantageValues.push(
                     homeAdvantage
@@ -629,6 +728,8 @@ async function loadStatistics() {
 
             }
 
+
+            /* ODDS VALUE */
 
             const oddsValue =
                 number(
@@ -643,9 +744,7 @@ async function loadStatistics() {
                 );
 
 
-            if (
-                oddsValue !== null
-            ) {
+            if (oddsValue !== null) {
 
                 oddsValueValues.push(
                     oddsValue
@@ -653,6 +752,8 @@ async function loadStatistics() {
 
             }
 
+
+            /* RISK */
 
             const risk =
                 String(
@@ -666,14 +767,14 @@ async function loadStatistics() {
                 ).toLowerCase();
 
 
-            if (
-                risk === "low"
-            ) {
+            if (risk === "low") {
 
                 lowRisk++;
 
             }
 
+
+            /* PREDICTION */
 
             const prediction =
                 String(
@@ -688,9 +789,7 @@ async function loadStatistics() {
 
 
             if (
-                prediction.includes(
-                    "over 1.5"
-                )
+                prediction.includes("over 1.5")
             ) {
 
                 over15++;
@@ -699,9 +798,7 @@ async function loadStatistics() {
 
 
             if (
-                prediction.includes(
-                    "over 2.5"
-                )
+                prediction.includes("over 2.5")
             ) {
 
                 over25++;
@@ -712,11 +809,13 @@ async function loadStatistics() {
 
 
         /* =================================================
-           DISPLAY
+           HEADER
            ================================================= */
 
         statusElement.textContent =
-            "✅ APEX AI Connected — 10 selected matches";
+            "✅ APEX AI Connected — " +
+            matches.length +
+            " selected matches";
 
 
         let html = `
@@ -728,10 +827,14 @@ async function loadStatistics() {
                 </h2>
 
                 <p>
+
                     Showing statistics for the
+
                     <strong>
-                        final 10 selected matches.
+                        final ${matches.length}
+                        selected matches.
                     </strong>
+
                 </p>
 
 
@@ -850,7 +953,8 @@ async function loadStatistics() {
             <div class="matches-box">
 
                 <h2>
-                    ⚽ FINAL 10 MATCH STATISTICS
+                    ⚽ FINAL ${matches.length}
+                    MATCH STATISTICS
                 </h2>
 
         `;
@@ -972,7 +1076,8 @@ async function loadStatistics() {
                     match,
                     [
                         "Home Advantage Score",
-                        "Home Advantage"
+                        "Home Advantage",
+                        "Home Advantage Rating"
                     ]
                 );
 
@@ -1004,22 +1109,30 @@ async function loadStatistics() {
                 <div class="match-card">
 
                     <div class="match-number">
+
                         MATCH ${index + 1}
+
                     </div>
 
 
                     <div class="teams">
 
-                        ${safe(home || "Home Team")}
+                        ${safe(
+                            home || "Home Team"
+                        )}
 
                         <span style="
                             color:#777;
                             font-weight:normal;
                         ">
+
                             vs
+
                         </span>
 
-                        ${safe(away || "Away Team")}
+                        ${safe(
+                            away || "Away Team"
+                        )}
 
                     </div>
 
@@ -1033,4 +1146,239 @@ async function loadStatistics() {
                                 League
                             </strong>
 
- 
+                            <span>
+                                ${safe(
+                                    league || "—"
+                                )}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <strong>
+                                Date
+                            </strong>
+
+                            <span>
+                                ${safe(
+                                    date || "—"
+                                )}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail prediction">
+
+                            <strong>
+                                AI Prediction
+                            </strong>
+
+                            <span>
+                                ${safe(
+                                    prediction || "—"
+                                )}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail confidence">
+
+                            <strong>
+                                Confidence
+                            </strong>
+
+                            <span>
+                                ${safe(
+                                    confidence !== ""
+                                        ? confidence + "%"
+                                        : "—"
+                                )}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail ${riskClass(risk)}">
+
+                            <strong>
+                                Risk Level
+                            </strong>
+
+                            <span>
+                                ${safe(
+                                    risk || "—"
+                                )}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <strong>
+                                Recommended Market
+                            </strong>
+
+                            <span>
+                                ${safe(
+                                    market || "—"
+                                )}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <strong>
+                                Expected Goals
+                            </strong>
+
+                            <span>
+                                ${safe(
+                                    xg || "—"
+                                )}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <strong>
+                                Bookmaker Odds
+                            </strong>
+
+                            <span>
+                                ${safe(
+                                    odds || "—"
+                                )}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <strong>
+                                Home Advantage
+                            </strong>
+
+                            <span>
+                                ${safe(
+                                    homeAdvantage || "—"
+                                )}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <strong>
+                                Head To Head
+                            </strong>
+
+                            <span>
+                                ${safe(
+                                    h2h || "—"
+                                )}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <strong>
+                                Odds Value
+                            </strong>
+
+                            <span>
+                                ${safe(
+                                    oddsValue || "—"
+                                )}
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            `;
+
+        });
+
+
+        /* =================================================
+           CLOSE MATCH BOX
+           ================================================= */
+
+        html += `
+
+            </div>
+
+        `;
+
+
+        container.innerHTML =
+            html;
+
+
+    } catch (error) {
+
+
+        console.error(
+            "APEX Statistics Error:",
+            error
+        );
+
+
+        statusElement.textContent =
+            "❌ APEX Statistics Connection Error";
+
+
+        container.innerHTML = `
+
+            <div class="error-box">
+
+                <h3>
+                    ⚠️ Statistics could not be loaded
+                </h3>
+
+                <p>
+                    ${safe(error.message)}
+                </p>
+
+                <p>
+                    Please refresh the page and try again.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =====================================================
+   START
+   ===================================================== */
+
+loadStatistics();
+
+
+</script>
+
+
+</body>
+
+</html>
