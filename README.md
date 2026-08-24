@@ -1,51 +1,45 @@
 # APEX Predict AI Web
 
-APEX Predict AI Web is a professional football prediction platform powered by AI.
+APEX Predict AI Web is a professional football prediction platform powered by AI, live football data, Google Sheets integration, and a browser-based dashboard.
 
 ## Version
-2.1 Stable
+
+**2.1 Stable**
+
+## Status
+
+🚀 Under Active Development
 
 ## Features
 
-- AI Football Predictions
-- Match Analysis
-- Live Scores
-- Statistics Dashboard
-- Head-to-Head Analysis
-- League Tables
-- Prediction History
-- Google Sheets Integration
-- Secure Login System
-- Progressive Web App (PWA)
-- APK Ready
+- AI football predictions
+- Match analysis
+- Live scores
+- Statistics dashboard
+- Head-to-head analysis
+- League tables
+- Prediction history
+- Google Sheets integration
+- Secure login system
+- Progressive Web App support
+- APK-ready frontend architecture
+- Smart Gate selection for a maximum of 30 matches
 
-## Project Structure
+## Current Architecture
 
-```
-index.html
-style.css
+The application preserves a simple frontend structure built with HTML, CSS, and JavaScript.
+
+```text
+HTML pages
+    ↓
 script.js
-README.md
-assets/
-```
-
-## Technologies
-
-- HTML5
-- CSS3
-- JavaScript
-- Google Sheets API
-- Progressive Web App (PWA)
-
-## Developer
-
-Project Name:
-**APEX Predict AI**
-
-Repository:
-**Apex-Predict-AI-Web**
-
-Status:
-🚀 Under Active Development
-
-© 2026 APEX Predict AI. All Rights Reserved.
+    ↓
+Google Apps Script web app
+    ↓
+Google Sheets match database
+    ↓
+Prediction enrichment and AI scoring
+    ↓
+Smart Gate
+    ↓
+Dashboard display
