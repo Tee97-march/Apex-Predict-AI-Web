@@ -1,16 +1,15 @@
 <script>
-
 "use strict";
 
 const APEX_DASHBOARD_CONFIG = Object.freeze({
-    API_URL: "https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec",
+    API_URL: "PASTE_YOUR_NEW_BACKEND_EXEC_URL_HERE",
     TIMEOUT: 45000,
     RETRIES: 2,
     MAX_MATCHES: 30
 });
 
 function go(page) {
-    const pages = [
+    const allowedPages = [
         "dashboard.html",
         "predictions.html",
         "analysis.html",
@@ -21,15 +20,26 @@ function go(page) {
         "settings.html"
     ];
 
-    window.location.href = pages.includes(page)
-        ? "./" + page
-        : "./dashboard.html";
+    window.location.href =
+        "./" +
+        (
+            allowedPages.includes(page)
+                ? page
+                : "dashboard.html"
+        );
 }
 
 function logout() {
     if (confirm("Logout from APEX Predict AI?")) {
         window.location.href = "./index.html";
     }
+}
+
+function normaliseKey(value) {
+    return String(value ?? "")
+        .trim()
+        .toLowerCase()
+        .replace(/s+/g, " ");
 }
 
 function safe(value) {
@@ -41,14 +51,7 @@ function safe(value) {
         .replace(/'/g, "&#039;");
 }
 
-function key(value) {
-    return String(value ?? "")
-        .trim()
-        .toLowerCase()
-        .replace(/s+/g, " ");
-}
-
-function valueOf(object, names) {
+function getValue(object, names) {
     if (!object || typeof object !== "object") {
         return "";
     }
@@ -56,8 +59,11 @@ function valueOf(object, names) {
     const keys = Object.keys(object);
 
     for (const name of names) {
+        const wanted = normaliseKey(name);
+
         const found = keys.find(
-            existing => key(existing) === key(name)
+            existing =>
+                normaliseKey(existing) === wanted
         );
 
         if (
@@ -73,28 +79,37 @@ function valueOf(object, names) {
     return "";
 }
 
-function numberOf(value) {
-    if (value === null || value === undefined || value === "") {
+function numberValue(value) {
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
         return null;
     }
 
-    const result = parseFloat(
+    const parsed = parseFloat(
         String(value)
             .replace("%", "")
             .replace(",", ".")
             .trim()
     );
 
-    return Number.isFinite(result) ? result : null;
+    return Number.isFinite(parsed)
+        ? parsed
+        : null;
 }
 
-function percent(value) {
-    const result = numberOf(value);
-    return result === null ? "—" : result + "%";
+function percentage(value) {
+    const number = numberValue(value);
+
+    return number === null
+        ? "—"
+        : number + "%";
 }
 
-function home(match) {
-    return valueOf(match, [
+function getHomeTeam(match) {
+    return getValue(match, [
         "Home Team",
         "Home",
         "HomeTeam",
@@ -102,8 +117,8 @@ function home(match) {
     ]);
 }
 
-function away(match) {
-    return valueOf(match, [
+function getAwayTeam(match) {
+    return getValue(match, [
         "Away Team",
         "Away",
         "AwayTeam",
@@ -111,16 +126,16 @@ function away(match) {
     ]);
 }
 
-function league(match) {
-    return valueOf(match, [
+function getLeague(match) {
+    return getValue(match, [
         "League",
         "Competition",
         "League Name"
     ]);
 }
 
-function prediction(match) {
-    return valueOf(match, [
+function getPrediction(match) {
+    return getValue(match, [
         "Prediction",
         "AI Prediction",
         "Prediction Advice",
@@ -128,10 +143,12 @@ function prediction(match) {
     ]);
 }
 
-function confidence(match) {
-    return numberOf(
-        valueOf(match, [
+function getConfidence(match) {
+    return numberValue(
+        getValue(match, [
+            "Final confidence",
             "Final Confidence",
+            "Final confidence %",
             "Final Confidence %",
             "Confidence %",
             "Confidence",
@@ -140,8 +157,8 @@ function confidence(match) {
     );
 }
 
-function risk(match) {
-    const direct = valueOf(match, [
+function getRisk(match) {
+    const direct = getValue(match, [
         "Risk Level",
         "Risk",
         "Risk Category",
@@ -154,27 +171,28 @@ function risk(match) {
         return String(direct);
     }
 
-    const score = confidence(match);
+    const score = getConfidence(match);
 
     if (score === null) {
         return "";
     }
 
     if (score >= 60) {
-        return "Low";
+        return "LOW";
     }
 
     if (score >= 45) {
-        return "Medium";
+        return "MEDIUM";
     }
 
-    return "High";
+    return "HIGH";
 }
 
-function market(match) {
-    const direct = valueOf(match, [
-        "Recommended Market",
+function getMarket(match) {
+    const direct = getValue(match, [
         "recommended market",
+        "Recommended Market",
+        "Recommended market",
         "Market",
         "Betting Market",
         "Selection Market",
@@ -185,25 +203,38 @@ function market(match) {
         return String(direct);
     }
 
-    const text = String(prediction(match)).toLowerCase();
+    const text =
+        String(getPrediction(match)).toLowerCase();
 
     if (text.includes("double chance")) {
         return "Double Chance";
     }
 
-    if (text.includes("over 1.5") || text.includes("+1.5")) {
+    if (
+        text.includes("over 1.5") ||
+        text.includes("+1.5")
+    ) {
         return "Over 1.5 Goals";
     }
 
-    if (text.includes("over 2.5") || text.includes("+2.5")) {
+    if (
+        text.includes("over 2.5") ||
+        text.includes("+2.5")
+    ) {
         return "Over 2.5 Goals";
     }
 
-    if (text.includes("under 2.5") || text.includes("-2.5")) {
+    if (
+        text.includes("under 2.5") ||
+        text.includes("-2.5")
+    ) {
         return "Under 2.5 Goals";
     }
 
-    if (text.includes("under 3.5") || text.includes("-3.5")) {
+    if (
+        text.includes("under 3.5") ||
+        text.includes("-3.5")
+    ) {
         return "Under 3.5 Goals";
     }
 
@@ -218,14 +249,18 @@ function market(match) {
     return "";
 }
 
-function riskClass(value) {
-    const text = String(value || "").toLowerCase();
+function getRiskClass(risk) {
+    const text =
+        String(risk || "").toLowerCase();
 
     if (text.includes("low")) {
         return "low";
     }
 
-    if (text.includes("medium") || text.includes("moderate")) {
+    if (
+        text.includes("medium") ||
+        text.includes("moderate")
+    ) {
         return "medium";
     }
 
@@ -237,6 +272,13 @@ function riskClass(value) {
 }
 
 function extractMatches(data) {
+    if (
+        data &&
+        Array.isArray(data.matches)
+    ) {
+        return data.matches;
+    }
+
     if (
         data &&
         data.matchDatabase &&
@@ -253,19 +295,28 @@ function extractMatches(data) {
         return data.smartGate.objects;
     }
 
-    if (data && Array.isArray(data.matches)) {
-        return data.matches;
+    if (
+        data &&
+        Array.isArray(data.smartGate)
+    ) {
+        return data.smartGate;
     }
 
-    if (data && Array.isArray(data.data)) {
+    if (
+        data &&
+        Array.isArray(data.data)
+    ) {
         return data.data;
     }
 
     return [];
 }
 
-function usable(match) {
-    const result = String(prediction(match)).trim().toLowerCase();
+function isUsableMatch(match) {
+    const result =
+        String(getPrediction(match))
+            .trim()
+            .toLowerCase();
 
     return (
         result !== "" &&
@@ -277,37 +328,37 @@ function selectMatches(matches) {
     const seen = new Set();
 
     return matches
-        .filter(usable)
+        .filter(isUsableMatch)
         .filter((match, index) => {
             const identity = [
-                valueOf(match, [
+                getValue(match, [
                     "Fixture ID",
                     "API Fixture ID",
                     "fixture_id"
                 ]),
-                home(match),
-                away(match),
-                league(match)
+                getHomeTeam(match),
+                getAwayTeam(match),
+                getLeague(match)
             ]
-                .map(key)
+                .map(normaliseKey)
                 .join("|");
 
-            const identifier =
+            const uniqueKey =
                 identity === "|||"
                     ? "row-" + index
                     : identity;
 
-            if (seen.has(identifier)) {
+            if (seen.has(uniqueKey)) {
                 return false;
             }
 
-            seen.add(identifier);
+            seen.add(uniqueKey);
             return true;
         })
         .sort(
             (a, b) =>
-                (confidence(b) || 0) -
-                (confidence(a) || 0)
+                (getConfidence(b) || 0) -
+                (getConfidence(a) || 0)
         )
         .slice(
             0,
@@ -315,15 +366,16 @@ function selectMatches(matches) {
         );
 }
 
-function text(id, value) {
-    const element = document.getElementById(id);
+function setText(id, value) {
+    const element =
+        document.getElementById(id);
 
     if (element) {
         element.textContent = value;
     }
 }
 
-function status(message, type) {
+function setStatus(message, type) {
     const element =
         document.getElementById("connectionStatus");
 
@@ -334,37 +386,40 @@ function status(message, type) {
 }
 
 function renderKpis(matches) {
-    text("matchesCount", matches.length);
+    setText("matchesCount", matches.length);
 
-    const scores = matches
-        .map(confidence)
+    const confidenceValues = matches
+        .map(getConfidence)
         .filter(value => value !== null);
 
-    const best = scores.length
-        ? Math.max(...scores)
+    const best = confidenceValues.length
+        ? Math.max(...confidenceValues)
         : null;
 
-    text(
+    setText(
         "bestConfidence",
-        best === null ? "—" : best + "%"
+        best === null
+            ? "—"
+            : best + "%"
     );
 
-    text(
+    setText(
         "bestConfidenceNote",
         best === null
             ? "No confidence data"
             : "Highest final confidence"
     );
 
-    text(
+    setText(
         "predictionCount",
-        matches.filter(usable).length
+        matches.filter(isUsableMatch).length
     );
 
-    text(
+    setText(
         "lowRiskCount",
         matches.filter(
-            match => riskClass(risk(match)) === "low"
+            match =>
+                getRiskClass(getRisk(match)) === "low"
         ).length
     );
 }
@@ -385,51 +440,63 @@ function renderFeatured(match) {
 
     container.innerHTML = `
         <div class="featured-league">
-            ${safe(league(match) || "Football")}
+            ${safe(getLeague(match) || "Football")}
         </div>
 
         <div class="featured-teams">
             <div class="team-name">
-                ${safe(home(match) || "Home Team")}
+                ${safe(getHomeTeam(match) || "Home Team")}
             </div>
 
             <div class="vs">VS</div>
 
             <div class="team-name">
-                ${safe(away(match) || "Away Team")}
+                ${safe(getAwayTeam(match) || "Away Team")}
             </div>
         </div>
 
         <div class="featured-meta">
-            ${safe(prediction(match) || "Prediction available")}
+            ${safe(getPrediction(match) || "Prediction available")}
         </div>
 
         <div class="featured-metrics">
             <div class="featured-metric">
-                <div class="featured-metric-title">Confidence</div>
+                <div class="featured-metric-title">
+                    Confidence
+                </div>
+
                 <div class="featured-metric-value">
-                    ${safe(percent(confidence(match)))}
+                    ${safe(percentage(getConfidence(match)))}
                 </div>
             </div>
 
             <div class="featured-metric">
-                <div class="featured-metric-title">Risk</div>
+                <div class="featured-metric-title">
+                    Risk
+                </div>
+
                 <div class="featured-metric-value">
-                    ${safe(risk(match) || "—")}
+                    ${safe(getRisk(match) || "—")}
                 </div>
             </div>
 
             <div class="featured-metric">
-                <div class="featured-metric-title">Market</div>
+                <div class="featured-metric-title">
+                    Market
+                </div>
+
                 <div class="featured-metric-value">
-                    ${safe(market(match) || "—")}
+                    ${safe(getMarket(match) || "—")}
                 </div>
             </div>
 
             <div class="featured-metric">
-                <div class="featured-metric-title">League</div>
+                <div class="featured-metric-title">
+                    League
+                </div>
+
                 <div class="featured-metric-value">
-                    ${safe(league(match) || "—")}
+                    ${safe(getLeague(match) || "—")}
                 </div>
             </div>
         </div>
@@ -450,32 +517,39 @@ function renderAnalysis(matches) {
         return;
     }
 
-    const scores = matches
-        .map(confidence)
+    const values = matches
+        .map(getConfidence)
         .filter(value => value !== null);
 
-    const average = scores.length
+    const average = values.length
         ? Math.round(
-            scores.reduce(
+            values.reduce(
                 (total, value) => total + value,
                 0
-            ) / scores.length
+            ) / values.length
         )
         : null;
 
-    const markets = {};
-    const risks = {};
+    const marketCounts = {};
+    const riskCounts = {};
 
     matches.forEach(match => {
-        const m = market(match) || "Unknown";
-        const r = risk(match) || "Unknown";
+        const currentMarket =
+            getMarket(match) || "Unknown";
 
-        markets[m] = (markets[m] || 0) + 1;
-        risks[r] = (risks[r] || 0) + 1;
+        const currentRisk =
+            getRisk(match) || "Unknown";
+
+        marketCounts[currentMarket] =
+            (marketCounts[currentMarket] || 0) + 1;
+
+        riskCounts[currentRisk] =
+            (riskCounts[currentRisk] || 0) + 1;
     });
 
     function mostCommon(object) {
-        const entries = Object.entries(object);
+        const entries =
+            Object.entries(object);
 
         if (!entries.length) {
             return "—";
@@ -493,24 +567,30 @@ function renderAnalysis(matches) {
             <tbody>
                 <tr>
                     <th>Selected matches</th>
-                    <td class="score-value">${matches.length}</td>
+                    <td class="score-value">
+                        ${matches.length}
+                    </td>
                 </tr>
 
                 <tr>
                     <th>Average confidence</th>
                     <td class="score-value">
-                        ${safe(percent(average))}
+                        ${safe(percentage(average))}
                     </td>
                 </tr>
 
                 <tr>
                     <th>Most common market</th>
-                    <td>${safe(mostCommon(markets))}</td>
+                    <td>
+                        ${safe(mostCommon(marketCounts))}
+                    </td>
                 </tr>
 
                 <tr>
                     <th>Most common risk</th>
-                    <td>${safe(mostCommon(risks))}</td>
+                    <td>
+                        ${safe(mostCommon(riskCounts))}
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -531,24 +611,29 @@ function renderConfidence(match) {
     if (!match) {
         summary.innerHTML = `
             <div class="confidence-number">—</div>
-            <div class="confidence-label">Final Confidence</div>
+            <div class="confidence-label">
+                Final Confidence
+            </div>
         `;
 
         factors.innerHTML = "";
         return;
     }
 
-    const score = confidence(match);
-    const progress = score === null
-        ? 0
-        : Math.max(
-            0,
-            Math.min(100, score)
-        );
+    const score =
+        getConfidence(match);
+
+    const progress =
+        score === null
+            ? 0
+            : Math.max(
+                0,
+                Math.min(100, score)
+            );
 
     summary.innerHTML = `
         <div class="confidence-number">
-            ${safe(percent(score))}
+            ${safe(percentage(score))}
         </div>
 
         <div class="confidence-label">
@@ -565,23 +650,32 @@ function renderConfidence(match) {
 
     factors.innerHTML = `
         <div class="factor-row">
-            <span class="factor-name">Prediction</span>
+            <span class="factor-name">
+                Prediction
+            </span>
+
             <span class="factor-score">
-                ${safe(prediction(match) || "—")}
+                ${safe(getPrediction(match) || "—")}
             </span>
         </div>
 
         <div class="factor-row">
-            <span class="factor-name">Market</span>
+            <span class="factor-name">
+                Market
+            </span>
+
             <span class="factor-score">
-                ${safe(market(match) || "—")}
+                ${safe(getMarket(match) || "—")}
             </span>
         </div>
 
         <div class="factor-row">
-            <span class="factor-name">Risk</span>
+            <span class="factor-name">
+                Risk
+            </span>
+
             <span class="factor-score">
-                ${safe(risk(match) || "—")}
+                ${safe(getRisk(match) || "—")}
             </span>
         </div>
     `;
@@ -608,37 +702,35 @@ function renderMatches(matches) {
                     <div class="match-main">
                         <div class="match-teams-small">
                             ${index + 1}.
-                            ${safe(home(match) || "Home")}
+                            ${safe(getHomeTeam(match) || "Home")}
                             vs
-                            ${safe(away(match) || "Away")}
+                            ${safe(getAwayTeam(match) || "Away")}
                         </div>
 
                         <div class="match-league">
-                            ${safe(league(match) || "Football")}
+                            ${safe(getLeague(match) || "Football")}
                         </div>
                     </div>
 
                     <div class="match-prediction">
-                        ${safe(prediction(match) || "—")}
+                        ${safe(getPrediction(match) || "—")}
                     </div>
 
                     <div class="match-market">
                         <strong>Market:</strong>
-                        ${safe(market(match) || "—")}
+                        ${safe(getMarket(match) || "—")}
                         <br>
-                        <span class="match-risk">
-                            <strong>Risk:</strong>
-                            ${safe(risk(match) || "—")}
-                        </span>
+                        <strong>Risk:</strong>
+                        ${safe(getRisk(match) || "—")}
                     </div>
 
-                    <div>
+                    <div class="match-result">
                         <div class="match-confidence">
-                            ${safe(percent(confidence(match)))}
+                            ${safe(percentage(getConfidence(match)))}
                         </div>
 
-                        <span class="badge ${riskClass(risk(match))}">
-                            ${safe(risk(match) || "Unknown risk")}
+                        <span class="badge ${getRiskClass(getRisk(match))}">
+                            ${safe(getRisk(match) || "Unknown")}
                         </span>
                     </div>
                 </article>
@@ -647,7 +739,7 @@ function renderMatches(matches) {
         .join("");
 }
 
-async function fetchWithTimeout(url) {
+async function fetchJson(url) {
     const controller =
         new AbortController();
 
@@ -659,29 +751,26 @@ async function fetchWithTimeout(url) {
 
     try {
         const response =
-            await fetch(
-                url,
-                {
-                    method: "GET",
-                    cache: "no-store",
-                    redirect: "follow",
-                    signal: controller.signal
-                }
-            );
-
-        if (!response.ok) {
-            throw new Error(
-                "APEX backend returned HTTP " +
-                response.status
-            );
-        }
+            await fetch(url, {
+                method: "GET",
+                cache: "no-store",
+                redirect: "follow",
+                signal: controller.signal
+            });
 
         const raw =
             await response.text();
 
+        if (!response.ok) {
+            throw new Error(
+                "API returned HTTP " +
+                response.status
+            );
+        }
+
         if (!raw.trim()) {
             throw new Error(
-                "APEX backend returned an empty response"
+                "API returned an empty response"
             );
         }
 
@@ -689,14 +778,14 @@ async function fetchWithTimeout(url) {
             return JSON.parse(raw);
         } catch (error) {
             throw new Error(
-                "APEX backend returned invalid JSON"
+                "API returned invalid JSON"
             );
         }
 
     } catch (error) {
         if (error.name === "AbortError") {
             throw new Error(
-                "APEX backend request timed out"
+                "API request timed out"
             );
         }
 
@@ -709,8 +798,8 @@ async function fetchWithTimeout(url) {
 
 async function loadDashboard() {
     try {
-        status(
-            "🔄 Connecting to APEX AI...",
+        setStatus(
+            "Connecting to APEX AI...",
             "loading"
         );
 
@@ -729,7 +818,7 @@ async function loadDashboard() {
         ) {
             try {
                 data =
-                    await fetchWithTimeout(url);
+                    await fetchJson(url);
                 break;
             } catch (error) {
                 lastError = error;
@@ -739,7 +828,8 @@ async function loadDashboard() {
                     APEX_DASHBOARD_CONFIG.RETRIES
                 ) {
                     await new Promise(
-                        resolve => setTimeout(resolve, 1200)
+                        resolve =>
+                            setTimeout(resolve, 1200)
                     );
                 }
             }
@@ -748,16 +838,18 @@ async function loadDashboard() {
         if (!data) {
             throw lastError ||
                 new Error(
-                    "APEX backend did not respond"
+                    "No API response"
                 );
         }
 
         if (
-            data.status === "ERROR"
+            data.status &&
+            String(data.status).toUpperCase() ===
+            "ERROR"
         ) {
             throw new Error(
                 data.message ||
-                "APEX backend returned an error"
+                "Backend returned an error"
             );
         }
 
@@ -772,10 +864,10 @@ async function loadDashboard() {
         renderConfidence(matches[0]);
         renderMatches(matches);
 
-        status(
-            "✅ APEX backend connected · " +
+        setStatus(
+            "APEX connected · " +
             matches.length +
-            " selected matches loaded",
+            " matches loaded",
             "success"
         );
 
@@ -785,35 +877,28 @@ async function loadDashboard() {
             error
         );
 
-        status(
-            "❌ APEX backend connection failed: " +
+        setStatus(
+            "APEX connection failed: " +
             error.message,
             "error"
         );
 
-        document.getElementById(
-            "featuredMatch"
-        ).innerHTML =
-            '<div class="error">Unable to load APEX data.</div>';
-
-        document.getElementById(
-            "analysisSummary"
-        ).innerHTML =
-            '<div class="error">Unable to load APEX data.</div>';
-
-        document.getElementById(
-            "confidenceSummary"
-        ).innerHTML =
-            '<div class="error">Unable to load APEX data.</div>';
-
-        document.getElementById(
-            "factorSummary"
-        ).innerHTML = "";
-
-        document.getElementById(
+        [
+            "featuredMatch",
+            "analysisSummary",
+            "confidenceSummary",
             "matchList"
-        ).innerHTML =
-            '<div class="error">Unable to load APEX data.</div>';
+        ].forEach(id => {
+            const element =
+                document.getElementById(id);
+
+            if (element) {
+                element.innerHTML =
+                    '<div class="error">' +
+                    safe(error.message) +
+                    "</div>";
+            }
+        });
     }
 }
 
@@ -825,5 +910,4 @@ document.addEventListener(
     "DOMContentLoaded",
     loadDashboard
 );
-
 </script>
