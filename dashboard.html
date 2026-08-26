@@ -911,3 +911,23 @@ document.addEventListener(
     loadDashboard
 );
 </script>
+<script>
+window.APEX_BACKEND_URL =
+"https://script.google.com/macros/s/AKfycbxygAHM7CTxHK5SXXCoc7AyfhivumaYJDKSYv5OFdI_woZdSnpVgBM400W8Gkny1Y8I/exec";
+
+const originalFetch = window.fetch;
+
+window.fetch = function(url, options) {
+    if (
+        String(url).includes("request=dashboard") ||
+        String(url).includes("PASTE_YOUR_NEW_BACKEND_EXEC_URL_HERE")
+    ) {
+        url =
+            window.APEX_BACKEND_URL +
+            "?request=dashboard&ts=" +
+            Date.now();
+    }
+
+    return originalFetch.call(this, url, options);
+};
+</script>
