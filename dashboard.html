@@ -22,20 +22,16 @@
 
 :root{
     --bg:#06101c;
-    --panel:#0c1a2a;
-    --panel2:#102338;
+    --panel:#0d1b2c;
+    --panel2:#10243a;
     --border:rgba(255,255,255,.08);
-
     --text:#ffffff;
-    --muted:#8fa0b3;
-
-    --green:#00d66b;
-    --green2:#3be68f;
-
-    --blue:#4185ff;
-    --purple:#a04cff;
-    --orange:#ffb72e;
-    --red:#ff5d72;
+    --muted:#8fa1b4;
+    --green:#39e58c;
+    --blue:#4d8dff;
+    --purple:#a257ff;
+    --orange:#ffba42;
+    --red:#ff6f7f;
 }
 
 *{
@@ -50,16 +46,15 @@ body{
 }
 
 body{
-
     background:
         radial-gradient(
             circle at top right,
-            rgba(65,133,255,.12),
+            rgba(77,141,255,.11),
             transparent 30%
         ),
         radial-gradient(
             circle at top left,
-            rgba(0,214,107,.09),
+            rgba(57,229,140,.07),
             transparent 28%
         ),
         linear-gradient(
@@ -91,9 +86,9 @@ button{
    ========================================================= */
 
 .apex-app{
+    display:flex;
     width:100%;
     min-height:100vh;
-    display:flex;
 }
 
 
@@ -102,13 +97,12 @@ button{
    ========================================================= */
 
 .sidebar{
-
-    width:240px;
-    flex:0 0 240px;
+    width:235px;
+    flex:0 0 235px;
 
     min-height:100vh;
 
-    padding:22px 14px;
+    padding:20px 13px;
 
     background:
         rgba(7,18,30,.98);
@@ -127,19 +121,18 @@ button{
 }
 
 .logo{
-
     display:flex;
     align-items:center;
 
     gap:10px;
 
-    padding:3px 7px 26px;
+    padding:
+        3px 7px 25px;
 }
 
 .logo-ball{
-
-    width:43px;
-    height:43px;
+    width:42px;
+    height:42px;
 
     display:flex;
     align-items:center;
@@ -150,33 +143,29 @@ button{
     background:
         linear-gradient(
             145deg,
-            #1a3854,
+            #183650,
             #091827
         );
 
     border:
         1px solid
-        rgba(59,230,143,.25);
+        rgba(57,229,140,.23);
 
-    font-size:23px;
+    font-size:22px;
 }
 
 .logo-text{
-
     font-size:20px;
-
     font-weight:900;
-
     line-height:1;
 }
 
 .logo-text span{
-
     display:block;
 
     margin-top:4px;
 
-    color:var(--green2);
+    color:var(--green);
 
     font-size:10px;
 
@@ -184,19 +173,15 @@ button{
 }
 
 .nav{
-
     display:flex;
     flex-direction:column;
-
     gap:6px;
 }
 
 .nav button{
-
     width:100%;
 
     border:0;
-
     border-radius:11px;
 
     padding:12px 13px;
@@ -212,72 +197,70 @@ button{
 
 .nav button:hover,
 .nav button.active{
-
     color:#ffffff;
 
     background:
-        rgba(59,230,143,.10);
+        rgba(57,229,140,.10);
+
+    box-shadow:
+        inset 3px 0 0
+        var(--green);
 }
 
 .sidebar-bottom{
-
     margin-top:auto;
 }
 
 .engine-card{
-
-    padding:13px;
+    padding:12px;
 
     margin-bottom:9px;
 
     border-radius:12px;
 
     background:
-        rgba(59,230,143,.055);
+        rgba(57,229,140,.05);
 
     border:
         1px solid
-        rgba(59,230,143,.10);
+        rgba(57,229,140,.10);
 
-    color:#d1dbe5;
+    color:#d0dae4;
 
-    font-size:11px;
+    font-size:10px;
 }
 
 .engine-row{
-
     display:flex;
+
     align-items:center;
+
     gap:8px;
 
     font-weight:700;
 }
 
 .engine-dot{
-
     width:8px;
     height:8px;
 
     border-radius:50%;
 
-    background:var(--green2);
+    background:
+        var(--green);
 
     box-shadow:
         0 0 12px
-        rgba(59,230,143,.7);
+        rgba(57,229,140,.8);
 }
 
 .engine-small{
-
     margin-top:5px;
-
     margin-left:16px;
-
-    color:#627286;
+    color:#607287;
 }
 
 .logout{
-
     width:100%;
 
     border:
@@ -291,7 +274,7 @@ button{
     background:
         rgba(255,255,255,.025);
 
-    color:#aeb9c6;
+    color:#aeb9c7;
 
     cursor:pointer;
 }
@@ -302,16 +285,13 @@ button{
    ========================================================= */
 
 .main{
-
     flex:1;
-
     min-width:0;
 
-    padding:24px;
+    padding:23px;
 }
 
 .header{
-
     display:flex;
 
     align-items:center;
@@ -320,18 +300,16 @@ button{
 
     gap:18px;
 
-    margin-bottom:20px;
+    margin-bottom:18px;
 }
 
-.header-left h1{
-
+.header h1{
     margin:0;
 
-    font-size:30px;
+    font-size:29px;
 }
 
-.header-left p{
-
+.header p{
     margin:7px 0 0;
 
     color:var(--muted);
@@ -340,9 +318,6 @@ button{
 }
 
 .connection{
-
-    min-width:220px;
-
     padding:9px 13px;
 
     border-radius:999px;
@@ -354,9 +329,9 @@ button{
         1px solid
         rgba(255,255,255,.07);
 
-    text-align:center;
+    font-size:10px;
 
-    font-size:11px;
+    white-space:nowrap;
 }
 
 .connection.loading{
@@ -364,39 +339,37 @@ button{
 }
 
 .connection.success{
-    color:var(--green2);
+    color:var(--green);
 }
 
 .connection.error{
-    color:#ff7b89;
+    color:var(--red);
 }
 
 
 /* =========================================================
-   KPI CARDS
+   KPI
    ========================================================= */
 
 .kpis{
-
     display:grid;
 
     grid-template-columns:
         repeat(4,minmax(0,1fr));
 
-    gap:13px;
+    gap:12px;
 
-    margin-bottom:18px;
+    margin-bottom:17px;
 }
 
 .kpi{
-
     position:relative;
 
     overflow:hidden;
 
-    min-height:114px;
+    min-height:110px;
 
-    padding:17px;
+    padding:16px;
 
     border-radius:16px;
 
@@ -413,7 +386,6 @@ button{
 }
 
 .kpi::after{
-
     content:"";
 
     position:absolute;
@@ -424,7 +396,7 @@ button{
 
     height:3px;
 
-    background:var(--green2);
+    background:var(--green);
 }
 
 .kpi.blue::after{
@@ -440,8 +412,7 @@ button{
 }
 
 .kpi-label{
-
-    color:#8e9daf;
+    color:#91a0b1;
 
     font-size:11px;
 
@@ -449,10 +420,11 @@ button{
 }
 
 .kpi-value{
+    margin-top:8px;
 
-    margin-top:9px;
+    color:#ffffff;
 
-    font-size:31px;
+    font-size:30px;
 
     font-weight:900;
 
@@ -460,12 +432,11 @@ button{
 }
 
 .kpi-note{
+    margin-top:7px;
 
-    margin-top:8px;
+    color:#63758a;
 
-    color:#66778b;
-
-    font-size:10px;
+    font-size:9px;
 }
 
 
@@ -474,12 +445,11 @@ button{
    ========================================================= */
 
 .featured{
+    padding:19px;
 
-    margin-bottom:18px;
+    margin-bottom:17px;
 
-    padding:20px;
-
-    border-radius:19px;
+    border-radius:18px;
 
     background:
         linear-gradient(
@@ -494,7 +464,6 @@ button{
 }
 
 .section-heading{
-
     display:flex;
 
     align-items:center;
@@ -503,96 +472,86 @@ button{
 
     gap:12px;
 
-    margin-bottom:16px;
+    margin-bottom:15px;
 }
 
 .section-heading h2{
-
     margin:0;
 
     font-size:17px;
 }
 
 .section-heading p{
+    margin:4px 0 0;
 
-    margin:5px 0 0;
+    color:#708196;
 
-    color:#718196;
-
-    font-size:10px;
+    font-size:9px;
 }
 
 .top-badge{
-
-    padding:6px 10px;
+    padding:5px 9px;
 
     border-radius:999px;
 
     background:
-        rgba(59,230,143,.08);
+        rgba(57,229,140,.08);
 
-    color:var(--green2);
+    color:var(--green);
 
-    font-size:9px;
+    font-size:8px;
 
     font-weight:800;
 }
 
 .featured-league{
-
-    margin-bottom:14px;
-
-    color:#c1cfda;
-
     text-align:center;
 
-    font-size:12px;
+    margin-bottom:13px;
+
+    color:#c2cfdb;
+
+    font-size:11px;
 
     font-weight:700;
 }
 
 .featured-teams{
-
     display:grid;
 
     grid-template-columns:
-        1fr 70px 1fr;
+        1fr 65px 1fr;
 
     align-items:center;
 
-    gap:12px;
+    gap:10px;
 
     text-align:center;
 }
 
 .team{
-
     color:#ffffff;
 
     font-size:20px;
 
     font-weight:900;
-
-    line-height:1.3;
 }
 
 .team small{
-
     display:block;
 
-    margin-top:5px;
+    margin-top:4px;
 
-    color:#63758a;
+    color:#65778c;
 
-    font-size:9px;
+    font-size:8px;
 }
 
 .vs{
+    width:45px;
+    height:45px;
 
-    width:48px;
-    height:48px;
-
-    margin:0 auto;
+    margin:auto;
 
     display:flex;
 
@@ -604,49 +563,46 @@ button{
     background:
         rgba(255,255,255,.045);
 
-    color:#7d8da1;
+    color:#8291a3;
 
-    font-size:11px;
+    font-size:10px;
 
     font-weight:900;
 }
 
 .featured-prediction{
+    margin-top:15px;
 
-    margin-top:17px;
+    padding:12px;
 
-    padding:13px;
-
-    border-radius:12px;
+    border-radius:11px;
 
     background:
-        rgba(59,230,143,.055);
+        rgba(57,229,140,.055);
 
     border:
         1px solid
-        rgba(59,230,143,.10);
+        rgba(57,229,140,.10);
 
     text-align:center;
 }
 
 .featured-prediction-label{
-
     display:block;
 
     margin-bottom:5px;
 
-    color:#6e8093;
+    color:#6c7f93;
 
-    font-size:9px;
+    font-size:8px;
 
     letter-spacing:1px;
 }
 
 .featured-prediction-value{
+    color:var(--green);
 
-    color:var(--green2);
-
-    font-size:15px;
+    font-size:14px;
 
     font-weight:800;
 
@@ -654,13 +610,12 @@ button{
 }
 
 .featured-metrics{
-
     display:grid;
 
     grid-template-columns:
         repeat(4,1fr);
 
-    margin-top:15px;
+    margin-top:14px;
 
     border-top:
         1px solid
@@ -668,8 +623,7 @@ button{
 }
 
 .featured-metric{
-
-    padding:14px 12px;
+    padding:13px 10px;
 
     border-right:
         1px solid
@@ -677,69 +631,61 @@ button{
 }
 
 .featured-metric:last-child{
-
     border-right:0;
 }
 
 .featured-metric-title{
+    color:#63758a;
 
-    color:#65778b;
-
-    font-size:8px;
+    font-size:7px;
 
     font-weight:800;
 
-    letter-spacing:.8px;
+    letter-spacing:.7px;
 }
 
 .featured-metric-value{
+    margin-top:5px;
 
-    margin-top:6px;
+    color:#ebf1f6;
 
-    color:#edf2f7;
-
-    font-size:13px;
+    font-size:12px;
 
     font-weight:800;
 
-    line-height:1.35;
+    line-height:1.3;
 
     word-break:break-word;
 }
 
 .featured-metric-value.green{
+    color:var(--green);
 
-    color:var(--green2);
-
-    font-size:21px;
+    font-size:20px;
 }
 
 .score-wrap{
-
-    margin-top:15px;
+    margin-top:14px;
 }
 
 .score-head{
-
     display:flex;
 
     justify-content:space-between;
 
-    margin-bottom:7px;
+    margin-bottom:6px;
 
-    color:#718196;
+    color:#6e8094;
 
-    font-size:9px;
+    font-size:8px;
 }
 
 .score-head strong{
-
-    color:var(--green2);
+    color:var(--green);
 }
 
 .score-bar{
-
-    height:8px;
+    height:7px;
 
     overflow:hidden;
 
@@ -750,7 +696,6 @@ button{
 }
 
 .score-fill{
-
     height:100%;
 
     border-radius:inherit;
@@ -758,18 +703,17 @@ button{
     background:
         linear-gradient(
             90deg,
-            #20bd73,
-            #5bf0a2
+            #1fba70,
+            #5bf1a2
         );
 }
 
 
 /* =========================================================
-   TWO PANELS
+   PANELS
    ========================================================= */
 
 .two-column{
-
     display:grid;
 
     grid-template-columns:
@@ -777,11 +721,10 @@ button{
 
     gap:16px;
 
-    margin-bottom:18px;
+    margin-bottom:17px;
 }
 
 .panel{
-
     background:
         linear-gradient(
             145deg,
@@ -798,26 +741,12 @@ button{
     padding:18px;
 }
 
-.panel-title{
 
-    margin:0 0 5px;
-
-    font-size:17px;
-
-    font-weight:800;
-}
-
-.panel-subtitle{
-
-    margin:0 0 14px;
-
-    color:#6f8194;
-
-    font-size:10px;
-}
+/* =========================================================
+   SUMMARY
+   ========================================================= */
 
 .summary-grid{
-
     display:grid;
 
     grid-template-columns:
@@ -827,10 +756,9 @@ button{
 }
 
 .summary-box{
+    padding:13px;
 
-    padding:14px;
-
-    border-radius:12px;
+    border-radius:11px;
 
     background:
         rgba(255,255,255,.035);
@@ -841,25 +769,23 @@ button{
 }
 
 .summary-box span{
-
     display:block;
 
-    color:#718196;
+    color:#708196;
 
-    font-size:9px;
+    font-size:8px;
 }
 
 .summary-box strong{
-
     display:block;
 
-    margin-top:7px;
+    margin-top:6px;
 
     color:#e9eef4;
 
-    font-size:15px;
+    font-size:14px;
 
-    line-height:1.35;
+    line-height:1.3;
 }
 
 
@@ -868,33 +794,29 @@ button{
    ========================================================= */
 
 .confidence-center{
-
-    padding:3px 0 13px;
-
     text-align:center;
+
+    padding-bottom:11px;
 }
 
 .confidence-number{
+    color:var(--green);
 
-    color:var(--green2);
-
-    font-size:45px;
+    font-size:44px;
 
     font-weight:900;
 }
 
 .confidence-label{
-
-    color:#708196;
+    color:#6f8094;
 
     margin-bottom:10px;
 
-    font-size:10px;
+    font-size:9px;
 }
 
 .progress{
-
-    height:8px;
+    height:7px;
 
     overflow:hidden;
 
@@ -905,7 +827,6 @@ button{
 }
 
 .progress-bar{
-
     height:100%;
 
     border-radius:inherit;
@@ -913,30 +834,29 @@ button{
     background:
         linear-gradient(
             90deg,
-            #20bd73,
-            #5bf0a2
+            #1fba70,
+            #5bf1a2
         );
 }
 
 .factor-list{
-    margin-top:11px;
+    margin-top:9px;
 }
 
 .factor-row{
-
     display:flex;
 
     justify-content:space-between;
 
-    gap:12px;
+    gap:10px;
 
-    padding:8px 0;
+    padding:7px 0;
 
     border-bottom:
         1px solid
         rgba(255,255,255,.045);
 
-    font-size:10px;
+    font-size:9px;
 }
 
 .factor-row:last-child{
@@ -944,14 +864,13 @@ button{
 }
 
 .factor-name{
-    color:#738397;
+    color:#718297;
 }
 
 .factor-score{
+    max-width:65%;
 
-    max-width:68%;
-
-    color:#dde5ed;
+    color:#dfe6ed;
 
     text-align:right;
 
@@ -960,23 +879,22 @@ button{
 
 
 /* =========================================================
-   MATCHES
+   MATCH LIST
    ========================================================= */
 
 .matches-panel{
-    margin-bottom:18px;
+    margin-bottom:17px;
 }
 
 .match-limit{
-
     padding:5px 9px;
 
     border-radius:999px;
 
     background:
-        rgba(59,230,143,.07);
+        rgba(57,229,140,.07);
 
-    color:var(--green2);
+    color:var(--green);
 
     font-size:8px;
 
@@ -985,44 +903,37 @@ button{
 
 .table-header,
 .match-row{
-
     display:grid;
 
     grid-template-columns:
-        30px
+        28px
         1.65fr
-        1.35fr
-        .75fr
-        .75fr
-        .85fr;
+        1.30fr
+        .72fr
+        .78fr
+        .82fr;
 
     align-items:center;
 
-    gap:10px;
+    gap:9px;
 }
 
 .table-header{
-
-    padding:
-        10px 8px;
-
-    color:#637387;
+    padding:10px 7px;
 
     border-bottom:
         1px solid
         rgba(255,255,255,.055);
 
-    font-size:8px;
+    color:#637488;
+
+    font-size:7px;
 
     text-transform:uppercase;
-
-    letter-spacing:.6px;
 }
 
 .match-row{
-
-    padding:
-        12px 8px;
+    padding:11px 7px;
 
     border-bottom:
         1px solid
@@ -1034,17 +945,15 @@ button{
 }
 
 .match-number{
+    color:#56677c;
 
-    color:#56667b;
-
-    font-size:10px;
+    font-size:9px;
 }
 
 .match-teams-small{
-
     color:#edf3f8;
 
-    font-size:11px;
+    font-size:10px;
 
     font-weight:800;
 
@@ -1052,78 +961,68 @@ button{
 }
 
 .match-teams-small span{
+    margin:0 4px;
 
-    margin:0 5px;
+    color:#506176;
 
-    color:#52647a;
-
-    font-size:8px;
+    font-size:7px;
 }
 
 .match-league{
+    margin-top:3px;
 
-    margin-top:4px;
+    color:#63748a;
 
-    color:#62738a;
-
-    font-size:8px;
+    font-size:7px;
 }
 
 .match-prediction{
-
     color:#dce5ed;
 
-    font-size:10px;
+    font-size:9px;
 
     line-height:1.35;
 }
 
 .market-small{
-
     display:block;
 
     margin-top:3px;
 
-    color:var(--green2);
+    color:var(--green);
 
-    font-size:8px;
+    font-size:7px;
 }
 
 .match-confidence{
+    color:var(--green);
 
-    color:var(--green2);
-
-    font-size:14px;
+    font-size:13px;
 
     font-weight:900;
 }
 
 .match-info{
+    color:#8fa0b2;
 
-    color:#8fa0b1;
+    font-size:7px;
 
-    font-size:8px;
-
-    line-height:1.6;
+    line-height:1.55;
 }
 
 .decision{
-
     display:inline-block;
 
-    width:max-content;
+    padding:5px 7px;
 
-    padding:6px 8px;
+    border-radius:7px;
 
-    border-radius:8px;
-
-    font-size:7px;
+    font-size:6px;
 
     font-weight:800;
 }
 
 .decision.low{
-
     color:#39e58c;
 
     background:
@@ -1131,7 +1030,6 @@ button{
 }
 
 .decision.medium{
-
     color:#ffd166;
 
     background:
@@ -1139,7 +1037,6 @@ button{
 }
 
 .decision.high{
-
     color:#ff7c89;
 
     background:
@@ -1147,7 +1044,6 @@ button{
 }
 
 .decision.unknown{
-
     color:#a5b1bf;
 
     background:
@@ -1156,35 +1052,13 @@ button{
 
 
 /* =========================================================
-   FOOTER
-   ========================================================= */
-
-.footer{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    gap:12px;
-
-    padding:
-        3px 2px 18px;
-
-    color:#4e6075;
-
-    font-size:8px;
-}
-
-
-/* =========================================================
-   STATE
+   STATES
    ========================================================= */
 
 .state{
+    padding:24px;
 
-    padding:25px;
-
-    border-radius:14px;
+    border-radius:13px;
 
     background:
         rgba(255,255,255,.025);
@@ -1193,12 +1067,31 @@ button{
 
     text-align:center;
 
-    font-size:12px;
+    font-size:11px;
 }
 
 .state.error{
+    color:#ff7b8b;
+}
 
-    color:#ff7d8a;
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.footer{
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    padding:
+        3px 2px 18px;
+
+    color:#4d5f74;
+
+    font-size:7px;
 }
 
 
@@ -1209,20 +1102,16 @@ button{
 @media(max-width:1050px){
 
     .sidebar{
-
         width:205px;
-
         flex-basis:205px;
     }
 
     .kpis{
-
         grid-template-columns:
-            repeat(2,minmax(0,1fr));
+            repeat(2,1fr);
     }
 
     .two-column{
-
         grid-template-columns:
             1fr;
     }
@@ -1244,11 +1133,11 @@ button{
 
         min-height:0;
 
-        padding:12px;
+        padding:11px;
     }
 
     .logo{
-        padding-bottom:14px;
+        padding-bottom:13px;
     }
 
     .nav{
@@ -1260,17 +1149,15 @@ button{
     }
 
     .sidebar-bottom{
-        margin-top:12px;
+        margin-top:11px;
     }
 
     .main{
-        padding:13px;
+        padding:12px;
     }
 
     .header{
-
         flex-direction:column;
-
         align-items:flex-start;
     }
 
@@ -1279,17 +1166,15 @@ button{
     }
 
     .featured-teams{
-
         grid-template-columns:
-            1fr 58px 1fr;
+            1fr 55px 1fr;
     }
 
     .team{
-        font-size:16px;
+        font-size:15px;
     }
 
     .featured-metrics{
-
         grid-template-columns:
             repeat(2,1fr);
     }
@@ -1303,13 +1188,10 @@ button{
     }
 
     .match-row{
-
         grid-template-columns:
-            24px
+            23px
             1fr
             1fr;
-
-        padding:13px 5px;
     }
 
     .footer{
@@ -1320,30 +1202,29 @@ button{
 @media(max-width:430px){
 
     .kpis{
-
         grid-template-columns:
             1fr 1fr;
 
-        gap:8px;
+        gap:7px;
     }
 
     .kpi{
-
-        min-height:96px;
-
-        padding:13px;
+        min-height:92px;
+        padding:12px;
     }
 
     .kpi-value{
-        font-size:24px;
+        font-size:23px;
     }
 
     .summary-grid{
-        grid-template-columns:1fr;
+        grid-template-columns:
+            1fr;
     }
 
     .featured-teams{
-        grid-template-columns:1fr;
+        grid-template-columns:
+            1fr;
     }
 
     .vs{
@@ -1351,11 +1232,11 @@ button{
     }
 
     .featured-metrics{
-        grid-template-columns:1fr;
+        grid-template-columns:
+            1fr;
     }
 
     .featured-metric{
-
         border-right:0;
 
         border-bottom:
@@ -1375,18 +1256,23 @@ button{
 
 <body>
 
+
 <div class="apex-app">
 
 
-    <!-- SIDEBAR -->
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
 
     <aside class="sidebar">
+
 
         <div class="logo">
 
             <div class="logo-ball">
                 ⚽
             </div>
+
 
             <div class="logo-text">
 
@@ -1403,6 +1289,7 @@ button{
 
         <nav class="nav">
 
+
             <button
                 class="active"
                 onclick="go('dashboard.html')"
@@ -1410,11 +1297,13 @@ button{
                 🏠 Dashboard
             </button>
 
+
             <button
                 onclick="go('predictions.html')"
             >
                 🤖 AI Predictions
             </button>
+
 
             <button
                 onclick="go('analysis.html')"
@@ -1422,11 +1311,13 @@ button{
                 📊 Analysis
             </button>
 
+
             <button
                 onclick="go('statistics.html')"
             >
                 📈 Statistics
             </button>
+
 
             <button
                 onclick="go('livescores.html')"
@@ -1434,11 +1325,13 @@ button{
                 ⚽ Live Scores
             </button>
 
+
             <button
                 onclick="go('leagues.html')"
             >
                 🏆 Leagues
             </button>
+
 
             <button
                 onclick="go('headtohead.html')"
@@ -1446,18 +1339,22 @@ button{
                 ⚔ Head To Head
             </button>
 
+
             <button
                 onclick="go('settings.html')"
             >
                 ⚙ Settings
             </button>
 
+
         </nav>
 
 
         <div class="sidebar-bottom">
 
+
             <div class="engine-card">
+
 
                 <div class="engine-row">
 
@@ -1468,9 +1365,11 @@ button{
 
                 </div>
 
+
                 <div class="engine-small">
                     Backend connection
                 </div>
+
 
             </div>
 
@@ -1482,19 +1381,24 @@ button{
                 🚪 Logout
             </button>
 
+
         </div>
+
 
     </aside>
 
 
-    <!-- MAIN -->
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
 
     <main class="main">
 
 
         <header class="header">
 
-            <div class="header-left">
+
+            <div>
 
                 <h1>
                     Dashboard
@@ -1514,10 +1418,13 @@ button{
                 🔄 Connecting to APEX AI...
             </div>
 
+
         </header>
 
 
-        <!-- KPI -->
+        <!-- =================================================
+             KPI CARDS
+             ================================================= -->
 
         <section class="kpis">
 
@@ -1536,7 +1443,7 @@ button{
                 </div>
 
                 <div class="kpi-note">
-                    Up to 30 dashboard matches
+                    Up to 30 selected matches
                 </div>
 
             </div>
@@ -1579,7 +1486,7 @@ button{
                 </div>
 
                 <div class="kpi-note">
-                    Valid prediction records
+                    Qualified prediction records
                 </div>
 
             </div>
@@ -1604,15 +1511,19 @@ button{
 
             </div>
 
+
         </section>
 
 
-        <!-- FEATURED -->
+        <!-- =================================================
+             FEATURED MATCH
+             ================================================= -->
 
         <section class="featured">
 
 
             <div class="section-heading">
+
 
                 <div>
 
@@ -1631,13 +1542,11 @@ button{
                     TOP AI
                 </div>
 
+
             </div>
 
 
-            <div
-                id="featuredMatch"
-                class="featured-content"
-            >
+            <div id="featuredMatch">
 
                 <div class="state">
                     🔄 Loading featured prediction...
@@ -1645,23 +1554,29 @@ button{
 
             </div>
 
+
         </section>
 
 
-        <!-- SUMMARY / CONFIDENCE -->
+        <!-- =================================================
+             AI SUMMARY / CONFIDENCE
+             ================================================= -->
 
         <section class="two-column">
 
 
             <div class="panel">
 
+
                 <h2 class="panel-title">
                     📊 AI Analysis Summary
                 </h2>
 
+
                 <p class="panel-subtitle">
                     Current APEX selection overview
                 </p>
+
 
                 <div id="analysisSummary">
 
@@ -1671,25 +1586,32 @@ button{
 
                 </div>
 
+
             </div>
 
 
             <div class="panel">
 
+
                 <h2 class="panel-title">
                     🎯 Confidence Breakdown
                 </h2>
+
 
                 <p class="panel-subtitle">
                     Current prediction confidence
                 </p>
 
+
                 <div
                     id="confidenceSummary"
                     class="confidence-center"
                 >
+
                     🔄 Loading...
+
                 </div>
+
 
                 <div
                     id="factorSummary"
@@ -1697,17 +1619,22 @@ button{
                 >
                 </div>
 
+
             </div>
+
 
         </section>
 
 
-        <!-- MATCHES -->
+        <!-- =================================================
+             TOP 30 MATCHES
+             ================================================= -->
 
         <section class="panel matches-panel">
 
 
             <div class="section-heading">
+
 
                 <div>
 
@@ -1716,7 +1643,7 @@ button{
                     </h2>
 
                     <p>
-                        Highest-confidence qualified matches
+                        Up to 30 qualified APEX selections
                     </p>
 
                 </div>
@@ -1726,17 +1653,35 @@ button{
                     MAX 30
                 </div>
 
+
             </div>
 
 
             <div class="table-header">
 
-                <span>#</span>
-                <span>Match</span>
-                <span>Prediction</span>
-                <span>Confidence</span>
-                <span>Info</span>
-                <span>AI</span>
+                <span>
+                    #
+                </span>
+
+                <span>
+                    Match
+                </span>
+
+                <span>
+                    Prediction
+                </span>
+
+                <span>
+                    Confidence
+                </span>
+
+                <span>
+                    Info
+                </span>
+
+                <span>
+                    AI
+                </span>
 
             </div>
 
@@ -1744,7 +1689,7 @@ button{
             <div id="matchList">
 
                 <div class="state">
-                    🔄 Loading matches...
+                    🔄 Loading APEX matches...
                 </div>
 
             </div>
@@ -1772,17 +1717,18 @@ button{
 
     </main>
 
+
 </div>
 
 
 <script>
 
-/* =========================================================
-   APEX DASHBOARD ENGINE
-   ========================================================= */
-
 "use strict";
 
+
+/* =========================================================
+   VERIFIED APEX BACKEND
+   ========================================================= */
 
 const APEX_DASHBOARD_CONFIG = Object.freeze({
 
@@ -1807,7 +1753,7 @@ const APEX_DASHBOARD_CONFIG = Object.freeze({
 
 function go(page){
 
-    const allowedPages = [
+    const pages = [
 
         "dashboard.html",
         "predictions.html",
@@ -1823,17 +1769,10 @@ function go(page){
     window.location.href =
         "./" +
         (
-            allowedPages.includes(page)
+            pages.includes(page)
                 ? page
                 : "dashboard.html"
         );
-}
-
-
-function logout(){
-
-    window.location.href =
-        "./index.html";
 }
 
 
@@ -1877,8 +1816,15 @@ function openSettings(){
 }
 
 
+function logout(){
+
+    window.location.href =
+        "./index.html";
+}
+
+
 /* =========================================================
-   HELPERS
+   GENERAL HELPERS
    ========================================================= */
 
 function normaliseKey(value){
@@ -1926,6 +1872,65 @@ function numberValue(value){
 }
 
 
+function percentage(value){
+
+    const number =
+        numberValue(value);
+
+    return number === null
+        ? "—"
+        : Math.round(number) + "%";
+}
+
+
+function setText(
+    id,
+    value
+){
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+    if(
+        element
+    ){
+
+        element.textContent =
+            value;
+    }
+}
+
+
+function setStatus(
+    message,
+    state
+){
+
+    const element =
+        document.getElementById(
+            "connectionStatus"
+        );
+
+    if(
+        element
+    ){
+
+        element.textContent =
+            message;
+
+        element.className =
+            "connection " +
+            state;
+    }
+}
+
+
+/* =========================================================
+   GENERIC FIELD READER
+   ========================================================= */
+
 function getValue(
     object,
     names
@@ -1956,8 +1961,9 @@ function getValue(
         const found =
             keys.find(
                 key =>
-                    normaliseKey(key) ===
-                    wanted
+                    normaliseKey(
+                        key
+                    ) === wanted
             );
 
         if(
@@ -1978,7 +1984,7 @@ function getValue(
 
 
 /* =========================================================
-   MATCH FIELD GETTERS
+   MATCH GETTERS
    ========================================================= */
 
 function getFixtureId(match){
@@ -1989,8 +1995,8 @@ function getFixtureId(match){
             "Fixture ID",
             "API Fixture ID",
             "fixture_id",
-            "Fixture",
-            "ID"
+            "Fixture ID ",
+            "Fixture"
         ]
     );
 }
@@ -2060,8 +2066,7 @@ function getPrediction(match){
             "Prediction",
             "AI Prediction",
             "Prediction Advice",
-            "Advice",
-            "AI Decision"
+            "Advice"
         ]
     );
 }
@@ -2109,27 +2114,27 @@ function getRisk(match){
         );
     }
 
-    const score =
+    const confidence =
         getConfidence(
             match
         );
 
     if(
-        score === null
+        confidence === null
     ){
 
         return "";
     }
 
     if(
-        score >= 70
+        confidence >= 70
     ){
 
         return "LOW";
     }
 
     if(
-        score >= 55
+        confidence >= 55
     ){
 
         return "MEDIUM";
@@ -2150,7 +2155,8 @@ function getMarket(match){
                 "Recommended market",
                 "Market",
                 "Betting Market",
-                "Selection Market"
+                "Selection Market",
+                "Prediction Market"
             ]
         );
 
@@ -2163,7 +2169,7 @@ function getMarket(match){
         );
     }
 
-    const prediction =
+    const text =
         String(
             getPrediction(
                 match
@@ -2171,7 +2177,7 @@ function getMarket(match){
         ).toLowerCase();
 
     if(
-        prediction.includes(
+        text.includes(
             "double chance"
         )
     ){
@@ -2180,40 +2186,48 @@ function getMarket(match){
     }
 
     if(
-        prediction.includes("over 1.5") ||
-        prediction.includes("+1.5")
+        text.includes("over 0.5") ||
+        text.includes("+0.5")
+    ){
+
+        return "Over 0.5 Goals";
+    }
+
+    if(
+        text.includes("over 1.5") ||
+        text.includes("+1.5")
     ){
 
         return "Over 1.5 Goals";
     }
 
     if(
-        prediction.includes("over 2.5") ||
-        prediction.includes("+2.5")
+        text.includes("over 2.5") ||
+        text.includes("+2.5")
     ){
 
         return "Over 2.5 Goals";
     }
 
     if(
-        prediction.includes("under 3.5") ||
-        prediction.includes("-3.5")
-    ){
-
-        return "Under 3.5 Goals";
-    }
-
-    if(
-        prediction.includes("under 2.5") ||
-        prediction.includes("-2.5")
+        text.includes("under 2.5") ||
+        text.includes("-2.5")
     ){
 
         return "Under 2.5 Goals";
     }
 
     if(
-        prediction.includes("btts") ||
-        prediction.includes(
+        text.includes("under 3.5") ||
+        text.includes("-3.5")
+    ){
+
+        return "Under 3.5 Goals";
+    }
+
+    if(
+        text.includes("btts") ||
+        text.includes(
             "both teams to score"
         )
     ){
@@ -2222,55 +2236,13 @@ function getMarket(match){
     }
 
     if(
-        prediction.includes("draw")
+        text.includes("draw")
     ){
 
         return "Draw";
     }
 
     return "";
-}
-
-
-function getOddsHome(match){
-
-    return numberValue(
-        getValue(
-            match,
-            [
-                "Odds Home",
-                "Home Odds"
-            ]
-        )
-    );
-}
-
-
-function getOddsDraw(match){
-
-    return numberValue(
-        getValue(
-            match,
-            [
-                "Odds Draw",
-                "Draw Odds"
-            ]
-        )
-    );
-}
-
-
-function getOddsAway(match){
-
-    return numberValue(
-        getValue(
-            match,
-            [
-                "Odds Away",
-                "Away Odds"
-            ]
-        )
-    );
 }
 
 
@@ -2326,29 +2298,29 @@ function getOver15(match){
 
 function getRiskClass(risk){
 
-    const value =
+    const text =
         String(
             risk ||
             ""
         ).toLowerCase();
 
     if(
-        value.includes("low")
+        text.includes("low")
     ){
 
         return "low";
     }
 
     if(
-        value.includes("medium") ||
-        value.includes("moderate")
+        text.includes("medium") ||
+        text.includes("moderate")
     ){
 
         return "medium";
     }
 
     if(
-        value.includes("high")
+        text.includes("high")
     ){
 
         return "high";
@@ -2360,34 +2332,34 @@ function getRiskClass(risk){
 
 function getAIStatus(match){
 
-    const score =
+    const confidence =
         getConfidence(
             match
         );
 
     if(
-        score === null
+        confidence === null
     ){
 
         return "WATCH";
     }
 
     if(
-        score >= 80
+        confidence >= 80
     ){
 
         return "STRONG BET";
     }
 
     if(
-        score >= 70
+        confidence >= 70
     ){
 
         return "GOOD BET";
     }
 
     if(
-        score >= 60
+        confidence >= 60
     ){
 
         return "POSSIBLE BET";
@@ -2398,10 +2370,24 @@ function getAIStatus(match){
 
 
 /* =========================================================
-   MATCH EXTRACTION
+   BACKEND RESPONSE
    ========================================================= */
 
-function extractMatches(data){
+function extractMatches(
+    data
+){
+
+    /*
+     * IMPORTANT:
+     * The verified backend response returns:
+     *
+     * {
+     *   status:"SUCCESS",
+     *   matches:[...]
+     * }
+     *
+     * Therefore matches[] is checked FIRST.
+     */
 
     if(
         data &&
@@ -2412,6 +2398,7 @@ function extractMatches(data){
 
         return data.matches;
     }
+
 
     if(
         data &&
@@ -2424,6 +2411,7 @@ function extractMatches(data){
         return data.matchDatabase.objects;
     }
 
+
     if(
         data &&
         data.smartGate &&
@@ -2435,6 +2423,7 @@ function extractMatches(data){
         return data.smartGate.objects;
     }
 
+
     if(
         data &&
         Array.isArray(
@@ -2444,6 +2433,7 @@ function extractMatches(data){
 
         return data.smartGate;
     }
+
 
     if(
         data &&
@@ -2455,15 +2445,18 @@ function extractMatches(data){
         return data.data;
     }
 
+
     return [];
 }
 
 
 /* =========================================================
-   MATCH VALIDATION
+   QUALIFIED MATCH CHECK
    ========================================================= */
 
-function isUsableMatch(match){
+function isUsableMatch(
+    match
+){
 
     if(
         !match ||
@@ -2499,19 +2492,17 @@ function isUsableMatch(match){
 
 
 /* =========================================================
-   DUPLICATE CONTROL
+   DEDUPLICATION
    ========================================================= */
 
-function getIdentity(
+function getMatchIdentity(
     match,
     index
 ){
 
     const fixture =
         String(
-            getFixtureId(
-                match
-            )
+            getFixtureId(match)
         ).trim();
 
     if(
@@ -2525,6 +2516,7 @@ function getIdentity(
             )
         );
     }
+
 
     const date =
         normaliseKey(
@@ -2546,7 +2538,8 @@ function getIdentity(
             getLeague(match)
         );
 
-    const key =
+
+    const identity =
         [
             date,
             home,
@@ -2554,12 +2547,14 @@ function getIdentity(
             league
         ].join("|");
 
+
     if(
-        key !== "|||"
+        identity !== "|||"
     ){
 
-        return key;
+        return identity;
     }
+
 
     return(
         "row:" +
@@ -2568,14 +2563,16 @@ function getIdentity(
 }
 
 
-function selectMatches(
+function prepareMatches(
     source
 ){
 
     const seen =
         new Set();
 
-    const result = [];
+    const result =
+        [];
+
 
     const matches =
         Array.isArray(source)
@@ -2598,11 +2595,13 @@ function selectMatches(
                 return;
             }
 
+
             const identity =
-                getIdentity(
+                getMatchIdentity(
                     match,
                     index
                 );
+
 
             if(
                 seen.has(
@@ -2613,9 +2612,11 @@ function selectMatches(
                 return;
             }
 
+
             seen.add(
                 identity
             );
+
 
             result.push(
                 match
@@ -2633,18 +2634,28 @@ function selectMatches(
 
             return(
                 (
-                    getConfidence(b)
-                    || 0
+                    getConfidence(
+                        b
+                    ) || 0
                 )
                 -
                 (
-                    getConfidence(a)
-                    || 0
+                    getConfidence(
+                        a
+                    ) || 0
                 )
             );
         }
     );
 
+
+    /*
+     * DISPLAY LIMIT = 30
+     *
+     * We never fabricate extra matches.
+     * If backend supplies 10, we display 10.
+     * If backend supplies 30, we display 30.
+     */
 
     return result.slice(
         0,
@@ -2725,7 +2736,7 @@ function renderKpis(
 
 
 /* =========================================================
-   FEATURED MATCH
+   FEATURED
    ========================================================= */
 
 function renderFeatured(
@@ -2835,6 +2846,7 @@ function renderFeatured(
 
         <div class="featured-prediction">
 
+
             <span
                 class="featured-prediction-label"
             >
@@ -2853,6 +2865,7 @@ function renderFeatured(
 
             </div>
 
+
         </div>
 
 
@@ -2861,9 +2874,7 @@ function renderFeatured(
 
             <div class="featured-metric">
 
-                <div
-                    class="featured-metric-title"
-                >
+                <div class="featured-metric-title">
                     CONFIDENCE
                 </div>
 
@@ -2876,7 +2887,7 @@ function renderFeatured(
                 >
 
                     ${safe(
-                        percentageValue(
+                        percentage(
                             confidence
                         )
                     )}
@@ -2888,9 +2899,7 @@ function renderFeatured(
 
             <div class="featured-metric">
 
-                <div
-                    class="featured-metric-title"
-                >
+                <div class="featured-metric-title">
                     MARKET
                 </div>
 
@@ -2909,9 +2918,7 @@ function renderFeatured(
 
             <div class="featured-metric">
 
-                <div
-                    class="featured-metric-title"
-                >
+                <div class="featured-metric-title">
                     RISK
                 </div>
 
@@ -2930,9 +2937,7 @@ function renderFeatured(
 
             <div class="featured-metric">
 
-                <div
-                    class="featured-metric-title"
-                >
+                <div class="featured-metric-title">
                     AI STATUS
                 </div>
 
@@ -2940,7 +2945,9 @@ function renderFeatured(
                 <div class="featured-metric-value">
 
                     ${safe(
-                        getAIStatus(match)
+                        getAIStatus(
+                            match
+                        )
                     )}
 
                 </div>
@@ -3011,18 +3018,21 @@ function renderSummary(
         !matches.length
     ){
 
-        container.innerHTML =
-            `
+        container.innerHTML = `
+
             <div class="state">
+
                 No prediction records available.
+
             </div>
-            `;
+
+        `;
 
         return;
     }
 
 
-    const values =
+    const confidenceValues =
         matches
             .map(
                 getConfidence
@@ -3034,17 +3044,19 @@ function renderSummary(
 
 
     const average =
-        values.length
+        confidenceValues.length
             ? Math.round(
-                values.reduce(
-                    (
+                confidenceValues.reduce(
+                    function(
                         total,
                         value
-                    ) =>
-                        total + value,
+                    ){
+
+                        return total + value;
+                    },
                     0
                 ) /
-                values.length
+                confidenceValues.length
             )
             : null;
 
@@ -3073,6 +3085,7 @@ function renderSummary(
                     markets[market] ||
                     0
                 ) + 1;
+
         }
     );
 
@@ -3086,12 +3099,14 @@ function renderSummary(
                 object
             );
 
+
         if(
             !entries.length
         ){
 
             return "—";
         }
+
 
         entries.sort(
             (
@@ -3101,6 +3116,7 @@ function renderSummary(
                 b[1] -
                 a[1]
         );
+
 
         return entries[0][0];
     }
@@ -3131,11 +3147,13 @@ function renderSummary(
                 </span>
 
                 <strong>
+
                     ${safe(
-                        percentageValue(
+                        percentage(
                             average
                         )
                     )}
+
                 </strong>
 
             </div>
@@ -3161,11 +3179,13 @@ function renderSummary(
                 </span>
 
                 <strong>
+
                     ${safe(
                         mostCommon(
                             markets
                         )
                     )}
+
                 </strong>
 
             </div>
@@ -3252,7 +3272,7 @@ function renderConfidence(
         <div class="confidence-number">
 
             ${safe(
-                percentageValue(
+                percentage(
                     confidence
                 )
             )}
@@ -3261,7 +3281,9 @@ function renderConfidence(
 
 
         <div class="confidence-label">
+
             Final Confidence
+
         </div>
 
 
@@ -3421,7 +3443,7 @@ function renderConfidence(
 
 
 /* =========================================================
-   MATCHES
+   MATCH LIST
    ========================================================= */
 
 function renderMatches(
@@ -3450,7 +3472,7 @@ function renderMatches(
 
             <div class="state">
 
-                No qualified matches available.
+                No qualified APEX matches available.
 
             </div>
 
@@ -3485,18 +3507,6 @@ function renderMatches(
             const riskClass =
                 getRiskClass(
                     risk
-                );
-
-
-            const homeGoals =
-                getHomeGoals(
-                    match
-                );
-
-
-            const awayGoals =
-                getAwayGoals(
-                    match
                 );
 
 
@@ -3615,7 +3625,7 @@ function renderMatches(
                         <div>
                             Home:
                             ${safe(
-                                homeGoals ||
+                                getHomeGoals(match) ||
                                 "—"
                             )}
                         </div>
@@ -3623,9 +3633,22 @@ function renderMatches(
                         <div>
                             Away:
                             ${safe(
-                                awayGoals ||
+                                getAwayGoals(match) ||
                                 "—"
                             )}
+                        </div>
+
+                        <div>
+                            BTTS:
+                            ${
+                                getBTTS(match) !== ""
+                                    ? safe(
+                                        String(
+                                            getBTTS(match)
+                                        ) + "%"
+                                    )
+                                    : "—"
+                            }
                         </div>
 
                     </div>
@@ -3665,33 +3688,10 @@ function renderMatches(
 
 
 /* =========================================================
-   PERCENTAGE HELPER
-   ========================================================= */
-
-function percentageValue(
-    value
-){
-
-    const parsed =
-        numberValue(
-            value
-        );
-
-    return(
-        parsed === null
-            ? "—"
-            : Math.round(
-                parsed
-            ) + "%"
-    );
-}
-
-
-/* =========================================================
    BACKEND REQUEST
    ========================================================= */
 
-async function fetchBackend(){
+async function requestDashboardData(){
 
     const controller =
         new AbortController();
@@ -3710,12 +3710,21 @@ async function fetchBackend(){
 
     try{
 
+        /*
+         * EXACT backend contract confirmed
+         * from the working /exec test.
+         *
+         * The response has:
+         *
+         * status:"SUCCESS"
+         * matches:[...]
+         */
+
         const url =
             APEX_DASHBOARD_CONFIG.API_URL +
             "?request=dashboard" +
             "&limit=" +
             APEX_DASHBOARD_CONFIG.MAX_MATCHES +
-            "&enrichment=football-data" +
             "&ts=" +
             Date.now();
 
@@ -3725,8 +3734,11 @@ async function fetchBackend(){
                 url,
                 {
                     method:"GET",
+
                     cache:"no-store",
+
                     redirect:"follow",
+
                     signal:
                         controller.signal
                 }
@@ -3742,7 +3754,7 @@ async function fetchBackend(){
         ){
 
             throw new Error(
-                "APEX backend HTTP " +
+                "APEX backend returned HTTP " +
                 response.status
             );
         }
@@ -3758,16 +3770,20 @@ async function fetchBackend(){
         }
 
 
+        let data;
+
+
         try{
 
-            return JSON.parse(
-                raw
-            );
+            data =
+                JSON.parse(
+                    raw
+                );
 
         }catch(error){
 
             console.error(
-                "APEX backend raw response:",
+                "APEX RAW RESPONSE:",
                 raw
             );
 
@@ -3775,6 +3791,9 @@ async function fetchBackend(){
                 "APEX backend returned invalid JSON."
             );
         }
+
+
+        return data;
 
 
     }catch(error){
@@ -3789,7 +3808,9 @@ async function fetchBackend(){
             );
         }
 
+
         throw error;
+
 
     }finally{
 
@@ -3801,7 +3822,7 @@ async function fetchBackend(){
 
 
 /* =========================================================
-   LOAD
+   LOAD DASHBOARD
    ========================================================= */
 
 async function loadDashboard(){
@@ -3833,7 +3854,7 @@ async function loadDashboard(){
             try{
 
                 data =
-                    await fetchBackend();
+                    await requestDashboardData();
 
                 break;
 
@@ -3888,15 +3909,15 @@ async function loadDashboard(){
         }
 
 
-        const rawMatches =
+        const backendMatches =
             extractMatches(
                 data
             );
 
 
         const matches =
-            selectMatches(
-                rawMatches
+            prepareMatches(
+                backendMatches
             );
 
 
@@ -3936,13 +3957,16 @@ async function loadDashboard(){
         console.log(
             "APEX DASHBOARD SUCCESS",
             {
-                rawMatches:
-                    rawMatches.length,
+                backendMatchCount:
+                    backendMatches.length,
 
-                displayedMatches:
+                displayedMatchCount:
                     matches.length,
 
-                response:
+                maximumDisplay:
+                    APEX_DASHBOARD_CONFIG.MAX_MATCHES,
+
+                backendResponse:
                     data
             }
         );
@@ -3951,7 +3975,7 @@ async function loadDashboard(){
     }catch(error){
 
         console.error(
-            "APEX Dashboard Error:",
+            "APEX DASHBOARD ERROR:",
             error
         );
 
@@ -3983,7 +4007,9 @@ async function loadDashboard(){
 
             <div class="state error">
 
-                APEX dashboard data could not be loaded.
+                ${safe(
+                    error.message
+                )}
 
             </div>
 
@@ -4022,13 +4048,14 @@ async function loadDashboard(){
             </div>
 
         `;
+
     }
 
 }
 
 
 /* =========================================================
-   GLOBAL FUNCTIONS
+   GLOBALS
    ========================================================= */
 
 window.go =
