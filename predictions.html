@@ -1,73 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>APEX Predict AI - Predictions</title>
-
 <link rel="stylesheet" href="styles.css">
 
 <style>
-
 :root{
     --bg:#071321;
     --panel:#0d1c2d;
-    --panel2:#10243a;
     --border:rgba(255,255,255,.08);
-    --text:#ffffff;
+    --text:#fff;
     --muted:#9eacba;
     --green:#00d66b;
-    --green-dark:#00a950;
-    --blue:#2f7cff;
     --yellow:#ffbf22;
     --red:#ff4d5f;
 }
 
-*{
-    box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
     margin:0;
     min-height:100vh;
-
     background:
-        radial-gradient(
-            circle at top left,
-            rgba(0,214,107,.10),
-            transparent 32%
-        ),
-        radial-gradient(
-            circle at top right,
-            rgba(47,124,255,.10),
-            transparent 32%
-        ),
-        linear-gradient(
-            135deg,
-            #050d17,
-            #071321 50%,
-            #0a1828
-        );
-
+        radial-gradient(circle at top left,rgba(0,214,107,.10),transparent 32%),
+        radial-gradient(circle at top right,rgba(47,124,255,.10),transparent 32%),
+        linear-gradient(135deg,#050d17,#071321 50%,#0a1828);
     color:var(--text);
-
-    font-family:
-        Inter,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Arial,
-        sans-serif;
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
 }
 
 .app{
     width:100%;
     max-width:1100px;
-    margin:0 auto;
+    margin:auto;
     padding:14px;
 }
 
@@ -89,20 +56,11 @@ body{
     width:46px;
     height:46px;
     border-radius:13px;
-
     display:flex;
     align-items:center;
     justify-content:center;
-
-    background:
-        linear-gradient(
-            145deg,
-            #19354e,
-            #0a1828
-        );
-
+    background:linear-gradient(145deg,#19354e,#0a1828);
     border:1px solid rgba(0,214,107,.22);
-
     font-size:24px;
 }
 
@@ -112,9 +70,7 @@ body{
     font-weight:800;
 }
 
-.brand-title span{
-    color:var(--green);
-}
+.brand-title span{color:var(--green)}
 
 .brand-subtitle{
     color:var(--muted);
@@ -125,10 +81,8 @@ body{
 .page-badge{
     padding:7px 10px;
     border-radius:999px;
-
     background:rgba(0,214,107,.08);
     border:1px solid rgba(0,214,107,.18);
-
     color:#9ff0c1;
     font-size:11px;
     font-weight:700;
@@ -137,36 +91,26 @@ body{
 .status{
     padding:12px 14px;
     margin-bottom:15px;
-
     border-radius:13px;
-
     background:rgba(255,255,255,.035);
     border:1px solid var(--border);
-
     color:#a9f0c2;
-
     text-align:center;
     font-size:12px;
     font-weight:700;
 }
 
-.page-header{
-    background:
-        linear-gradient(
-            145deg,
-            rgba(13,28,45,.98),
-            rgba(8,20,34,.98)
-        );
+.status.error{
+    color:#ffb4ab;
+}
 
+.page-header{
+    background:linear-gradient(145deg,rgba(13,28,45,.98),rgba(8,20,34,.98));
     border:1px solid var(--border);
     border-radius:19px;
-
     padding:18px;
-
     margin-bottom:15px;
-
-    box-shadow:
-        0 15px 35px rgba(0,0,0,.24);
+    box-shadow:0 15px 35px rgba(0,0,0,.24);
 }
 
 .page-header h1{
@@ -185,10 +129,8 @@ body{
     align-items:center;
     justify-content:space-between;
     gap:10px;
-
     margin-top:15px;
     padding-top:14px;
-
     border-top:1px solid var(--border);
 }
 
@@ -210,25 +152,15 @@ body{
 }
 
 .match-card{
-    background:
-        linear-gradient(
-            145deg,
-            rgba(13,28,45,.98),
-            rgba(8,20,34,.98)
-        );
-
+    background:linear-gradient(145deg,rgba(13,28,45,.98),rgba(8,20,34,.98));
     border:1px solid var(--border);
     border-radius:20px;
-
     overflow:hidden;
-
-    box-shadow:
-        0 15px 38px rgba(0,0,0,.26);
+    box-shadow:0 15px 38px rgba(0,0,0,.26);
 }
 
 .match-top{
     padding:16px 17px 12px;
-
     display:flex;
     align-items:center;
     justify-content:space-between;
@@ -257,12 +189,11 @@ body{
     grid-template-columns:1fr auto 1fr;
     align-items:center;
     gap:10px;
-
     text-align:center;
 }
 
 .team{
-    color:#ffffff;
+    color:#fff;
     font-size:18px;
     font-weight:800;
     line-height:1.3;
@@ -283,19 +214,10 @@ body{
 
 .prediction-box{
     margin:0 15px 15px;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(0,214,107,.10),
-            rgba(0,214,107,.035)
-        );
-
+    background:linear-gradient(135deg,rgba(0,214,107,.10),rgba(0,214,107,.035));
     border:1px solid rgba(0,214,107,.15);
     border-left:4px solid var(--green);
-
     border-radius:14px;
-
     padding:15px;
 }
 
@@ -305,12 +227,11 @@ body{
     font-weight:800;
     text-transform:uppercase;
     letter-spacing:.5px;
-
     margin-bottom:6px;
 }
 
 .prediction-text{
-    color:#ffffff;
+    color:#fff;
     font-size:16px;
     font-weight:800;
     line-height:1.4;
@@ -318,23 +239,16 @@ body{
 
 .metrics{
     display:grid;
-    grid-template-columns:
-        repeat(3,1fr);
-
+    grid-template-columns:repeat(3,1fr);
     gap:8px;
-
     padding:0 15px 15px;
 }
 
 .metric{
     min-height:76px;
-
     background:rgba(255,255,255,.035);
-
     border:1px solid rgba(255,255,255,.055);
-
     border-radius:12px;
-
     padding:12px;
 }
 
@@ -346,7 +260,7 @@ body{
 }
 
 .metric-value{
-    color:#ffffff;
+    color:#fff;
     font-size:14px;
     font-weight:800;
     line-height:1.3;
@@ -357,37 +271,22 @@ body{
     font-size:20px;
 }
 
-.metric-value.market{
-    color:#d9e7ff;
-}
-
-.risk-low{
-    color:#7ef0ad;
-}
-
-.risk-medium{
-    color:#ffd56d;
-}
-
-.risk-high{
-    color:#ff8d99;
-}
+.metric-value.market{color:#d9e7ff}
+.risk-low{color:#7ef0ad}
+.risk-medium{color:#ffd56d}
+.risk-high{color:#ff8d99}
 
 .match-footer{
     display:flex;
     justify-content:space-between;
     gap:10px;
-
     padding:12px 15px;
-
     border-top:1px solid var(--border);
-
     color:#768697;
     font-size:10px;
 }
 
-.empty,
-.error{
+.empty,.error{
     padding:25px;
     text-align:center;
     border-radius:17px;
@@ -406,95 +305,59 @@ body{
 
 .navigation{
     display:grid;
-    grid-template-columns:
-        repeat(4,1fr);
-
+    grid-template-columns:repeat(4,1fr);
     gap:9px;
-
     margin-top:18px;
     padding-bottom:25px;
 }
 
 .navigation button{
     min-height:48px;
-
     border:1px solid var(--border);
     border-radius:12px;
-
     background:#0d1c2d;
     color:#e8edf3;
-
     font-size:11px;
     font-weight:700;
 }
 
-.navigation button:hover{
-    border-color:rgba(0,214,107,.35);
-}
-
 @media(max-width:650px){
-
-    .app{
-        padding:10px;
-    }
-
-    .brand-title{
-        font-size:19px;
-    }
-
-    .page-badge{
-        display:none;
-    }
+    .app{padding:10px}
+    .brand-title{font-size:19px}
+    .page-badge{display:none}
 
     .teams{
         grid-template-columns:1fr;
     }
 
-    .vs{
-        margin:-3px 0;
-    }
+    .vs{margin:-3px 0}
 
     .metrics{
-        grid-template-columns:
-            1fr 1fr;
+        grid-template-columns:1fr 1fr;
     }
 
     .navigation{
-        grid-template-columns:
-            1fr 1fr;
+        grid-template-columns:1fr 1fr;
     }
-
 }
 
 @media(max-width:390px){
-
     .metrics{
-        grid-template-columns:
-            1fr;
+        grid-template-columns:1fr;
     }
-
 }
-
 </style>
-
 </head>
-
 
 <body>
 
 <div class="app">
 
-
     <div class="topbar">
-
         <div class="brand">
-
-            <div class="brand-icon">
-                ⚽
-            </div>
+            <div class="brand-icon">⚽</div>
 
             <div>
-
                 <h2 class="brand-title">
                     APEX <span>PREDICT AI</span>
                 </h2>
@@ -502,93 +365,64 @@ body{
                 <div class="brand-subtitle">
                     Professional Football Intelligence
                 </div>
-
             </div>
-
         </div>
-
 
         <div class="page-badge">
             AI PREDICTIONS
         </div>
-
     </div>
 
-
-    <div
-        id="connectionStatus"
-        class="status"
-    >
+    <div id="connectionStatus" class="status">
         🔄 Loading today's selected predictions...
     </div>
 
-
     <div class="page-header">
 
-        <h1>
-            🤖 Today's AI Predictions
-        </h1>
+        <h1>🤖 Today's AI Predictions</h1>
 
         <p>
             Final APEX selections generated by the AI engine.
         </p>
 
-
         <div class="selection-bar">
 
             <div>
-
-                <div class="selection-number"
-                     id="selectionCount">
+                <div
+                    class="selection-number"
+                    id="selectionCount"
+                >
                     —
                 </div>
 
                 <div class="selection-label">
                     SELECTED MATCHES
                 </div>
-
             </div>
 
+            <div style="text-align:right">
 
-            <div style="
-                text-align:right;
-            ">
-
-                <div style="
-                    color:#8b98a7;
-                    font-size:11px;
-                ">
+                <div style="color:#8b98a7;font-size:11px">
                     APEX SMART GATE
                 </div>
 
-                <div style="
-                    color:#9ff0c1;
-                    font-size:12px;
-                    font-weight:800;
-                ">
-                    ACTIVE
+                <div style="color:#9ff0c1;font-size:12px;font-weight:800">
+                    30 MAXIMUM
                 </div>
 
             </div>
 
         </div>
-
     </div>
-
 
     <div
         id="predictionContainer"
         class="match-list"
     >
-
         <div class="empty">
-
             🔄 Loading APEX predictions...
-
         </div>
-
     </div>
-
 
     <div class="navigation">
 
@@ -628,79 +462,684 @@ body{
 
 </div>
 
-
 <script>
-
 "use strict";
 
+/*
+ * APEX Predict AI
+ * Predictions frontend
+ *
+ * Uses the CURRENT APEX backend.
+ * Smart Gate maximum = 30.
+ */
 
-const GOOGLE_SHEETS_API =
-"https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
+const APEX_API_URL =
+"https://script.google.com/macros/s/AKfycbxygAHM7CTxHK5SXXCoc7AyfhivumaYJDKSYv5OFdI_woZdSnpVgBM400W8Gkny1Y8I/exec";
 
+const MAX_MATCHES = 30;
+const REQUEST_TIMEOUT = 45000;
+
+function safe(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+function normaliseKey(value){
+
+    return String(value ?? "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g," ");
+}
 
 function getValue(match,names){
 
+    if(!match || typeof match !== "object"){
+        return "";
+    }
+
+    const keys = Object.keys(match);
+
     for(const wanted of names){
 
-        const key =
-            Object.keys(match).find(
-                function(existingKey){
+        const wantedKey =
+            normaliseKey(wanted);
 
-                    return existingKey
-                        .trim()
-                        .toLowerCase()
-                        ===
-                        wanted
-                            .trim()
-                            .toLowerCase();
-
-                }
+        const found =
+            keys.find(
+                key =>
+                    normaliseKey(key) === wantedKey
             );
 
-        if(key !== undefined){
+        if(found !== undefined){
 
-            const value =
-                match[key];
+            const value = match[found];
 
             if(
                 value !== null &&
                 value !== undefined &&
                 String(value).trim() !== ""
             ){
-
                 return value;
-
             }
-
         }
-
     }
 
     return "";
-
 }
 
+function getDate(match){
 
-function safe(value){
+    return getValue(match,[
+        "Date",
+        "Fixture Date",
+        "Match Date",
+        "date"
+    ]);
+}
+
+function getLeague(match){
+
+    return getValue(match,[
+        "League",
+        "Competition",
+        "League Name",
+        "league"
+    ]);
+}
+
+function getHome(match){
+
+    return getValue(match,[
+        "Home Team",
+        "HomeTeam",
+        "Team Home",
+        "Home"
+    ]);
+}
+
+function getAway(match){
+
+    return getValue(match,[
+        "Away Team",
+        "AwayTeam",
+        "Team Away",
+        "Away"
+    ]);
+}
+
+function getPrediction(match){
+
+    return getValue(match,[
+        "Prediction",
+        "AI Prediction",
+        "Prediction Advice",
+        "Advice",
+        "prediction"
+    ]);
+}
+
+function getConfidence(match){
+
+    const value =
+        getValue(match,[
+            "Final confidence",
+            "Final Confidence",
+            "Final confidence %",
+            "Final Confidence %",
+            "Confidence %",
+            "Confidence",
+            "AI Confidence"
+        ]);
 
     if(
+        value === "" ||
         value === null ||
         value === undefined
     ){
-
-        return "";
-
+        return null;
     }
 
-    return String(value)
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+    const number =
+        parseFloat(
+            String(value)
+                .replace("%","")
+                .trim()
+        );
 
+    return Number.isFinite(number)
+        ? number
+        : null;
 }
 
+function getRisk(match){
+
+    const direct =
+        getValue(match,[
+            "Risk Level",
+            "Risk",
+            "Risk Category",
+            "Risk Rating",
+            "AI Risk",
+            "Confidence Risk"
+        ]);
+
+    if(direct !== ""){
+        return String(direct);
+    }
+
+    const confidence =
+        getConfidence(match);
+
+    if(confidence === null){
+        return "";
+    }
+
+    if(confidence >= 60){
+        return "LOW";
+    }
+
+    if(confidence >= 45){
+        return "MEDIUM";
+    }
+
+    return "HIGH";
+}
+
+function getMarket(match){
+
+    const direct =
+        getValue(match,[
+            "recommended market",
+            "Recommended Market",
+            "Market",
+            "Betting Market",
+            "Selection Market",
+            "Prediction Market"
+        ]);
+
+    if(direct !== ""){
+        return String(direct);
+    }
+
+    const prediction =
+        String(getPrediction(match))
+            .toLowerCase();
+
+    if(prediction.includes("double chance")){
+        return "Double Chance";
+    }
+
+    if(prediction.includes("over 1.5")){
+        return "Over 1.5 Goals";
+    }
+
+    if(prediction.includes("over 2.5")){
+        return "Over 2.5 Goals";
+    }
+
+    if(prediction.includes("under 2.5")){
+        return "Under 2.5 Goals";
+    }
+
+    if(prediction.includes("under 3.5")){
+        return "Under 3.5 Goals";
+    }
+
+    if(
+        prediction.includes("both teams to score") ||
+        prediction.includes("btts")
+    ){
+        return "Both Teams To Score";
+    }
+
+    if(prediction.includes("draw")){
+        return "Draw";
+    }
+
+    return "";
+}
+
+function extractMatches(data){
+
+    /*
+     * CURRENT BACKEND RESPONSE:
+     *
+     * {
+     *   status:"SUCCESS",
+     *   matches:[ ... ]
+     * }
+     *
+     * Older response structures are retained
+     * only for compatibility.
+     */
+
+    if(
+        data &&
+        Array.isArray(data.matches)
+    ){
+        return data.matches;
+    }
+
+    if(
+        data &&
+        data.smartGate &&
+        Array.isArray(data.smartGate.objects)
+    ){
+        return data.smartGate.objects;
+    }
+
+    if(
+        data &&
+        Array.isArray(data.smartGate)
+    ){
+        return data.smartGate;
+    }
+
+    if(
+        data &&
+        data.matchDatabase &&
+        Array.isArray(data.matchDatabase.objects)
+    ){
+        return data.matchDatabase.objects;
+    }
+
+    if(
+        data &&
+        Array.isArray(data.data)
+    ){
+        return data.data;
+    }
+
+    return [];
+}
+
+function isValidPrediction(match){
+
+    const prediction =
+        String(getPrediction(match))
+            .trim()
+            .toLowerCase();
+
+    return (
+        prediction !== "" &&
+        prediction !== "no predictions available"
+    );
+}
+
+function selectMatches(matches){
+
+    const seen = new Set();
+
+    return matches
+
+        .filter(isValidPrediction)
+
+        .filter((match,index)=>{
+
+            const fixture =
+                getValue(match,[
+                    "Fixture ID",
+                    "API Fixture ID",
+                    "fixture_id",
+                    "fixtureId"
+                ]);
+
+            const identity = [
+                fixture,
+                getHome(match),
+                getAway(match),
+                getLeague(match),
+                getDate(match)
+            ]
+            .map(normaliseKey)
+            .join("|");
+
+            const key =
+                identity.replace(/\|/g,"") === ""
+                    ? "row-"+index
+                    : identity;
+
+            if(seen.has(key)){
+                return false;
+            }
+
+            seen.add(key);
+
+            return true;
+        })
+
+        /*
+         * IMPORTANT:
+         * Smart Gate has already selected the
+         * qualified matches. We only rank them
+         * by final confidence for display.
+         */
+        .sort((a,b)=>{
+
+            const ca = getConfidence(a);
+            const cb = getConfidence(b);
+
+            return (
+                (cb ?? -1) -
+                (ca ?? -1)
+            );
+        })
+
+        .slice(0,MAX_MATCHES);
+}
+
+async function fetchAPEXData(){
+
+    const controller =
+        new AbortController();
+
+    const timeout =
+        setTimeout(
+            ()=>controller.abort(),
+            REQUEST_TIMEOUT
+        );
+
+    try{
+
+        const url =
+            APEX_API_URL +
+            "?request=dashboard&ts=" +
+            Date.now();
+
+        const response =
+            await fetch(
+                url,
+                {
+                    method:"GET",
+                    cache:"no-store",
+                    redirect:"follow",
+                    signal:controller.signal
+                }
+            );
+
+        if(!response.ok){
+
+            throw new Error(
+                "Backend HTTP " +
+                response.status
+            );
+        }
+
+        const raw =
+            await response.text();
+
+        if(!raw.trim()){
+
+            throw new Error(
+                "Backend returned an empty response."
+            );
+        }
+
+        let data;
+
+        try{
+
+            data =
+                JSON.parse(raw);
+
+        }catch(error){
+
+            console.error(
+                "APEX RAW RESPONSE:",
+                raw
+            );
+
+            throw new Error(
+                "Backend returned invalid JSON."
+            );
+        }
+
+        if(
+            data &&
+            String(data.status).toUpperCase() ===
+            "ERROR"
+        ){
+
+            throw new Error(
+                data.message ||
+                "APEX backend returned an error."
+            );
+        }
+
+        return data;
+
+    }catch(error){
+
+        if(error.name === "AbortError"){
+
+            throw new Error(
+                "APEX backend request timed out."
+            );
+        }
+
+        throw error;
+
+    }finally{
+
+        clearTimeout(timeout);
+    }
+}
+
+function renderPredictions(matches){
+
+    const container =
+        document.getElementById(
+            "predictionContainer"
+        );
+
+    const count =
+        document.getElementById(
+            "selectionCount"
+        );
+
+    if(!container || !count){
+        return;
+    }
+
+    count.textContent =
+        matches.length;
+
+    if(!matches.length){
+
+        container.innerHTML = `
+            <div class="empty">
+                <h3>⚠️ No Predictions Available</h3>
+                <p>
+                    The APEX backend is connected,
+                    but no qualified predictions were returned.
+                </p>
+            </div>
+        `;
+
+        return;
+    }
+
+    let html = "";
+
+    matches.forEach(
+        (match,index)=>{
+
+            const date =
+                getDate(match);
+
+            const league =
+                getLeague(match);
+
+            const home =
+                getHome(match);
+
+            const away =
+                getAway(match);
+
+            const prediction =
+                getPrediction(match);
+
+            const confidence =
+                getConfidence(match);
+
+            const risk =
+                getRisk(match);
+
+            const market =
+                getMarket(match);
+
+            const riskText =
+                String(risk)
+                    .toLowerCase();
+
+            let riskClass =
+                "risk-high";
+
+            if(riskText.includes("low")){
+                riskClass = "risk-low";
+            }else if(
+                riskText.includes("medium") ||
+                riskText.includes("moderate")
+            ){
+                riskClass = "risk-medium";
+            }
+
+            html += `
+
+                <div class="match-card">
+
+                    <div class="match-top">
+
+                        <div class="match-number">
+                            MATCH ${index + 1}
+                        </div>
+
+                        <div class="league">
+                            🏆 ${safe(
+                                league || "League"
+                            )}
+                        </div>
+
+                    </div>
+
+                    <div class="match-main">
+
+                        <div class="teams">
+
+                            <div class="team">
+                                ${safe(
+                                    home || "Home Team"
+                                )}
+                            </div>
+
+                            <div class="vs">
+                                VS
+                            </div>
+
+                            <div class="team">
+                                ${safe(
+                                    away || "Away Team"
+                                )}
+                            </div>
+
+                        </div>
+
+                        <div class="match-date">
+                            ${safe(
+                                date || "Date unavailable"
+                            )}
+                        </div>
+
+                    </div>
+
+                    <div class="prediction-box">
+
+                        <div class="prediction-label">
+                            🤖 AI Prediction
+                        </div>
+
+                        <div class="prediction-text">
+                            ${safe(
+                                prediction || "—"
+                            )}
+                        </div>
+
+                    </div>
+
+                    <div class="metrics">
+
+                        <div class="metric">
+
+                            <div class="metric-label">
+                                CONFIDENCE
+                            </div>
+
+                            <div class="metric-value confidence">
+                                ${
+                                    confidence === null
+                                        ? "—"
+                                        : safe(confidence) + "%"
+                                }
+                            </div>
+
+                        </div>
+
+                        <div class="metric">
+
+                            <div class="metric-label">
+                                RISK
+                            </div>
+
+                            <div class="metric-value ${riskClass}">
+                                ${safe(
+                                    risk || "—"
+                                )}
+                            </div>
+
+                        </div>
+
+                        <div class="metric">
+
+                            <div class="metric-label">
+                                MARKET
+                            </div>
+
+                            <div class="metric-value market">
+                                ${safe(
+                                    market || "—"
+                                )}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="match-footer">
+
+                        <span>
+                            APEX AI ENGINE
+                        </span>
+
+                        <span>
+                            SMART GATE
+                        </span>
+
+                    </div>
+
+                </div>
+            `;
+        }
+    );
+
+    container.innerHTML =
+        html;
+}
 
 async function loadPredictions(){
 
@@ -719,495 +1158,94 @@ async function loadPredictions(){
             "selectionCount"
         );
 
-
     try{
 
+        status.className =
+            "status";
+
         status.textContent =
-            "🔄 Connecting to APEX Predict AI...";
-
-
-        const response =
-            await fetch(
-                GOOGLE_SHEETS_API,
-                {
-                    method:"GET",
-                    cache:"no-store"
-                }
-            );
-
-
-        if(!response.ok){
-
-            throw new Error(
-                "HTTP " + response.status
-            );
-
-        }
-
+            "🔄 Connecting to current APEX AI backend...";
 
         const data =
-            await response.json();
-
-
-        if(
-            !data ||
-            !data.matchDatabase ||
-            !Array.isArray(
-                data.matchDatabase.objects
-            )
-        ){
-
-            throw new Error(
-                "APEX Match Database was not returned."
-            );
-
-        }
-
+            await fetchAPEXData();
 
         const allMatches =
-            data.matchDatabase.objects;
-
-
-        /*
-         * Preserve the exact selection logic
-         * that is already working in production.
-         */
-
-        const completedMatches =
-            allMatches.filter(
-                function(match){
-
-                    const prediction =
-                        getValue(
-                            match,
-                            [
-                                "Prediction",
-                                "prediction",
-                                "AI Prediction"
-                            ]
-                        );
-
-                    const confidence =
-                        getValue(
-                            match,
-                            [
-                                "Confidence %",
-                                "Confidence",
-                                "confidence %",
-                                "Final Confidence"
-                            ]
-                        );
-
-                    const market =
-                        getValue(
-                            match,
-                            [
-                                "Recommended Market",
-                                "recommended market",
-                                "Market"
-                            ]
-                        );
-
-                    return (
-                        prediction !== "" ||
-                        confidence !== "" ||
-                        market !== ""
-                    );
-
-                }
-            );
-
+            extractMatches(data);
 
         const matches =
-            completedMatches
-                .slice()
-                .reverse()
-                .slice(0,10);
+            selectMatches(allMatches);
 
-
-        count.textContent =
-            matches.length;
-
+        renderPredictions(matches);
 
         status.textContent =
-            "✅ APEX AI Connected — " +
+            "✅ APEX AI Connected · " +
             matches.length +
-            " selected matches";
-
-
-        if(!matches.length){
-
-            container.innerHTML = `
-
-                <div class="empty">
-
-                    <h3>
-                        ⚠️ Predictions Not Ready
-                    </h3>
-
-                    <p>
-                        No completed APEX predictions
-                        are currently available.
-                    </p>
-
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-
-        let html = "";
-
-
-        matches.forEach(
-            function(match,index){
-
-                const date =
-                    getValue(
-                        match,
-                        [
-                            "Date",
-                            "date",
-                            "Fixture Date",
-                            "Match Date"
-                        ]
-                    );
-
-
-                const league =
-                    getValue(
-                        match,
-                        [
-                            "League",
-                            "league",
-                            "League Name"
-                        ]
-                    );
-
-
-                const home =
-                    getValue(
-                        match,
-                        [
-                            "Home Team",
-                            "home team",
-                            "HomeTeam",
-                            "Home"
-                        ]
-                    );
-
-
-                const away =
-                    getValue(
-                        match,
-                        [
-                            "Away Team",
-                            "away team",
-                            "AwayTeam",
-                            "Away"
-                        ]
-                    );
-
-
-                const prediction =
-                    getValue(
-                        match,
-                        [
-                            "Prediction",
-                            "prediction",
-                            "AI Prediction"
-                        ]
-                    );
-
-
-                const confidence =
-                    getValue(
-                        match,
-                        [
-                            "Confidence %",
-                            "Confidence",
-                            "confidence %",
-                            "Final Confidence"
-                        ]
-                    );
-
-
-                const risk =
-                    getValue(
-                        match,
-                        [
-                            "Risk Level",
-                            "Risk",
-                            "risk level"
-                        ]
-                    );
-
-
-                const market =
-                    getValue(
-                        match,
-                        [
-                            "Recommended Market",
-                            "recommended market",
-                            "Market"
-                        ]
-                    );
-
-
-                const riskText =
-                    String(
-                        risk || ""
-                    ).toLowerCase();
-
-
-                let riskClass =
-                    "risk-high";
-
-
-                if(
-                    riskText === "low"
-                ){
-
-                    riskClass =
-                        "risk-low";
-
-                }
-                else if(
-                    riskText === "medium"
-                ){
-
-                    riskClass =
-                        "risk-medium";
-
-                }
-
-
-                html += `
-
-                    <div class="match-card">
-
-
-                        <div class="match-top">
-
-                            <div class="match-number">
-                                MATCH ${index + 1}
-                            </div>
-
-                            <div class="league">
-                                🏆 ${safe(
-                                    league || "League"
-                                )}
-                            </div>
-
-                        </div>
-
-
-                        <div class="match-main">
-
-                            <div class="teams">
-
-                                <div class="team">
-
-                                    ${safe(
-                                        home || "Home Team"
-                                    )}
-
-                                </div>
-
-
-                                <div class="vs">
-                                    VS
-                                </div>
-
-
-                                <div class="team">
-
-                                    ${safe(
-                                        away || "Away Team"
-                                    )}
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="match-date">
-
-                                ${safe(
-                                    date || "Date unavailable"
-                                )}
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="prediction-box">
-
-                            <div class="prediction-label">
-                                🤖 AI Prediction
-                            </div>
-
-                            <div class="prediction-text">
-
-                                ${safe(
-                                    prediction || "—"
-                                )}
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="metrics">
-
-
-                            <div class="metric">
-
-                                <div class="metric-label">
-                                    CONFIDENCE
-                                </div>
-
-                                <div class="metric-value confidence">
-
-                                    ${
-                                        confidence !== ""
-                                            ? safe(
-                                                confidence
-                                            ) + "%"
-                                            : "—"
-                                    }
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="metric">
-
-                                <div class="metric-label">
-                                    RISK
-                                </div>
-
-                                <div
-                                    class="
-                                        metric-value
-                                        ${riskClass}
-                                    "
-                                >
-
-                                    ${safe(
-                                        risk || "—"
-                                    )}
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="metric">
-
-                                <div class="metric-label">
-                                    MARKET
-                                </div>
-
-                                <div class="
-                                    metric-value market
-                                ">
-
-                                    ${safe(
-                                        market || "—"
-                                    )}
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="match-footer">
-
-                            <span>
-                                APEX AI ENGINE
-                            </span>
-
-                            <span>
-                                SMART GATE
-                            </span>
-
-                        </div>
-
-
-                    </div>
-
-                `;
-
+            " selected matches loaded";
+
+        console.log(
+            "APEX Predictions:",
+            {
+                backendStatus:data.status,
+                received:allMatches.length,
+                displayed:matches.length
             }
         );
 
-
-        container.innerHTML =
-            html;
-
-
-    }
-    catch(error){
+    }catch(error){
 
         console.error(
             "APEX Predictions Error:",
             error
         );
 
+        if(count){
+            count.textContent = "—";
+        }
+
+        status.className =
+            "status error";
 
         status.textContent =
-            "❌ APEX Predictions failed to load";
+            "❌ APEX Predictions failed: " +
+            error.message;
 
+        if(container){
 
-        count.textContent =
-            "—";
+            container.innerHTML = `
 
+                <div class="error">
 
-        container.innerHTML = `
+                    <h3>
+                        ❌ Unable to Load Predictions
+                    </h3>
 
-            <div class="error">
+                    <p>
+                        ${safe(error.message)}
+                    </p>
 
-                <h3>
-                    ❌ Unable to Load Predictions
-                </h3>
-
-                <p>
-                    ${safe(error.message)}
-                </p>
-
-            </div>
-
-        `;
-
+                </div>
+            `;
+        }
     }
-
 }
-
 
 function go(page){
 
     window.location.href =
         page;
-
 }
 
+window.loadPredictions =
+    loadPredictions;
+
+window.go =
+    go;
 
 document.addEventListener(
     "DOMContentLoaded",
     loadPredictions
 );
-
 </script>
 
-
 </body>
-
 </html>
