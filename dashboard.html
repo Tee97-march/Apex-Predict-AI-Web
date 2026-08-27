@@ -22,7 +22,6 @@
 
 :root{
     --bg:#06101c;
-    --bg2:#091827;
     --panel:#0c1a2a;
     --panel2:#102338;
     --border:rgba(255,255,255,.08);
@@ -47,7 +46,6 @@ html,
 body{
     margin:0;
     padding:0;
-    width:100%;
     min-height:100%;
 }
 
@@ -87,10 +85,6 @@ button{
     font:inherit;
 }
 
-button:focus{
-    outline:none;
-}
-
 
 /* =========================================================
    APP
@@ -99,7 +93,6 @@ button:focus{
 .apex-app{
     width:100%;
     min-height:100vh;
-
     display:flex;
 }
 
@@ -111,9 +104,9 @@ button:focus{
 .sidebar{
 
     width:240px;
-    min-height:100vh;
-
     flex:0 0 240px;
+
+    min-height:100vh;
 
     padding:22px 14px;
 
@@ -140,8 +133,7 @@ button:focus{
 
     gap:10px;
 
-    padding:
-        3px 7px 26px;
+    padding:3px 7px 26px;
 }
 
 .logo-ball{
@@ -216,29 +208,15 @@ button:focus{
     text-align:left;
 
     cursor:pointer;
-
-    transition:
-        .18s ease;
 }
 
-.nav button:hover{
+.nav button:hover,
+.nav button.active{
 
     color:#ffffff;
 
     background:
-        rgba(255,255,255,.045);
-}
-
-.nav button.active{
-
-    color:var(--green2);
-
-    background:
         rgba(59,230,143,.10);
-
-    box-shadow:
-        inset 3px 0 0
-        var(--green2);
 }
 
 .sidebar-bottom{
@@ -269,9 +247,7 @@ button:focus{
 .engine-row{
 
     display:flex;
-
     align-items:center;
-
     gap:8px;
 
     font-weight:700;
@@ -284,8 +260,7 @@ button:focus{
 
     border-radius:50%;
 
-    background:
-        var(--green2);
+    background:var(--green2);
 
     box-shadow:
         0 0 12px
@@ -321,14 +296,6 @@ button:focus{
     cursor:pointer;
 }
 
-.logout:hover{
-
-    color:#ff8997;
-
-    border-color:
-        rgba(255,93,114,.23);
-}
-
 
 /* =========================================================
    MAIN
@@ -356,16 +323,14 @@ button:focus{
     margin-bottom:20px;
 }
 
-.header h1{
+.header-left h1{
 
     margin:0;
 
     font-size:30px;
-
-    line-height:1.1;
 }
 
-.header p{
+.header-left p{
 
     margin:7px 0 0;
 
@@ -376,7 +341,7 @@ button:focus{
 
 .connection{
 
-    min-width:200px;
+    min-width:220px;
 
     padding:9px 13px;
 
@@ -408,7 +373,7 @@ button:focus{
 
 
 /* =========================================================
-   KPI
+   KPI CARDS
    ========================================================= */
 
 .kpis{
@@ -445,10 +410,6 @@ button:focus{
     border:
         1px solid
         var(--border);
-
-    box-shadow:
-        0 12px 30px
-        rgba(0,0,0,.20);
 }
 
 .kpi::after{
@@ -463,8 +424,7 @@ button:focus{
 
     height:3px;
 
-    background:
-        var(--green2);
+    background:var(--green2);
 }
 
 .kpi.blue::after{
@@ -491,8 +451,6 @@ button:focus{
 .kpi-value{
 
     margin-top:9px;
-
-    color:#ffffff;
 
     font-size:31px;
 
@@ -533,10 +491,6 @@ button:focus{
     border:
         1px solid
         var(--border);
-
-    box-shadow:
-        0 16px 40px
-        rgba(0,0,0,.22);
 }
 
 .section-heading{
@@ -582,11 +536,6 @@ button:focus{
     font-size:9px;
 
     font-weight:800;
-}
-
-.featured-content{
-
-    width:100%;
 }
 
 .featured-league{
@@ -636,10 +585,6 @@ button:focus{
     color:#63758a;
 
     font-size:9px;
-
-    font-weight:600;
-
-    letter-spacing:.5px;
 }
 
 .vs{
@@ -695,8 +640,6 @@ button:focus{
     font-size:9px;
 
     letter-spacing:1px;
-
-    font-weight:700;
 }
 
 .featured-prediction-value{
@@ -734,6 +677,7 @@ button:focus{
 }
 
 .featured-metric:last-child{
+
     border-right:0;
 }
 
@@ -789,6 +733,7 @@ button:focus{
 }
 
 .score-head strong{
+
     color:var(--green2);
 }
 
@@ -820,7 +765,7 @@ button:focus{
 
 
 /* =========================================================
-   PANELS
+   TWO PANELS
    ========================================================= */
 
 .two-column{
@@ -851,17 +796,11 @@ button:focus{
     border-radius:18px;
 
     padding:18px;
-
-    box-shadow:
-        0 14px 34px
-        rgba(0,0,0,.20);
 }
 
 .panel-title{
 
     margin:0 0 5px;
-
-    color:#ffffff;
 
     font-size:17px;
 
@@ -876,11 +815,6 @@ button:focus{
 
     font-size:10px;
 }
-
-
-/* =========================================================
-   SUMMARY
-   ========================================================= */
 
 .summary-grid{
 
@@ -1013,7 +947,7 @@ button:focus{
     color:#738397;
 }
 
-.factor-value{
+.factor-score{
 
     max-width:68%;
 
@@ -1026,7 +960,7 @@ button:focus{
 
 
 /* =========================================================
-   MATCH LIST
+   MATCHES
    ========================================================= */
 
 .matches-panel{
@@ -1222,32 +1156,6 @@ button:focus{
 
 
 /* =========================================================
-   STATES
-   ========================================================= */
-
-.state{
-
-    padding:26px;
-
-    border-radius:14px;
-
-    background:
-        rgba(255,255,255,.025);
-
-    color:#718196;
-
-    text-align:center;
-
-    font-size:12px;
-}
-
-.state.error{
-
-    color:#ff7d8a;
-}
-
-
-/* =========================================================
    FOOTER
    ========================================================= */
 
@@ -1269,7 +1177,33 @@ button:focus{
 
 
 /* =========================================================
-   MOBILE
+   STATE
+   ========================================================= */
+
+.state{
+
+    padding:25px;
+
+    border-radius:14px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    color:#718196;
+
+    text-align:center;
+
+    font-size:12px;
+}
+
+.state.error{
+
+    color:#ff7d8a;
+}
+
+
+/* =========================================================
+   RESPONSIVE
    ========================================================= */
 
 @media(max-width:1050px){
@@ -1294,11 +1228,9 @@ button:focus{
     }
 }
 
-
 @media(max-width:760px){
 
     .apex-app{
-
         display:block;
     }
 
@@ -1316,7 +1248,6 @@ button:focus{
     }
 
     .logo{
-
         padding-bottom:14px;
     }
 
@@ -1329,12 +1260,10 @@ button:focus{
     }
 
     .sidebar-bottom{
-
         margin-top:12px;
     }
 
     .main{
-
         padding:13px;
     }
 
@@ -1346,7 +1275,6 @@ button:focus{
     }
 
     .connection{
-
         width:100%;
     }
 
@@ -1357,7 +1285,6 @@ button:focus{
     }
 
     .team{
-
         font-size:16px;
     }
 
@@ -1368,12 +1295,10 @@ button:focus{
     }
 
     .featured-metric:nth-child(2){
-
         border-right:0;
     }
 
     .table-header{
-
         display:none;
     }
 
@@ -1383,14 +1308,14 @@ button:focus{
             24px
             1fr
             1fr;
+
+        padding:13px 5px;
     }
 
     .footer{
-
         flex-direction:column;
     }
 }
-
 
 @media(max-width:430px){
 
@@ -1410,31 +1335,23 @@ button:focus{
     }
 
     .kpi-value{
-
         font-size:24px;
     }
 
     .summary-grid{
-
-        grid-template-columns:
-            1fr;
+        grid-template-columns:1fr;
     }
 
     .featured-teams{
-
-        grid-template-columns:
-            1fr;
+        grid-template-columns:1fr;
     }
 
     .vs{
-
         margin:1px auto;
     }
 
     .featured-metrics{
-
-        grid-template-columns:
-            1fr;
+        grid-template-columns:1fr;
     }
 
     .featured-metric{
@@ -1447,7 +1364,6 @@ button:focus{
     }
 
     .featured-metric:last-child{
-
         border-bottom:0;
     }
 }
@@ -1459,24 +1375,18 @@ button:focus{
 
 <body>
 
-
 <div class="apex-app">
 
 
-    <!-- =====================================================
-         SIDEBAR
-         ===================================================== -->
+    <!-- SIDEBAR -->
 
     <aside class="sidebar">
 
-
         <div class="logo">
-
 
             <div class="logo-ball">
                 ⚽
             </div>
-
 
             <div class="logo-text">
 
@@ -1488,12 +1398,10 @@ button:focus{
 
             </div>
 
-
         </div>
 
 
         <nav class="nav">
-
 
             <button
                 class="active"
@@ -1502,13 +1410,11 @@ button:focus{
                 🏠 Dashboard
             </button>
 
-
             <button
                 onclick="go('predictions.html')"
             >
                 🤖 AI Predictions
             </button>
-
 
             <button
                 onclick="go('analysis.html')"
@@ -1516,13 +1422,11 @@ button:focus{
                 📊 Analysis
             </button>
 
-
             <button
                 onclick="go('statistics.html')"
             >
                 📈 Statistics
             </button>
-
 
             <button
                 onclick="go('livescores.html')"
@@ -1530,13 +1434,11 @@ button:focus{
                 ⚽ Live Scores
             </button>
 
-
             <button
                 onclick="go('leagues.html')"
             >
                 🏆 Leagues
             </button>
-
 
             <button
                 onclick="go('headtohead.html')"
@@ -1544,22 +1446,18 @@ button:focus{
                 ⚔ Head To Head
             </button>
 
-
             <button
                 onclick="go('settings.html')"
             >
                 ⚙ Settings
             </button>
 
-
         </nav>
 
 
         <div class="sidebar-bottom">
 
-
             <div class="engine-card">
-
 
                 <div class="engine-row">
 
@@ -1570,11 +1468,9 @@ button:focus{
 
                 </div>
 
-
                 <div class="engine-small">
                     Backend connection
                 </div>
-
 
             </div>
 
@@ -1586,22 +1482,17 @@ button:focus{
                 🚪 Logout
             </button>
 
-
         </div>
-
 
     </aside>
 
 
-    <!-- =====================================================
-         MAIN
-         ===================================================== -->
+    <!-- MAIN -->
 
     <main class="main">
 
 
         <header class="header">
-
 
             <div class="header-left">
 
@@ -1623,13 +1514,10 @@ button:focus{
                 🔄 Connecting to APEX AI...
             </div>
 
-
         </header>
 
 
-        <!-- =================================================
-             KPI CARDS
-             ================================================= -->
+        <!-- KPI -->
 
         <section class="kpis">
 
@@ -1716,19 +1604,15 @@ button:focus{
 
             </div>
 
-
         </section>
 
 
-        <!-- =================================================
-             FEATURED PREDICTION
-             ================================================= -->
+        <!-- FEATURED -->
 
         <section class="featured">
 
 
             <div class="section-heading">
-
 
                 <div>
 
@@ -1737,7 +1621,7 @@ button:focus{
                     </h2>
 
                     <p>
-                        Highest-confidence match received from APEX
+                        Highest-confidence qualified APEX selection
                     </p>
 
                 </div>
@@ -1746,7 +1630,6 @@ button:focus{
                 <div class="top-badge">
                     TOP AI
                 </div>
-
 
             </div>
 
@@ -1762,29 +1645,23 @@ button:focus{
 
             </div>
 
-
         </section>
 
 
-        <!-- =================================================
-             SUMMARY / CONFIDENCE
-             ================================================= -->
+        <!-- SUMMARY / CONFIDENCE -->
 
         <section class="two-column">
 
 
             <div class="panel">
 
-
                 <h2 class="panel-title">
                     📊 AI Analysis Summary
                 </h2>
 
-
                 <p class="panel-subtitle">
                     Current APEX selection overview
                 </p>
-
 
                 <div id="analysisSummary">
 
@@ -1794,22 +1671,18 @@ button:focus{
 
                 </div>
 
-
             </div>
 
 
             <div class="panel">
 
-
                 <h2 class="panel-title">
                     🎯 Confidence Breakdown
                 </h2>
 
-
                 <p class="panel-subtitle">
-                    Current prediction confidence and data indicators
+                    Current prediction confidence
                 </p>
-
 
                 <div
                     id="confidenceSummary"
@@ -1818,29 +1691,23 @@ button:focus{
                     🔄 Loading...
                 </div>
 
-
                 <div
                     id="factorSummary"
                     class="factor-list"
                 >
                 </div>
 
-
             </div>
-
 
         </section>
 
 
-        <!-- =================================================
-             TOP MATCHES
-             ================================================= -->
+        <!-- MATCHES -->
 
         <section class="panel matches-panel">
 
 
             <div class="section-heading">
-
 
                 <div>
 
@@ -1849,7 +1716,7 @@ button:focus{
                     </h2>
 
                     <p>
-                        Highest-confidence qualified matches returned by APEX
+                        Highest-confidence qualified matches
                     </p>
 
                 </div>
@@ -1859,35 +1726,17 @@ button:focus{
                     MAX 30
                 </div>
 
-
             </div>
 
 
             <div class="table-header">
 
-                <span>
-                    #
-                </span>
-
-                <span>
-                    Match
-                </span>
-
-                <span>
-                    Prediction
-                </span>
-
-                <span>
-                    Confidence
-                </span>
-
-                <span>
-                    Info
-                </span>
-
-                <span>
-                    AI
-                </span>
+                <span>#</span>
+                <span>Match</span>
+                <span>Prediction</span>
+                <span>Confidence</span>
+                <span>Info</span>
+                <span>AI</span>
 
             </div>
 
@@ -1895,7 +1744,7 @@ button:focus{
             <div id="matchList">
 
                 <div class="state">
-                    🔄 Loading APEX matches...
+                    🔄 Loading matches...
                 </div>
 
             </div>
@@ -1903,10 +1752,6 @@ button:focus{
 
         </section>
 
-
-        <!-- =================================================
-             FOOTER
-             ================================================= -->
 
         <footer class="footer">
 
@@ -1919,7 +1764,7 @@ button:focus{
             </span>
 
             <span>
-                API-Football + Football-Data.org enrichment
+                API-Football + Football-Data.org
             </span>
 
         </footer>
@@ -1927,18 +1772,17 @@ button:focus{
 
     </main>
 
-
 </div>
 
 
 <script>
 
+/* =========================================================
+   APEX DASHBOARD ENGINE
+   ========================================================= */
+
 "use strict";
 
-
-/* =========================================================
-   VERIFIED APEX BACKEND
-   ========================================================= */
 
 const APEX_DASHBOARD_CONFIG = Object.freeze({
 
@@ -1963,7 +1807,7 @@ const APEX_DASHBOARD_CONFIG = Object.freeze({
 
 function go(page){
 
-    const allowed = [
+    const allowedPages = [
 
         "dashboard.html",
         "predictions.html",
@@ -1979,10 +1823,17 @@ function go(page){
     window.location.href =
         "./" +
         (
-            allowed.includes(page)
+            allowedPages.includes(page)
                 ? page
                 : "dashboard.html"
         );
+}
+
+
+function logout(){
+
+    window.location.href =
+        "./index.html";
 }
 
 
@@ -2026,13 +1877,6 @@ function openSettings(){
 }
 
 
-function logout(){
-
-    window.location.href =
-        "./index.html";
-}
-
-
 /* =========================================================
    HELPERS
    ========================================================= */
@@ -2068,7 +1912,7 @@ function numberValue(value){
         return null;
     }
 
-    const number =
+    const parsed =
         parseFloat(
             String(value)
                 .replace("%","")
@@ -2076,64 +1920,11 @@ function numberValue(value){
                 .trim()
         );
 
-    return Number.isFinite(number)
-        ? number
+    return Number.isFinite(parsed)
+        ? parsed
         : null;
 }
 
-
-function percentage(value){
-
-    const number =
-        numberValue(value);
-
-    return number === null
-        ? "—"
-        : Math.round(number) + "%";
-}
-
-
-function setText(
-    id,
-    value
-){
-
-    const element =
-        document.getElementById(id);
-
-    if(element){
-
-        element.textContent =
-            value;
-    }
-}
-
-
-function setStatus(
-    message,
-    state
-){
-
-    const element =
-        document.getElementById(
-            "connectionStatus"
-        );
-
-    if(element){
-
-        element.textContent =
-            message;
-
-        element.className =
-            "connection " +
-            state;
-    }
-}
-
-
-/* =========================================================
-   FLEXIBLE DATA READER
-   ========================================================= */
 
 function getValue(
     object,
@@ -2165,9 +1956,8 @@ function getValue(
         const found =
             keys.find(
                 key =>
-                    normaliseKey(
-                        key
-                    ) === wanted
+                    normaliseKey(key) ===
+                    wanted
             );
 
         if(
@@ -2188,7 +1978,7 @@ function getValue(
 
 
 /* =========================================================
-   MATCH FIELDS
+   MATCH FIELD GETTERS
    ========================================================= */
 
 function getFixtureId(match){
@@ -2270,7 +2060,8 @@ function getPrediction(match){
             "Prediction",
             "AI Prediction",
             "Prediction Advice",
-            "Advice"
+            "Advice",
+            "AI Decision"
         ]
     );
 }
@@ -2389,49 +2180,39 @@ function getMarket(match){
     }
 
     if(
-        prediction.includes(
-            "over 1.5"
-        )
-        ||
-        prediction.includes(
-            "+1.5"
-        )
+        prediction.includes("over 1.5") ||
+        prediction.includes("+1.5")
     ){
 
         return "Over 1.5 Goals";
     }
 
     if(
-        prediction.includes(
-            "over 2.5"
-        )
-        ||
-        prediction.includes(
-            "+2.5"
-        )
+        prediction.includes("over 2.5") ||
+        prediction.includes("+2.5")
     ){
 
         return "Over 2.5 Goals";
     }
 
     if(
-        prediction.includes(
-            "under 3.5"
-        )
-        ||
-        prediction.includes(
-            "-3.5"
-        )
+        prediction.includes("under 3.5") ||
+        prediction.includes("-3.5")
     ){
 
         return "Under 3.5 Goals";
     }
 
     if(
-        prediction.includes(
-            "btts"
-        )
-        ||
+        prediction.includes("under 2.5") ||
+        prediction.includes("-2.5")
+    ){
+
+        return "Under 2.5 Goals";
+    }
+
+    if(
+        prediction.includes("btts") ||
         prediction.includes(
             "both teams to score"
         )
@@ -2441,9 +2222,7 @@ function getMarket(match){
     }
 
     if(
-        prediction.includes(
-            "draw"
-        )
+        prediction.includes("draw")
     ){
 
         return "Draw";
@@ -2545,19 +2324,6 @@ function getOver15(match){
 }
 
 
-function getAIValue(match){
-
-    return getValue(
-        match,
-        [
-            "Odds Value Score",
-            "Odds Value",
-            "Value Score"
-        ]
-    );
-}
-
-
 function getRiskClass(risk){
 
     const value =
@@ -2632,7 +2398,7 @@ function getAIStatus(match){
 
 
 /* =========================================================
-   EXTRACT BACKEND MATCHES
+   MATCH EXTRACTION
    ========================================================= */
 
 function extractMatches(data){
@@ -2699,6 +2465,14 @@ function extractMatches(data){
 
 function isUsableMatch(match){
 
+    if(
+        !match ||
+        typeof match !== "object"
+    ){
+
+        return false;
+    }
+
     const home =
         String(
             getHome(match)
@@ -2725,7 +2499,7 @@ function isUsableMatch(match){
 
 
 /* =========================================================
-   DUPLICATE PROTECTION
+   DUPLICATE CONTROL
    ========================================================= */
 
 function getIdentity(
@@ -2735,7 +2509,9 @@ function getIdentity(
 
     const fixture =
         String(
-            getFixtureId(match)
+            getFixtureId(
+                match
+            )
         ).trim();
 
     if(
@@ -2793,7 +2569,7 @@ function getIdentity(
 
 
 function selectMatches(
-    matches
+    source
 ){
 
     const seen =
@@ -2801,12 +2577,13 @@ function selectMatches(
 
     const result = [];
 
-    const source =
-        Array.isArray(matches)
-            ? matches
+    const matches =
+        Array.isArray(source)
+            ? source
             : [];
 
-    source.forEach(
+
+    matches.forEach(
         function(
             match,
             index
@@ -2843,6 +2620,7 @@ function selectMatches(
             result.push(
                 match
             );
+
         }
     );
 
@@ -2853,15 +2631,17 @@ function selectMatches(
             b
         ){
 
-            const ca =
-                getConfidence(a) ||
-                0;
-
-            const cb =
-                getConfidence(b) ||
-                0;
-
-            return cb - ca;
+            return(
+                (
+                    getConfidence(b)
+                    || 0
+                )
+                -
+                (
+                    getConfidence(a)
+                    || 0
+                )
+            );
         }
     );
 
@@ -2869,6 +2649,77 @@ function selectMatches(
     return result.slice(
         0,
         APEX_DASHBOARD_CONFIG.MAX_MATCHES
+    );
+}
+
+
+/* =========================================================
+   RENDER KPIs
+   ========================================================= */
+
+function renderKpis(
+    matches
+){
+
+    setText(
+        "matchesCount",
+        matches.length
+    );
+
+
+    const confidenceValues =
+        matches
+            .map(
+                getConfidence
+            )
+            .filter(
+                value =>
+                    value !== null
+            );
+
+
+    const best =
+        confidenceValues.length
+            ? Math.max(
+                ...confidenceValues
+            )
+            : null;
+
+
+    const lowRisk =
+        matches.filter(
+            match =>
+                getRiskClass(
+                    getRisk(match)
+                ) === "low"
+        ).length;
+
+
+    setText(
+        "bestConfidence",
+        best === null
+            ? "—"
+            : best + "%"
+    );
+
+
+    setText(
+        "bestConfidenceNote",
+        best === null
+            ? "No confidence data"
+            : "Highest final confidence"
+    );
+
+
+    setText(
+        "predictionCount",
+        matches.length
+    );
+
+
+    setText(
+        "lowRiskCount",
+        lowRisk
     );
 }
 
@@ -2886,12 +2737,14 @@ function renderFeatured(
             "featuredMatch"
         );
 
+
     if(
         !container
     ){
 
         return;
     }
+
 
     if(
         !match
@@ -2900,7 +2753,9 @@ function renderFeatured(
         container.innerHTML = `
 
             <div class="state">
-                No qualified APEX prediction is available.
+
+                No qualified APEX prediction available.
+
             </div>
 
         `;
@@ -2908,8 +2763,12 @@ function renderFeatured(
         return;
     }
 
+
     const confidence =
-        getConfidence(match);
+        getConfidence(
+            match
+        );
+
 
     const width =
         confidence === null
@@ -2976,7 +2835,6 @@ function renderFeatured(
 
         <div class="featured-prediction">
 
-
             <span
                 class="featured-prediction-label"
             >
@@ -2995,7 +2853,6 @@ function renderFeatured(
 
             </div>
 
-
         </div>
 
 
@@ -3010,6 +2867,7 @@ function renderFeatured(
                     CONFIDENCE
                 </div>
 
+
                 <div
                     class="
                         featured-metric-value
@@ -3018,7 +2876,7 @@ function renderFeatured(
                 >
 
                     ${safe(
-                        percentage(
+                        percentageValue(
                             confidence
                         )
                     )}
@@ -3036,9 +2894,8 @@ function renderFeatured(
                     MARKET
                 </div>
 
-                <div
-                    class="featured-metric-value"
-                >
+
+                <div class="featured-metric-value">
 
                     ${safe(
                         getMarket(match) ||
@@ -3058,9 +2915,8 @@ function renderFeatured(
                     RISK
                 </div>
 
-                <div
-                    class="featured-metric-value"
-                >
+
+                <div class="featured-metric-value">
 
                     ${safe(
                         getRisk(match) ||
@@ -3077,16 +2933,14 @@ function renderFeatured(
                 <div
                     class="featured-metric-title"
                 >
-                    ODDS VALUE
+                    AI STATUS
                 </div>
 
-                <div
-                    class="featured-metric-value"
-                >
+
+                <div class="featured-metric-value">
 
                     ${safe(
-                        getAIValue(match) ||
-                        "—"
+                        getAIStatus(match)
                     )}
 
                 </div>
@@ -3144,12 +2998,14 @@ function renderSummary(
             "analysisSummary"
         );
 
+
     if(
         !container
     ){
 
         return;
     }
+
 
     if(
         !matches.length
@@ -3166,7 +3022,7 @@ function renderSummary(
     }
 
 
-    const confidenceValues =
+    const values =
         matches
             .map(
                 getConfidence
@@ -3178,24 +3034,22 @@ function renderSummary(
 
 
     const average =
-        confidenceValues.length
+        values.length
             ? Math.round(
-                confidenceValues.reduce(
-                    function(
+                values.reduce(
+                    (
                         total,
                         value
-                    ){
-
-                        return total + value;
-                    },
+                    ) =>
+                        total + value,
                     0
                 ) /
-                confidenceValues.length
+                values.length
             )
             : null;
 
 
-    const low =
+    const lowRisk =
         matches.filter(
             match =>
                 getRiskClass(
@@ -3277,13 +3131,11 @@ function renderSummary(
                 </span>
 
                 <strong>
-
                     ${safe(
-                        percentage(
+                        percentageValue(
                             average
                         )
                     )}
-
                 </strong>
 
             </div>
@@ -3296,7 +3148,7 @@ function renderSummary(
                 </span>
 
                 <strong>
-                    ${low}
+                    ${lowRisk}
                 </strong>
 
             </div>
@@ -3309,13 +3161,11 @@ function renderSummary(
                 </span>
 
                 <strong>
-
                     ${safe(
                         mostCommon(
                             markets
                         )
                     )}
-
                 </strong>
 
             </div>
@@ -3328,7 +3178,7 @@ function renderSummary(
 
 
 /* =========================================================
-   CONFIDENCE PANEL
+   CONFIDENCE
    ========================================================= */
 
 function renderConfidence(
@@ -3340,10 +3190,12 @@ function renderConfidence(
             "confidenceSummary"
         );
 
+
     const factors =
         document.getElementById(
             "factorSummary"
         );
+
 
     if(
         !summary ||
@@ -3352,6 +3204,7 @@ function renderConfidence(
 
         return;
     }
+
 
     if(
         !match
@@ -3399,7 +3252,7 @@ function renderConfidence(
         <div class="confidence-number">
 
             ${safe(
-                percentage(
+                percentageValue(
                     confidence
                 )
             )}
@@ -3408,9 +3261,7 @@ function renderConfidence(
 
 
         <div class="confidence-label">
-
             Final Confidence
-
         </div>
 
 
@@ -3436,7 +3287,7 @@ function renderConfidence(
                 Prediction
             </span>
 
-            <span class="factor-value">
+            <span class="factor-score">
 
                 ${safe(
                     getPrediction(match) ||
@@ -3451,10 +3302,10 @@ function renderConfidence(
         <div class="factor-row">
 
             <span class="factor-name">
-                Recommended Market
+                Market
             </span>
 
-            <span class="factor-value">
+            <span class="factor-score">
 
                 ${safe(
                     getMarket(match) ||
@@ -3469,10 +3320,10 @@ function renderConfidence(
         <div class="factor-row">
 
             <span class="factor-name">
-                Risk Level
+                Risk
             </span>
 
-            <span class="factor-value">
+            <span class="factor-score">
 
                 ${safe(
                     getRisk(match) ||
@@ -3490,7 +3341,7 @@ function renderConfidence(
                 Home Goals Avg
             </span>
 
-            <span class="factor-value">
+            <span class="factor-score">
 
                 ${safe(
                     getHomeGoals(match) ||
@@ -3508,7 +3359,7 @@ function renderConfidence(
                 Away Goals Avg
             </span>
 
-            <span class="factor-value">
+            <span class="factor-score">
 
                 ${safe(
                     getAwayGoals(match) ||
@@ -3526,7 +3377,7 @@ function renderConfidence(
                 BTTS
             </span>
 
-            <span class="factor-value">
+            <span class="factor-score">
 
                 ${
                     getBTTS(match) !== ""
@@ -3549,7 +3400,7 @@ function renderConfidence(
                 Over 1.5
             </span>
 
-            <span class="factor-value">
+            <span class="factor-score">
 
                 ${
                     getOver15(match) !== ""
@@ -3570,7 +3421,7 @@ function renderConfidence(
 
 
 /* =========================================================
-   MATCH LIST
+   MATCHES
    ========================================================= */
 
 function renderMatches(
@@ -3581,6 +3432,7 @@ function renderMatches(
         document.getElementById(
             "matchList"
         );
+
 
     if(
         !container
@@ -3598,8 +3450,7 @@ function renderMatches(
 
             <div class="state">
 
-                No qualified prediction matches
-                were returned by APEX.
+                No qualified matches available.
 
             </div>
 
@@ -3624,28 +3475,27 @@ function renderMatches(
                     match
                 );
 
+
             const risk =
                 getRisk(
                     match
                 );
+
 
             const riskClass =
                 getRiskClass(
                     risk
                 );
 
-            const homeOdds =
-                getOddsHome(
+
+            const homeGoals =
+                getHomeGoals(
                     match
                 );
 
-            const drawOdds =
-                getOddsDraw(
-                    match
-                );
 
-            const awayOdds =
-                getOddsAway(
+            const awayGoals =
+                getAwayGoals(
                     match
                 );
 
@@ -3657,10 +3507,10 @@ function renderMatches(
                 >
 
 
-                    <div
-                        class="match-number"
-                    >
+                    <div class="match-number">
+
                         ${index + 1}
+
                     </div>
 
 
@@ -3710,7 +3560,6 @@ function renderMatches(
                             "—"
                         )}
 
-
                         <span
                             class="market-small"
                         >
@@ -3734,7 +3583,9 @@ function renderMatches(
                             ${
                                 confidence !== null
                                     ? safe(
-                                        confidence
+                                        String(
+                                            confidence
+                                        )
                                     ) + "%"
                                     : "—"
                             }
@@ -3759,35 +3610,22 @@ function renderMatches(
                     </div>
 
 
-                    <div
-                        class="match-info"
-                    >
+                    <div class="match-info">
 
                         <div>
-                            H:
-                            ${
-                                homeOdds !== null
-                                    ? homeOdds
-                                    : "—"
-                            }
+                            Home:
+                            ${safe(
+                                homeGoals ||
+                                "—"
+                            )}
                         </div>
 
                         <div>
-                            D:
-                            ${
-                                drawOdds !== null
-                                    ? drawOdds
-                                    : "—"
-                            }
-                        </div>
-
-                        <div>
-                            A:
-                            ${
-                                awayOdds !== null
-                                    ? awayOdds
-                                    : "—"
-                            }
+                            Away:
+                            ${safe(
+                                awayGoals ||
+                                "—"
+                            )}
                         </div>
 
                     </div>
@@ -3816,12 +3654,36 @@ function renderMatches(
                 </article>
 
             `;
+
         }
     );
 
 
     container.innerHTML =
         html;
+}
+
+
+/* =========================================================
+   PERCENTAGE HELPER
+   ========================================================= */
+
+function percentageValue(
+    value
+){
+
+    const parsed =
+        numberValue(
+            value
+        );
+
+    return(
+        parsed === null
+            ? "—"
+            : Math.round(
+                parsed
+            ) + "%"
+    );
 }
 
 
@@ -3835,7 +3697,7 @@ async function fetchBackend(){
         new AbortController();
 
 
-    const timeout =
+    const timer =
         setTimeout(
             function(){
 
@@ -3863,11 +3725,8 @@ async function fetchBackend(){
                 url,
                 {
                     method:"GET",
-
                     cache:"no-store",
-
                     redirect:"follow",
-
                     signal:
                         controller.signal
                 }
@@ -3899,15 +3758,11 @@ async function fetchBackend(){
         }
 
 
-        let data;
-
-
         try{
 
-            data =
-                JSON.parse(
-                    raw
-                );
+            return JSON.parse(
+                raw
+            );
 
         }catch(error){
 
@@ -3921,8 +3776,6 @@ async function fetchBackend(){
             );
         }
 
-
-        return data;
 
     }catch(error){
 
@@ -3941,14 +3794,14 @@ async function fetchBackend(){
     }finally{
 
         clearTimeout(
-            timeout
+            timer
         );
     }
 }
 
 
 /* =========================================================
-   LOAD DASHBOARD
+   LOAD
    ========================================================= */
 
 async function loadDashboard(){
@@ -4081,19 +3934,16 @@ async function loadDashboard(){
 
 
         console.log(
-            "APEX DASHBOARD CONNECTED",
+            "APEX DASHBOARD SUCCESS",
             {
-                endpoint:
-                    APEX_DASHBOARD_CONFIG.API_URL,
-
-                response:
-                    data,
-
-                backendMatches:
+                rawMatches:
                     rawMatches.length,
 
                 displayedMatches:
-                    matches.length
+                    matches.length,
+
+                response:
+                    data
             }
         );
 
@@ -4172,7 +4022,6 @@ async function loadDashboard(){
             </div>
 
         `;
-
     }
 
 }
