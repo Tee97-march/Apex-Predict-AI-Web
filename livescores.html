@@ -6,6 +6,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<meta name="theme-color" content="#071321">
+
 <title>APEX Predict AI - Live Scores</title>
 
 <link rel="stylesheet" href="styles.css">
@@ -20,19 +22,23 @@
     --text:#ffffff;
     --muted:#9eacba;
     --green:#00d66b;
-    --green-dark:#00a950;
     --blue:#2f7cff;
-    --red:#ff4d5f;
     --yellow:#ffbf22;
+    --red:#ff4d5f;
 }
 
 *{
     box-sizing:border-box;
 }
 
+html,
 body{
     margin:0;
-    min-height:100vh;
+    padding:0;
+    min-height:100%;
+}
+
+body{
 
     background:
         radial-gradient(
@@ -62,6 +68,10 @@ body{
         Roboto,
         Arial,
         sans-serif;
+}
+
+button{
+    font:inherit;
 }
 
 .app{
@@ -150,7 +160,12 @@ body{
     font-weight:700;
 }
 
+.status.error{
+    color:#ffb4ab;
+}
+
 .summary{
+
     background:
         linear-gradient(
             145deg,
@@ -168,48 +183,67 @@ body{
 }
 
 .summary-header{
+
     display:flex;
+
     justify-content:space-between;
+
     align-items:flex-start;
+
     gap:12px;
 }
 
 .summary-header h1{
+
     margin:0 0 7px;
+
     font-size:23px;
 }
 
 .summary-header p{
+
     margin:0;
+
     color:var(--muted);
+
     font-size:12px;
 }
 
 .count-box{
+
     text-align:right;
 }
 
 .count-number{
+
     color:var(--green);
-    font-size:27px;
+
+    font-size:30px;
+
     font-weight:900;
 }
 
 .count-label{
+
     color:#788797;
+
     font-size:10px;
 }
 
 .match-grid{
+
     display:grid;
+
     grid-template-columns:
         repeat(auto-fit,minmax(280px,1fr));
 
     gap:14px;
+
     margin-top:18px;
 }
 
 .match-card{
+
     background:
         linear-gradient(
             145deg,
@@ -217,7 +251,10 @@ body{
             rgba(7,18,30,.96)
         );
 
-    border:1px solid rgba(255,255,255,.07);
+    border:
+        1px solid
+        rgba(255,255,255,.07);
+
     border-radius:18px;
 
     overflow:hidden;
@@ -227,48 +264,85 @@ body{
 }
 
 .match-top{
+
     display:flex;
+
     justify-content:space-between;
+
     align-items:center;
+
     gap:10px;
 
     padding:14px 15px 10px;
 }
 
 .match-number{
+
     color:#778595;
+
     font-size:10px;
+
     font-weight:800;
 }
 
 .league{
+
     color:#c8d2dc;
+
     font-size:10px;
+
     font-weight:700;
+
     text-align:right;
 }
 
 .match-body{
+
     padding:7px 15px 16px;
 }
 
 .status-badge{
+
     display:inline-block;
+
     padding:5px 9px;
+
     border-radius:999px;
 
-    background:rgba(0,214,107,.11);
+    background:
+        rgba(0,214,107,.11);
+
     color:#7ef0ad;
 
     font-size:10px;
+
     font-weight:800;
 }
 
+.status-live{
+
+    background:
+        rgba(255,77,95,.14);
+
+    color:#ff8995;
+}
+
+.status-finished{
+
+    background:
+        rgba(47,124,255,.13);
+
+    color:#9fc0ff;
+}
+
 .teams{
+
     margin-top:13px;
 
     display:grid;
-    grid-template-columns:1fr auto 1fr;
+
+    grid-template-columns:
+        1fr auto 1fr;
 
     align-items:center;
 
@@ -278,30 +352,51 @@ body{
 }
 
 .team{
+
     color:#ffffff;
+
     font-size:17px;
+
     font-weight:800;
+
     line-height:1.3;
 }
 
 .vs{
+
     color:#7f8d9d;
+
     font-size:11px;
+
     font-weight:900;
 }
 
 .score{
+
     text-align:center;
+
     margin-top:12px;
 
     color:var(--green);
+
     font-size:25px;
+
     font-weight:900;
 }
 
+.score.pending{
+
+    color:#77899c;
+
+    font-size:18px;
+}
+
 .schedule{
+
     display:grid;
-    grid-template-columns:1fr 1fr;
+
+    grid-template-columns:
+        1fr 1fr;
 
     gap:8px;
 
@@ -309,8 +404,13 @@ body{
 }
 
 .schedule-item{
-    background:rgba(255,255,255,.035);
-    border:1px solid rgba(255,255,255,.055);
+
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px solid
+        rgba(255,255,255,.055);
 
     border-radius:11px;
 
@@ -318,34 +418,92 @@ body{
 }
 
 .schedule-label{
+
     color:#758394;
+
     font-size:10px;
+
     font-weight:700;
 
     margin-bottom:5px;
 }
 
 .schedule-value{
+
     color:#e9eef4;
+
     font-size:12px;
+
     font-weight:700;
+
     word-break:break-word;
 }
 
+.prediction{
+
+    margin-top:12px;
+
+    padding:10px;
+
+    border-radius:10px;
+
+    background:
+        rgba(0,214,107,.05);
+
+    border:
+        1px solid
+        rgba(0,214,107,.09);
+
+}
+
+.prediction-label{
+
+    color:#718398;
+
+    font-size:8px;
+
+    font-weight:800;
+
+    margin-bottom:4px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.5px;
+}
+
+.prediction-value{
+
+    color:#dff8e9;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    line-height:1.4;
+}
+
 .match-footer{
+
     display:flex;
+
     justify-content:space-between;
+
+    gap:10px;
 
     padding:11px 15px;
 
-    border-top:1px solid rgba(255,255,255,.06);
+    border-top:
+        1px solid
+        rgba(255,255,255,.06);
 
     color:#697888;
+
     font-size:9px;
 }
 
 .empty,
 .error{
+
     padding:25px;
 
     text-align:center;
@@ -354,42 +512,62 @@ body{
 }
 
 .empty{
+
     background:#0d1c2d;
-    border:1px solid var(--border);
+
+    border:
+        1px solid
+        var(--border);
+
     color:#b9c6d3;
 }
 
 .error{
+
     background:#3a1515;
+
     color:#ffb4ab;
 }
 
 .navigation{
+
     display:grid;
+
     grid-template-columns:
         repeat(4,1fr);
 
     gap:9px;
 
     margin-top:18px;
+
     padding-bottom:25px;
 }
 
 .navigation button{
+
     min-height:48px;
 
-    border:1px solid var(--border);
+    border:
+        1px solid
+        var(--border);
+
     border-radius:12px;
 
     background:#0d1c2d;
+
     color:#e8edf3;
 
     font-size:11px;
+
     font-weight:700;
+
+    cursor:pointer;
 }
 
 .navigation button:hover{
-    border-color:rgba(0,214,107,.35);
+
+    border-color:
+        rgba(0,214,107,.35);
 }
 
 @media(max-width:650px){
@@ -422,7 +600,6 @@ body{
         grid-template-columns:
             1fr 1fr;
     }
-
 }
 
 @media(max-width:390px){
@@ -435,16 +612,21 @@ body{
         text-align:left;
     }
 
+    .schedule{
+        grid-template-columns:1fr;
+    }
 }
 
 </style>
 
 </head>
 
-
 <body>
 
 <div class="app">
+
+
+    <!-- BRAND -->
 
     <div class="topbar">
 
@@ -476,22 +658,28 @@ body{
     </div>
 
 
+    <!-- CONNECTION -->
+
     <div
         id="liveScoreStatus"
         class="status"
     >
-        🔄 Connecting to APEX AI...
+        🔄 Connecting to current APEX backend...
     </div>
 
+
+    <!-- CONTENT -->
 
     <div id="liveScoresContainer">
 
         <div class="empty">
-            🔄 Loading today's selected matches...
+            🔄 Loading current APEX selections...
         </div>
 
     </div>
 
+
+    <!-- NAVIGATION -->
 
     <div class="navigation">
 
@@ -537,73 +725,1375 @@ body{
 "use strict";
 
 
-const APEX_GOOGLE_SHEETS_API =
-"https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
+/* =========================================================
+   CURRENT APEX BACKEND
+   ========================================================= */
 
+const APEX_GOOGLE_SHEETS_API =
+"https://script.google.com/macros/s/AKfycbxygAHM7CTxHK5SXXCoc7AyfhivumaYJDKSYv5OFdI_woZdSnpVgBM400W8Gkny1Y8I/exec";
+
+
+const MAX_MATCHES = 30;
+
+const REQUEST_TIMEOUT = 45000;
+
+const RETRIES = 2;
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+function go(page){
+
+    const allowed = [
+
+        "dashboard.html",
+        "predictions.html",
+        "analysis.html",
+        "statistics.html",
+        "livescores.html",
+        "leagues.html",
+        "headtohead.html",
+        "settings.html",
+        "index.html"
+
+    ];
+
+    window.location.href =
+        "./" +
+        (
+            allowed.includes(page)
+                ? page
+                : "dashboard.html"
+        );
+}
+
+
+/* =========================================================
+   SAFE HTML
+   ========================================================= */
 
 function safe(value){
 
-    if(
-        value === null ||
-        value === undefined
-    ){
-
-        return "";
-
-    }
-
-    return String(value)
+    return String(value ?? "")
         .replace(/&/g,"&amp;")
         .replace(/</g,"&lt;")
         .replace(/>/g,"&gt;")
         .replace(/"/g,"&quot;")
         .replace(/'/g,"&#039;");
-
 }
 
 
-function getValue(match,names){
+/* =========================================================
+   KEY NORMALISATION
+   ========================================================= */
 
-    for(const wanted of names){
+function normaliseKey(value){
 
-        const key =
-            Object.keys(match).find(
-                function(existingKey){
+    return String(value ?? "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g," ");
+}
 
-                    return existingKey
-                        .trim()
-                        .toLowerCase()
-                        ===
+
+/* =========================================================
+   FLEXIBLE FIELD READER
+   ========================================================= */
+
+function getValue(
+    object,
+    names
+){
+
+    if(
+        !object ||
+        typeof object !== "object"
+    ){
+
+        return "";
+    }
+
+    const keys =
+        Object.keys(
+            object
+        );
+
+
+    for(
+        const wantedName of names
+    ){
+
+        const wanted =
+            normaliseKey(
+                wantedName
+            );
+
+
+        const found =
+            keys.find(
+                function(key){
+
+                    return(
+                        normaliseKey(
+                            key
+                        ) ===
                         wanted
-                            .trim()
-                            .toLowerCase();
-
+                    );
                 }
             );
 
-        if(key !== undefined){
+
+        if(
+            found !== undefined
+        ){
 
             const value =
-                match[key];
+                object[found];
+
 
             if(
                 value !== null &&
                 value !== undefined &&
-                String(value).trim() !== ""
+                String(
+                    value
+                ).trim() !== ""
             ){
 
                 return value;
-
             }
-
         }
-
     }
 
-    return "";
 
+    return "";
 }
 
+
+/* =========================================================
+   MATCH FIELDS
+   ========================================================= */
+
+function getFixtureId(match){
+
+    return getValue(
+        match,
+        [
+            "Fixture ID",
+            "API Fixture ID",
+            "fixture_id",
+            "fixtureId",
+            "Fixture"
+        ]
+    );
+}
+
+
+function getDate(match){
+
+    return getValue(
+        match,
+        [
+            "Date",
+            "Match Date",
+            "Fixture Date",
+            "date"
+        ]
+    );
+}
+
+
+function getTime(match){
+
+    return getValue(
+        match,
+        [
+            "Time",
+            "Match Time",
+            "Kickoff",
+            "Kick-off",
+            "Kick Off",
+            "Start Time"
+        ]
+    );
+}
+
+
+function getLeague(match){
+
+    return getValue(
+        match,
+        [
+            "League",
+            "Competition",
+            "League Name",
+            "Tournament"
+        ]
+    );
+}
+
+
+function getHome(match){
+
+    return getValue(
+        match,
+        [
+            "Home Team",
+            "HomeTeam",
+            "Home",
+            "Team Home"
+        ]
+    );
+}
+
+
+function getAway(match){
+
+    return getValue(
+        match,
+        [
+            "Away Team",
+            "AwayTeam",
+            "Away",
+            "Team Away"
+        ]
+    );
+}
+
+
+function getPrediction(match){
+
+    return getValue(
+        match,
+        [
+            "Prediction",
+            "AI Prediction",
+            "Prediction Advice",
+            "Advice"
+        ]
+    );
+}
+
+
+function getConfidence(match){
+
+    const value =
+        getValue(
+            match,
+            [
+                "Final Confidence",
+                "Final confidence",
+                "Final Confidence %",
+                "Final confidence %",
+                "Confidence %",
+                "Confidence",
+                "AI Confidence"
+            ]
+        );
+
+
+    if(
+        value === "" ||
+        value === null ||
+        value === undefined
+    ){
+
+        return null;
+    }
+
+
+    const parsed =
+        parseFloat(
+            String(value)
+                .replace("%","")
+                .replace(",",".")
+                .trim()
+        );
+
+
+    return Number.isFinite(parsed)
+        ? parsed
+        : null;
+}
+
+
+function getRisk(match){
+
+    const value =
+        getValue(
+            match,
+            [
+                "Risk Level",
+                "Risk",
+                "Risk Category",
+                "Risk Rating",
+                "AI Risk"
+            ]
+        );
+
+    return value === ""
+        ? ""
+        : String(value);
+}
+
+
+function getMarket(match){
+
+    const direct =
+        getValue(
+            match,
+            [
+                "Recommended Market",
+                "recommended market",
+                "Recommended market",
+                "Market",
+                "Betting Market",
+                "Selection Market",
+                "Prediction Market"
+            ]
+        );
+
+
+    if(
+        direct !== ""
+    ){
+
+        return String(
+            direct
+        );
+    }
+
+
+    const prediction =
+        String(
+            getPrediction(match)
+        ).toLowerCase();
+
+
+    if(
+        prediction.includes(
+            "double chance"
+        )
+    ){
+
+        return "Double Chance";
+    }
+
+
+    if(
+        prediction.includes("over 0.5")
+        ||
+        prediction.includes("+0.5")
+    ){
+
+        return "Over 0.5 Goals";
+    }
+
+
+    if(
+        prediction.includes("over 1.5")
+        ||
+        prediction.includes("+1.5")
+    ){
+
+        return "Over 1.5 Goals";
+    }
+
+
+    if(
+        prediction.includes("over 2.5")
+        ||
+        prediction.includes("+2.5")
+    ){
+
+        return "Over 2.5 Goals";
+    }
+
+
+    if(
+        prediction.includes("under 2.5")
+        ||
+        prediction.includes("-2.5")
+    ){
+
+        return "Under 2.5 Goals";
+    }
+
+
+    if(
+        prediction.includes("under 3.5")
+        ||
+        prediction.includes("-3.5")
+    ){
+
+        return "Under 3.5 Goals";
+    }
+
+
+    if(
+        prediction.includes("btts")
+        ||
+        prediction.includes(
+            "both teams to score"
+        )
+    ){
+
+        return "Both Teams To Score";
+    }
+
+
+    return "";
+}
+
+
+/* =========================================================
+   SCORES
+   ========================================================= */
+
+function getHomeScore(match){
+
+    return getValue(
+        match,
+        [
+            "Home Score",
+            "Home Goals",
+            "home score",
+            "Home Team Score",
+            "Goals Home"
+        ]
+    );
+}
+
+
+function getAwayScore(match){
+
+    return getValue(
+        match,
+        [
+            "Away Score",
+            "Away Goals",
+            "away score",
+            "Away Team Score",
+            "Goals Away"
+        ]
+    );
+}
+
+
+function getMatchStatus(match){
+
+    const value =
+        getValue(
+            match,
+            [
+                "Status",
+                "Match Status",
+                "Fixture Status",
+                "status",
+                "Live Status"
+            ]
+        );
+
+
+    if(
+        value === ""
+    ){
+
+        return "Scheduled";
+    }
+
+
+    return String(
+        value
+    );
+}
+
+
+/* =========================================================
+   BACKEND RESPONSE
+   ========================================================= */
+
+function extractMatches(data){
+
+    /*
+     * Current verified backend:
+     *
+     * {
+     *     status:"SUCCESS",
+     *     matches:[...]
+     * }
+     */
+
+    if(
+        data &&
+        Array.isArray(
+            data.matches
+        )
+    ){
+
+        return data.matches;
+    }
+
+
+    if(
+        data &&
+        data.smartGate &&
+        Array.isArray(
+            data.smartGate.objects
+        )
+    ){
+
+        return data.smartGate.objects;
+    }
+
+
+    if(
+        data &&
+        Array.isArray(
+            data.smartGate
+        )
+    ){
+
+        return data.smartGate;
+    }
+
+
+    if(
+        data &&
+        data.matchDatabase &&
+        Array.isArray(
+            data.matchDatabase.objects
+        )
+    ){
+
+        return data.matchDatabase.objects;
+    }
+
+
+    if(
+        data &&
+        Array.isArray(
+            data.data
+        )
+    ){
+
+        return data.data;
+    }
+
+
+    return [];
+}
+
+
+/* =========================================================
+   VALIDATION
+   ========================================================= */
+
+function isValidMatch(match){
+
+    return(
+        String(
+            getHome(match)
+        ).trim() !== ""
+        &&
+        String(
+            getAway(match)
+        ).trim() !== ""
+    );
+}
+
+
+/* =========================================================
+   DEDUPLICATION
+   ========================================================= */
+
+function getIdentity(
+    match,
+    index
+){
+
+    const fixture =
+        String(
+            getFixtureId(match)
+        ).trim();
+
+
+    if(
+        fixture
+    ){
+
+        return(
+            "fixture:" +
+            normaliseKey(
+                fixture
+            )
+        );
+    }
+
+
+    const identity =
+        [
+            getDate(match),
+            getHome(match),
+            getAway(match),
+            getLeague(match)
+        ]
+        .map(normaliseKey)
+        .join("|");
+
+
+    if(
+        identity !== "|||"
+    ){
+
+        return identity;
+    }
+
+
+    return(
+        "row:" +
+        index
+    );
+}
+
+
+function prepareMatches(
+    source
+){
+
+    const matches =
+        Array.isArray(source)
+            ? source
+            : [];
+
+
+    const seen =
+        new Set();
+
+
+    const result =
+        [];
+
+
+    matches.forEach(
+        function(
+            match,
+            index
+        ){
+
+            if(
+                !isValidMatch(
+                    match
+                )
+            ){
+
+                return;
+            }
+
+
+            const identity =
+                getIdentity(
+                    match,
+                    index
+                );
+
+
+            if(
+                seen.has(
+                    identity
+                )
+            ){
+
+                return;
+            }
+
+
+            seen.add(
+                identity
+            );
+
+
+            result.push(
+                match
+            );
+        }
+    );
+
+
+    result.sort(
+        function(
+            a,
+            b
+        ){
+
+            return(
+                (
+                    getConfidence(b)
+                    ?? -1
+                )
+                -
+                (
+                    getConfidence(a)
+                    ?? -1
+                )
+            );
+        }
+    );
+
+
+    return result.slice(
+        0,
+        MAX_MATCHES
+    );
+}
+
+
+/* =========================================================
+   API REQUEST
+   ========================================================= */
+
+async function fetchAPEXData(){
+
+    const controller =
+        new AbortController();
+
+
+    const timer =
+        setTimeout(
+            function(){
+
+                controller.abort();
+
+            },
+            REQUEST_TIMEOUT
+        );
+
+
+    try{
+
+        const url =
+            APEX_GOOGLE_SHEETS_API +
+            "?request=dashboard" +
+            "&limit=" +
+            MAX_MATCHES +
+            "&ts=" +
+            Date.now();
+
+
+        const response =
+            await fetch(
+                url,
+                {
+                    method:"GET",
+
+                    cache:"no-store",
+
+                    redirect:"follow",
+
+                    signal:
+                        controller.signal
+                }
+            );
+
+
+        const raw =
+            await response.text();
+
+
+        if(
+            !response.ok
+        ){
+
+            throw new Error(
+                "APEX backend HTTP " +
+                response.status
+            );
+        }
+
+
+        if(
+            !raw.trim()
+        ){
+
+            throw new Error(
+                "APEX backend returned an empty response."
+            );
+        }
+
+
+        let data;
+
+
+        try{
+
+            data =
+                JSON.parse(
+                    raw
+                );
+
+        }catch(error){
+
+            console.error(
+                "APEX Live Scores Raw Response:",
+                raw
+            );
+
+            throw new Error(
+                "APEX backend returned invalid JSON."
+            );
+        }
+
+
+        if(
+            data &&
+            String(
+                data.status
+            ).toUpperCase()
+            ===
+            "ERROR"
+        ){
+
+            throw new Error(
+                data.message ||
+                "APEX backend returned an error."
+            );
+        }
+
+
+        return data;
+
+
+    }catch(error){
+
+        if(
+            error.name ===
+            "AbortError"
+        ){
+
+            throw new Error(
+                "APEX backend request timed out."
+            );
+        }
+
+
+        throw error;
+
+    }finally{
+
+        clearTimeout(
+            timer
+        );
+    }
+}
+
+
+/* =========================================================
+   LOAD WITH RETRY
+   ========================================================= */
+
+async function loadAPEXData(){
+
+    let lastError =
+        null;
+
+
+    for(
+        let attempt = 0;
+
+        attempt <= RETRIES;
+
+        attempt++
+    ){
+
+        try{
+
+            return await fetchAPEXData();
+
+        }catch(error){
+
+            lastError =
+                error;
+
+
+            if(
+                attempt <
+                RETRIES
+            ){
+
+                await new Promise(
+                    resolve =>
+                        setTimeout(
+                            resolve,
+                            1000
+                        )
+                );
+            }
+        }
+    }
+
+
+    throw(
+        lastError ||
+        new Error(
+            "Unable to connect to APEX backend."
+        )
+    );
+}
+
+
+/* =========================================================
+   STATUS CLASS
+   ========================================================= */
+
+function getStatusClass(
+    status
+){
+
+    const text =
+        String(
+            status ||
+            ""
+        ).toLowerCase();
+
+
+    if(
+        text.includes("live") ||
+        text.includes("1h") ||
+        text.includes("2h") ||
+        text === "ht"
+    ){
+
+        return "status-live";
+    }
+
+
+    if(
+        text.includes("finish") ||
+        text === "ft"
+    ){
+
+        return "status-finished";
+    }
+
+
+    return "";
+}
+
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+
+function renderLiveScores(
+    matches
+){
+
+    const container =
+        document.getElementById(
+            "liveScoresContainer"
+        );
+
+
+    if(
+        !container
+    ){
+
+        return;
+    }
+
+
+    if(
+        !matches.length
+    ){
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                <h2>
+                    ⚽ No APEX Matches Available
+                </h2>
+
+                <p>
+                    No current Smart Gate matches
+                    were returned by the backend.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    let html = `
+
+        <div class="summary">
+
+
+            <div class="summary-header">
+
+
+                <div>
+
+                    <h1>
+                        ⚽ APEX Match Centre
+                    </h1>
+
+                    <p>
+                        Current matches returned by
+                        the APEX AI backend.
+                    </p>
+
+                </div>
+
+
+                <div class="count-box">
+
+                    <div class="count-number">
+                        ${matches.length}
+                    </div>
+
+                    <div class="count-label">
+                        SELECTED
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="match-grid">
+
+    `;
+
+
+    matches.forEach(
+        function(
+            match,
+            index
+        ){
+
+            const league =
+                getLeague(
+                    match
+                );
+
+
+            const home =
+                getHome(
+                    match
+                );
+
+
+            const away =
+                getAway(
+                    match
+                );
+
+
+            const date =
+                getDate(
+                    match
+                );
+
+
+            const time =
+                getTime(
+                    match
+                );
+
+
+            const homeScore =
+                getHomeScore(
+                    match
+                );
+
+
+            const awayScore =
+                getAwayScore(
+                    match
+                );
+
+
+            const matchStatus =
+                getMatchStatus(
+                    match
+                );
+
+
+            const prediction =
+                getPrediction(
+                    match
+                );
+
+
+            const confidence =
+                getConfidence(
+                    match
+                );
+
+
+            const market =
+                getMarket(
+                    match
+                );
+
+
+            const statusClass =
+                getStatusClass(
+                    matchStatus
+                );
+
+
+            const hasScore =
+                (
+                    homeScore !== ""
+                    ||
+                    awayScore !== ""
+                );
+
+
+            html += `
+
+                <div class="match-card">
+
+
+                    <div class="match-top">
+
+
+                        <div class="match-number">
+
+                            MATCH ${index + 1}
+
+                        </div>
+
+
+                        <div class="league">
+
+                            🏆 ${safe(
+                                league ||
+                                "League"
+                            )}
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="match-body">
+
+
+                        <span
+                            class="
+                                status-badge
+                                ${statusClass}
+                            "
+                        >
+
+                            ${safe(
+                                matchStatus
+                            )}
+
+                        </span>
+
+
+                        <div class="teams">
+
+
+                            <div class="team">
+
+                                ${safe(
+                                    home ||
+                                    "Home Team"
+                                )}
+
+                            </div>
+
+
+                            <div class="vs">
+                                VS
+                            </div>
+
+
+                            <div class="team">
+
+                                ${safe(
+                                    away ||
+                                    "Away Team"
+                                )}
+
+                            </div>
+
+
+                        </div>
+
+
+                        ${
+                            hasScore
+
+                            ?
+
+                            `
+                                <div class="score">
+
+                                    ${safe(
+                                        homeScore ||
+                                        "0"
+                                    )}
+
+                                    -
+
+                                    ${safe(
+                                        awayScore ||
+                                        "0"
+                                    )}
+
+                                </div>
+                            `
+
+                            :
+
+                            `
+                                <div class="score pending">
+                                    — : —
+                                </div>
+                            `
+                        }
+
+
+                        <div class="schedule">
+
+
+                            <div class="schedule-item">
+
+                                <div class="schedule-label">
+                                    DATE
+                                </div>
+
+                                <div class="schedule-value">
+
+                                    ${safe(
+                                        date ||
+                                        "—"
+                                    )}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="schedule-item">
+
+                                <div class="schedule-label">
+                                    TIME
+                                </div>
+
+                                <div class="schedule-value">
+
+                                    ${safe(
+                                        time ||
+                                        "—"
+                                    )}
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="prediction">
+
+
+                            <div class="prediction-label">
+                                APEX PREDICTION
+                            </div>
+
+
+                            <div class="prediction-value">
+
+                                ${safe(
+                                    prediction ||
+                                    "Prediction unavailable"
+                                )}
+
+                                ${
+                                    market
+                                        ? " · " +
+                                          safe(
+                                              market
+                                          )
+                                        : ""
+                                }
+
+                                ${
+                                    confidence !== null
+                                        ? " · " +
+                                          safe(
+                                              confidence
+                                          ) +
+                                          "%"
+                                        : ""
+                                }
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="match-footer">
+
+
+                        <span>
+                            APEX AI ENGINE
+                        </span>
+
+
+                        <span>
+                            ${safe(
+                                matchStatus
+                            )}
+                        </span>
+
+
+                    </div>
+
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    html += `
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    container.innerHTML =
+        html;
+}
+
+
+/* =========================================================
+   MAIN LOADER
+   ========================================================= */
 
 async function loadLiveScores(){
 
@@ -611,6 +2101,7 @@ async function loadLiveScores(){
         document.getElementById(
             "liveScoreStatus"
         );
+
 
     const container =
         document.getElementById(
@@ -620,467 +2111,69 @@ async function loadLiveScores(){
 
     try{
 
+        status.className =
+            "status";
+
+
         status.textContent =
-            "🔄 Connecting to APEX Predict AI...";
-
-
-        const response =
-            await fetch(
-                APEX_GOOGLE_SHEETS_API,
-                {
-                    method:"GET",
-                    cache:"no-store"
-                }
-            );
-
-
-        if(!response.ok){
-
-            throw new Error(
-                "HTTP " + response.status
-            );
-
-        }
+            "🔄 Connecting to current APEX backend...";
 
 
         const data =
-            await response.json();
+            await loadAPEXData();
 
 
-        if(
-            !data ||
-            !data.matchDatabase ||
-            !Array.isArray(
-                data.matchDatabase.objects
-            )
-        ){
-
-            throw new Error(
-                "APEX Match Database was not returned."
-            );
-
-        }
-
-
-        const allMatches =
-            data.matchDatabase.objects;
-
-
-        /*
-         * Preserve the working selection logic.
-         * The database remains untouched.
-         */
-
-        const completedMatches =
-            allMatches.filter(
-                function(match){
-
-                    const prediction =
-                        getValue(
-                            match,
-                            [
-                                "Prediction",
-                                "prediction",
-                                "AI Prediction"
-                            ]
-                        );
-
-                    const confidence =
-                        getValue(
-                            match,
-                            [
-                                "Confidence %",
-                                "Confidence",
-                                "confidence %",
-                                "Final Confidence"
-                            ]
-                        );
-
-                    const market =
-                        getValue(
-                            match,
-                            [
-                                "Recommended Market",
-                                "recommended market",
-                                "Market"
-                            ]
-                        );
-
-                    return (
-                        prediction !== "" ||
-                        confidence !== "" ||
-                        market !== ""
-                    );
-
-                }
+        const source =
+            extractMatches(
+                data
             );
 
 
         const matches =
-            completedMatches
-                .slice()
-                .reverse()
-                .slice(0,10);
+            prepareMatches(
+                source
+            );
+
+
+        renderLiveScores(
+            matches
+        );
 
 
         status.textContent =
-            "✅ APEX AI Connected — " +
+            "✅ APEX AI Connected · " +
             matches.length +
-            " selected matches";
+            " matches loaded";
 
 
-        if(!matches.length){
+        console.log(
+            "APEX LIVE SCORES SUCCESS",
+            {
+                backendMatches:
+                    source.length,
 
-            container.innerHTML = `
+                displayedMatches:
+                    matches.length,
 
-                <div class="empty">
+                maximum:
+                    MAX_MATCHES,
 
-                    <h2>
-                        ⚽ No Selected Matches
-                    </h2>
-
-                    <p>
-                        APEX has not produced completed
-                        match records yet.
-                    </p>
-
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-
-        let html = `
-
-            <div class="summary">
-
-                <div class="summary-header">
-
-                    <div>
-
-                        <h1>
-                            ⚽ APEX Match Centre
-                        </h1>
-
-                        <p>
-                            Today's final selected matches
-                            from the APEX AI engine.
-                        </p>
-
-                    </div>
-
-                    <div class="count-box">
-
-                        <div class="count-number">
-                            ${matches.length}
-                        </div>
-
-                        <div class="count-label">
-                            SELECTED
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="match-grid">
-
-        `;
-
-
-        matches.forEach(
-            function(match,index){
-
-                const league =
-                    getValue(
-                        match,
-                        [
-                            "League",
-                            "league"
-                        ]
-                    );
-
-
-                const home =
-                    getValue(
-                        match,
-                        [
-                            "Home Team",
-                            "HomeTeam",
-                            "Home"
-                        ]
-                    );
-
-
-                const away =
-                    getValue(
-                        match,
-                        [
-                            "Away Team",
-                            "AwayTeam",
-                            "Away"
-                        ]
-                    );
-
-
-                const date =
-                    getValue(
-                        match,
-                        [
-                            "Date",
-                            "Match Date",
-                            "date"
-                        ]
-                    );
-
-
-                const time =
-                    getValue(
-                        match,
-                        [
-                            "Time",
-                            "Match Time",
-                            "time"
-                        ]
-                    );
-
-
-                const homeScore =
-                    getValue(
-                        match,
-                        [
-                            "Home Score",
-                            "Home Goals",
-                            "home score"
-                        ]
-                    );
-
-
-                const awayScore =
-                    getValue(
-                        match,
-                        [
-                            "Away Score",
-                            "Away Goals",
-                            "away score"
-                        ]
-                    );
-
-
-                const matchStatus =
-                    getValue(
-                        match,
-                        [
-                            "Status",
-                            "Match Status",
-                            "status"
-                        ]
-                    )
-                    ||
-                    "Scheduled";
-
-
-                const prediction =
-                    getValue(
-                        match,
-                        [
-                            "Prediction",
-                            "AI Prediction"
-                        ]
-                    );
-
-
-                const confidence =
-                    getValue(
-                        match,
-                        [
-                            "Confidence %",
-                            "Confidence",
-                            "Final Confidence"
-                        ]
-                    );
-
-
-                html += `
-
-                    <div class="match-card">
-
-
-                        <div class="match-top">
-
-                            <div class="match-number">
-
-                                MATCH ${index + 1}
-
-                            </div>
-
-                            <div class="league">
-
-                                🏆 ${safe(
-                                    league || "League"
-                                )}
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="match-body">
-
-                            <span class="status-badge">
-
-                                ${safe(matchStatus)}
-
-                            </span>
-
-
-                            <div class="teams">
-
-                                <div class="team">
-
-                                    ${safe(
-                                        home || "Home Team"
-                                    )}
-
-                                </div>
-
-                                <div class="vs">
-                                    VS
-                                </div>
-
-                                <div class="team">
-
-                                    ${safe(
-                                        away || "Away Team"
-                                    )}
-
-                                </div>
-
-                            </div>
-
-
-                            ${
-                                (
-                                    homeScore !== "" ||
-                                    awayScore !== ""
-                                )
-                                ?
-
-                                `
-                                    <div class="score">
-
-                                        ${safe(
-                                            homeScore || "0"
-                                        )}
-
-                                        -
-
-                                        ${safe(
-                                            awayScore || "0"
-                                        )}
-
-                                    </div>
-                                `
-
-                                :
-
-                                ""
-                            }
-
-
-                            <div class="schedule">
-
-                                <div class="schedule-item">
-
-                                    <div class="schedule-label">
-                                        DATE
-                                    </div>
-
-                                    <div class="schedule-value">
-
-                                        ${safe(
-                                            date || "—"
-                                        )}
-
-                                    </div>
-
-                                </div>
-
-
-                                <div class="schedule-item">
-
-                                    <div class="schedule-label">
-                                        TIME
-                                    </div>
-
-                                    <div class="schedule-value">
-
-                                        ${safe(
-                                            time || "—"
-                                        )}
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="match-footer">
-
-                            <span>
-                                APEX AI
-                            </span>
-
-                            <span>
-                                ${
-                                    confidence !== ""
-                                        ? "Confidence " +
-                                          safe(confidence) +
-                                          "%"
-                                        : safe(
-                                            prediction || "Prediction"
-                                          )
-                                }
-                            </span>
-
-                        </div>
-
-
-                    </div>
-
-                `;
-
+                response:
+                    data
             }
         );
 
 
-        html += `
-
-                </div>
-
-            </div>
-
-        `;
-
-
-        container.innerHTML =
-            html;
-
-
-    }
-    catch(error){
+    }catch(error){
 
         console.error(
             "APEX Live Scores Error:",
             error
         );
+
+
+        status.className =
+            "status error";
 
 
         status.textContent =
@@ -1096,25 +2189,32 @@ async function loadLiveScores(){
                 </h2>
 
                 <p>
-                    ${safe(error.message)}
+                    ${safe(
+                        error.message
+                    )}
                 </p>
 
             </div>
 
         `;
-
     }
-
 }
 
 
-function go(page){
+/* =========================================================
+   GLOBAL
+   ========================================================= */
 
-    window.location.href =
-        page;
+window.go =
+    go;
 
-}
+window.loadLiveScores =
+    loadLiveScores;
 
+
+/* =========================================================
+   START
+   ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -1122,7 +2222,6 @@ document.addEventListener(
 );
 
 </script>
-
 
 </body>
 
