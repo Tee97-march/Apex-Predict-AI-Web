@@ -5,6 +5,7 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#071321">
 
 <title>APEX Predict AI - Settings</title>
 
@@ -30,9 +31,14 @@
     box-sizing:border-box;
 }
 
+html,
 body{
     margin:0;
-    min-height:100vh;
+    padding:0;
+    min-height:100%;
+}
+
+body{
 
     background:
         radial-gradient(
@@ -62,6 +68,11 @@ body{
         Roboto,
         Arial,
         sans-serif;
+}
+
+button{
+    font:inherit;
+    cursor:pointer;
 }
 
 .app{
@@ -126,10 +137,15 @@ body{
     padding:7px 10px;
     border-radius:999px;
 
-    background:rgba(47,124,255,.08);
-    border:1px solid rgba(47,124,255,.18);
+    background:
+        rgba(47,124,255,.08);
+
+    border:
+        1px solid
+        rgba(47,124,255,.18);
 
     color:#a9c7ff;
+
     font-size:10px;
     font-weight:800;
 }
@@ -140,17 +156,23 @@ body{
 
     border-radius:13px;
 
-    background:rgba(255,255,255,.035);
-    border:1px solid var(--border);
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px solid
+        var(--border);
 
     color:#a9f0c2;
 
     text-align:center;
+
     font-size:12px;
     font-weight:700;
 }
 
 .panel{
+
     background:
         linear-gradient(
             145deg,
@@ -158,7 +180,10 @@ body{
             rgba(8,20,34,.98)
         );
 
-    border:1px solid var(--border);
+    border:
+        1px solid
+        var(--border);
+
     border-radius:20px;
 
     padding:18px;
@@ -166,30 +191,44 @@ body{
     margin-bottom:15px;
 
     box-shadow:
-        0 15px 35px rgba(0,0,0,.24);
+        0 15px 35px
+        rgba(0,0,0,.24);
 }
 
 .panel-title{
+
     display:flex;
+
     align-items:center;
+
     gap:10px;
 
     color:#ffffff;
+
     font-size:18px;
+
     font-weight:800;
 
-    margin-bottom:14px;
+    margin-bottom:6px;
 }
 
 .panel-subtitle{
+
     color:#8998a8;
+
     font-size:12px;
+
     margin-bottom:16px;
+
+    line-height:1.5;
 }
 
 .setting-row{
+
     display:flex;
+
     align-items:center;
+
     justify-content:space-between;
 
     gap:14px;
@@ -197,7 +236,8 @@ body{
     padding:14px 0;
 
     border-bottom:
-        1px solid rgba(255,255,255,.06);
+        1px solid
+        rgba(255,255,255,.06);
 }
 
 .setting-row:last-child{
@@ -205,46 +245,34 @@ body{
 }
 
 .setting-name{
+
     color:#ffffff;
+
     font-size:13px;
+
     font-weight:700;
 }
 
 .setting-description{
+
     color:#7e8d9d;
+
     font-size:10px;
+
     margin-top:4px;
+
     line-height:1.4;
 }
 
 .setting-value{
+
     color:#aebccb;
+
     font-size:12px;
+
     text-align:right;
+
     word-break:break-word;
-}
-
-.info-card{
-    background:rgba(255,255,255,.035);
-    border:1px solid rgba(255,255,255,.06);
-
-    border-radius:13px;
-
-    padding:14px;
-    margin-top:10px;
-}
-
-.info-label{
-    color:#778797;
-    font-size:10px;
-    font-weight:700;
-    margin-bottom:5px;
-}
-
-.info-value{
-    color:#ffffff;
-    font-size:13px;
-    font-weight:700;
 }
 
 .green{
@@ -259,38 +287,319 @@ body{
     color:#ffd66d;
 }
 
+.red{
+    color:#ff9aa4;
+}
+
+
+/* =========================================================
+   DAILY WORKFLOW — HIGHLIGHTED
+   ========================================================= */
+
+.workflow-panel{
+
+    border:
+        1px solid
+        rgba(0,214,107,.20);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(0,214,107,.07),
+            rgba(8,20,34,.98)
+        );
+}
+
+.workflow-title{
+
+    color:#ffffff;
+
+    font-size:20px;
+
+    font-weight:900;
+
+    margin-bottom:5px;
+}
+
+.workflow-subtitle{
+
+    color:#96a8ba;
+
+    font-size:11px;
+
+    line-height:1.5;
+
+    margin-bottom:16px;
+}
+
+.workflow-step{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:12px;
+
+    padding:14px;
+
+    margin-bottom:9px;
+
+    border-radius:14px;
+
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px solid
+        rgba(255,255,255,.06);
+}
+
+.workflow-step:last-child{
+    margin-bottom:0;
+}
+
+.workflow-number{
+
+    width:30px;
+    height:30px;
+
+    flex:0 0 30px;
+
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:
+        rgba(0,214,107,.13);
+
+    border:
+        1px solid
+        rgba(0,214,107,.25);
+
+    color:var(--green);
+
+    font-size:12px;
+
+    font-weight:900;
+}
+
+.workflow-content{
+    flex:1;
+}
+
+.workflow-name{
+
+    color:#ffffff;
+
+    font-size:13px;
+
+    font-weight:800;
+
+    margin-bottom:4px;
+}
+
+.workflow-detail{
+
+    color:#8d9baa;
+
+    font-size:10px;
+
+    line-height:1.5;
+}
+
+.workflow-status{
+
+    color:#7ef0ad;
+
+    font-size:10px;
+
+    font-weight:900;
+
+    white-space:nowrap;
+}
+
+
+/* IMPORT STEP */
+
+.import-step{
+
+    border:
+        1px solid
+        rgba(47,124,255,.28);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(47,124,255,.10),
+            rgba(255,255,255,.025)
+        );
+}
+
+.import-step .workflow-number{
+
+    color:#a9c7ff;
+
+    background:
+        rgba(47,124,255,.13);
+
+    border-color:
+        rgba(47,124,255,.25);
+}
+
+.import-step .workflow-status{
+
+    color:#a9c7ff;
+}
+
+
+/* =========================================================
+   INFO CARDS
+   ========================================================= */
+
+.info-card{
+
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px solid
+        rgba(255,255,255,.06);
+
+    border-radius:13px;
+
+    padding:14px;
+
+    margin-top:10px;
+}
+
+.info-label{
+
+    color:#778797;
+
+    font-size:10px;
+
+    font-weight:700;
+
+    margin-bottom:5px;
+}
+
+.info-value{
+
+    color:#ffffff;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    line-height:1.4;
+}
+
+
+/* =========================================================
+   RUN GUIDE
+   ========================================================= */
+
+.guide-card{
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,191,34,.09),
+            rgba(255,255,255,.025)
+        );
+
+    border:
+        1px solid
+        rgba(255,191,34,.18);
+
+    border-radius:14px;
+
+    padding:15px;
+
+    margin-top:12px;
+}
+
+.guide-title{
+
+    color:#ffd66d;
+
+    font-size:13px;
+
+    font-weight:900;
+
+    margin-bottom:8px;
+}
+
+.guide-text{
+
+    color:#c4cfda;
+
+    font-size:10px;
+
+    line-height:1.6;
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
 .navigation{
+
     display:grid;
+
     grid-template-columns:
         repeat(4,1fr);
 
     gap:9px;
 
     margin-top:18px;
+
     padding-bottom:25px;
 }
 
 .navigation button{
+
     min-height:48px;
 
-    border:1px solid var(--border);
+    border:
+        1px solid
+        var(--border);
+
     border-radius:12px;
 
     background:#0d1c2d;
+
     color:#e8edf3;
 
     font-size:11px;
+
     font-weight:700;
 }
 
 .navigation button:hover{
-    border-color:rgba(0,214,107,.35);
+
+    border-color:
+        rgba(0,214,107,.35);
 }
 
 .danger{
-    border-color:rgba(255,77,95,.18) !important;
-    color:#ff9aa4 !important;
+
+    border-color:
+        rgba(255,77,95,.18)
+        !important;
+
+    color:
+        #ff9aa4
+        !important;
 }
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
 
 @media(max-width:650px){
 
@@ -302,9 +611,29 @@ body{
         display:none;
     }
 
+    .workflow-step{
+        gap:9px;
+    }
+
+    .workflow-status{
+        font-size:9px;
+    }
+
     .navigation{
         grid-template-columns:
             1fr 1fr;
+    }
+
+}
+
+@media(max-width:380px){
+
+    .workflow-step{
+        flex-wrap:wrap;
+    }
+
+    .workflow-status{
+        margin-left:42px;
     }
 
 }
@@ -319,9 +648,9 @@ body{
 <div class="app">
 
 
-    <!-- =================================================
+    <!-- =====================================================
          TOP BAR
-         ================================================= -->
+         ===================================================== -->
 
     <div class="topbar">
 
@@ -353,21 +682,199 @@ body{
     </div>
 
 
-    <!-- =================================================
-         STATUS
-         ================================================= -->
+    <!-- =====================================================
+         CONNECTION STATUS
+         ===================================================== -->
 
     <div
         id="settingsStatus"
         class="status"
     >
-        ✅ APEX Predict AI is ready
+        ✅ APEX Predict AI System Ready
     </div>
 
 
-    <!-- =================================================
-         ACCOUNT / APP
-         ================================================= -->
+    <!-- =====================================================
+         DAILY RUN WORKFLOW
+         ===================================================== -->
+
+    <div class="panel workflow-panel">
+
+        <div class="workflow-title">
+            🔄 How To Run APEX Predict AI
+        </div>
+
+        <div class="workflow-subtitle">
+            Follow this production sequence each day after
+            preparing the day's football fixtures.
+        </div>
+
+
+        <!-- STEP 1 -->
+
+        <div class="workflow-step import-step">
+
+            <div class="workflow-number">
+                1
+            </div>
+
+            <div class="workflow-content">
+
+                <div class="workflow-name">
+                    📥 Import Fixtures
+                </div>
+
+                <div class="workflow-detail">
+                    Run the fixture importer in Google Apps Script.
+                    This places the day's football fixtures into
+                    the APEX Match Database.
+                </div>
+
+            </div>
+
+            <div class="workflow-status">
+                FIRST
+            </div>
+
+        </div>
+
+
+        <!-- STEP 2 -->
+
+        <div class="workflow-step">
+
+            <div class="workflow-number">
+                2
+            </div>
+
+            <div class="workflow-content">
+
+                <div class="workflow-name">
+                    🧠 Run Data Pipeline
+                </div>
+
+                <div class="workflow-detail">
+                    Enrich the imported fixtures with the available
+                    football data and prepare the records for AI calculation.
+                </div>
+
+            </div>
+
+            <div class="workflow-status">
+                RUN
+            </div>
+
+        </div>
+
+
+        <!-- STEP 3 -->
+
+        <div class="workflow-step">
+
+            <div class="workflow-number">
+                3
+            </div>
+
+            <div class="workflow-content">
+
+                <div class="workflow-name">
+                    🎯 Run APEX Smart Gate
+                </div>
+
+                <div class="workflow-detail">
+                    Smart Gate evaluates the qualified records and
+                    prepares the final selection pool, with a maximum
+                    of 30 matches.
+                </div>
+
+            </div>
+
+            <div class="workflow-status">
+                MAX 30
+            </div>
+
+        </div>
+
+
+        <!-- STEP 4 -->
+
+        <div class="workflow-step">
+
+            <div class="workflow-number">
+                4
+            </div>
+
+            <div class="workflow-content">
+
+                <div class="workflow-name">
+                    🤖 Run APEX AI Engine
+                </div>
+
+                <div class="workflow-detail">
+                    The AI Engine calculates the prediction,
+                    final confidence, risk level and recommended market.
+                </div>
+
+            </div>
+
+            <div class="workflow-status">
+                RUN
+            </div>
+
+        </div>
+
+
+        <!-- STEP 5 -->
+
+        <div class="workflow-step">
+
+            <div class="workflow-number">
+                5
+            </div>
+
+            <div class="workflow-content">
+
+                <div class="workflow-name">
+                    🌐 Open APEX Web App
+                </div>
+
+                <div class="workflow-detail">
+                    Refresh the web app. Dashboard, Predictions,
+                    Analysis, Statistics, Live Scores, Leagues and
+                    Head To Head read the current backend results.
+                </div>
+
+            </div>
+
+            <div class="workflow-status">
+                ONLINE
+            </div>
+
+        </div>
+
+
+        <div class="guide-card">
+
+            <div class="guide-title">
+                ⭐ Daily operating order
+            </div>
+
+            <div class="guide-text">
+
+                Import Fixtures → Data Pipeline →
+                Smart Gate → APEX AI Engine →
+                Open / Refresh Web App
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         APPLICATION SETTINGS
+         ===================================================== -->
 
     <div class="panel">
 
@@ -376,7 +883,7 @@ body{
         </div>
 
         <div class="panel-subtitle">
-            Current APEX Predict AI configuration.
+            Current APEX Predict AI production configuration.
         </div>
 
 
@@ -431,7 +938,7 @@ body{
                 </div>
 
                 <div class="setting-description">
-                    APEX AI final selection workflow
+                    Current APEX AI prediction workflow
                 </div>
 
             </div>
@@ -448,7 +955,7 @@ body{
             <div>
 
                 <div class="setting-name">
-                    Smart Selection
+                    Smart Gate Capacity
                 </div>
 
                 <div class="setting-description">
@@ -458,7 +965,7 @@ body{
             </div>
 
             <div class="setting-value green">
-                10 MATCHES
+                30 MATCHES
             </div>
 
         </div>
@@ -466,9 +973,9 @@ body{
     </div>
 
 
-    <!-- =================================================
-         DATA SYSTEM
-         ================================================= -->
+    <!-- =====================================================
+         APEX SYSTEM
+         ===================================================== -->
 
     <div class="panel">
 
@@ -477,7 +984,7 @@ body{
         </div>
 
         <div class="panel-subtitle">
-            Current production data flow.
+            Current data architecture used by the platform.
         </div>
 
 
@@ -497,11 +1004,24 @@ body{
         <div class="info-card">
 
             <div class="info-label">
+                DATA ENRICHMENT
+            </div>
+
+            <div class="info-value blue">
+                Football-Data.org + available APEX enrichment
+            </div>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <div class="info-label">
                 DATA STORAGE
             </div>
 
             <div class="info-value">
-                Google Sheets
+                Google Sheets Match Database
             </div>
 
         </div>
@@ -523,11 +1043,11 @@ body{
         <div class="info-card">
 
             <div class="info-label">
-                SELECTION
+                FINAL SELECTION
             </div>
 
             <div class="info-value green">
-                SMART GATE
+                APEX SMART GATE · MAX 30
             </div>
 
         </div>
@@ -548,50 +1068,29 @@ body{
     </div>
 
 
-    <!-- =================================================
-         PRODUCTION WORKFLOW
-         ================================================= -->
+    <!-- =====================================================
+         PRODUCTION CHECK
+         ===================================================== -->
 
     <div class="panel">
 
         <div class="panel-title">
-            🔄 Daily Workflow
+            ✅ Production Status
         </div>
 
         <div class="panel-subtitle">
-            The production sequence used by APEX.
+            Frontend components currently connected to APEX.
         </div>
 
 
         <div class="setting-row">
 
-            <div>
-
-                <div class="setting-name">
-                    01. Import Fixtures
-                </div>
-
+            <div class="setting-name">
+                Dashboard
             </div>
 
             <div class="setting-value green">
-                READY
-            </div>
-
-        </div>
-
-
-        <div class="setting-row">
-
-            <div>
-
-                <div class="setting-name">
-                    02. Calculate Predictions
-                </div>
-
-            </div>
-
-            <div class="setting-value green">
-                READY
+                30 MATCHES
             </div>
 
         </div>
@@ -599,16 +1098,12 @@ body{
 
         <div class="setting-row">
 
-            <div>
-
-                <div class="setting-name">
-                    03. Smart Gate
-                </div>
-
+            <div class="setting-name">
+                AI Predictions
             </div>
 
             <div class="setting-value green">
-                ACTIVE
+                30 MATCHES
             </div>
 
         </div>
@@ -616,16 +1111,12 @@ body{
 
         <div class="setting-row">
 
-            <div>
-
-                <div class="setting-name">
-                    04. APEX AI Engine
-                </div>
-
+            <div class="setting-name">
+                AI Analysis
             </div>
 
             <div class="setting-value green">
-                ACTIVE
+                30 MATCHES
             </div>
 
         </div>
@@ -633,16 +1124,51 @@ body{
 
         <div class="setting-row">
 
-            <div>
-
-                <div class="setting-name">
-                    05. Web App
-                </div>
-
+            <div class="setting-name">
+                AI Statistics
             </div>
 
             <div class="setting-value green">
-                ONLINE
+                30 MATCHES
+            </div>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <div class="setting-name">
+                Live Scores
+            </div>
+
+            <div class="setting-value green">
+                30 MATCHES
+            </div>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <div class="setting-name">
+                Leagues
+            </div>
+
+            <div class="setting-value green">
+                CONNECTED
+            </div>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <div class="setting-name">
+                Head To Head
+            </div>
+
+            <div class="setting-value green">
+                CONNECTED
             </div>
 
         </div>
@@ -650,9 +1176,9 @@ body{
     </div>
 
 
-    <!-- =================================================
+    <!-- =====================================================
          ACCOUNT
-         ================================================= -->
+         ===================================================== -->
 
     <div class="panel">
 
@@ -661,7 +1187,7 @@ body{
         </div>
 
         <div class="panel-subtitle">
-            Account controls.
+            Current browser session and account controls.
         </div>
 
 
@@ -712,9 +1238,9 @@ body{
     </div>
 
 
-    <!-- =================================================
+    <!-- =====================================================
          NAVIGATION
-         ================================================= -->
+         ===================================================== -->
 
     <div class="navigation">
 
@@ -760,15 +1286,36 @@ body{
 
 <script>
 
+"use strict";
+
+
 /* =====================================================
    NAVIGATION
    ===================================================== */
 
 function go(page){
 
-    window.location.href =
-        page;
+    const allowed = [
 
+        "dashboard.html",
+        "predictions.html",
+        "analysis.html",
+        "statistics.html",
+        "livescores.html",
+        "leagues.html",
+        "headtohead.html",
+        "settings.html",
+        "index.html"
+
+    ];
+
+    window.location.href =
+        "./" +
+        (
+            allowed.includes(page)
+                ? page
+                : "dashboard.html"
+        );
 }
 
 
@@ -779,13 +1326,12 @@ function go(page){
 function logout(){
 
     window.location.href =
-        "index.html";
-
+        "./index.html";
 }
 
 
 /* =====================================================
-   PASSWORD MESSAGE
+   PASSWORD
    ===================================================== */
 
 function showPasswordMessage(){
@@ -793,11 +1339,33 @@ function showPasswordMessage(){
     alert(
         "Password recovery will be available in a future APEX Predict AI update."
     );
-
 }
 
-</script>
 
+/* =====================================================
+   READY
+   ===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        const status =
+            document.getElementById(
+                "settingsStatus"
+            );
+
+        if(status){
+
+            status.textContent =
+                "✅ APEX Predict AI System Ready · Smart Gate maximum 30";
+
+        }
+
+    }
+);
+
+</script>
 
 </body>
 
