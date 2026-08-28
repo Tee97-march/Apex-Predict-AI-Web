@@ -5,6 +5,7 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#071321">
 
 <title>APEX Predict AI - Analysis</title>
 
@@ -15,13 +16,11 @@
 :root{
     --bg:#071321;
     --panel:#0d1c2d;
-    --panel2:#10243a;
     --border:rgba(255,255,255,.08);
     --text:#ffffff;
     --muted:#9eacba;
     --green:#00d66b;
     --green-dark:#00a950;
-    --blue:#2f7cff;
     --yellow:#ffbf22;
     --red:#ff4d5f;
 }
@@ -30,10 +29,14 @@
     box-sizing:border-box;
 }
 
+html,
 body{
     margin:0;
-    min-height:100vh;
+    padding:0;
+    min-height:100%;
+}
 
+body{
     background:
         radial-gradient(
             circle at top left,
@@ -62,6 +65,10 @@ body{
         Roboto,
         Arial,
         sans-serif;
+}
+
+button{
+    font:inherit;
 }
 
 .app{
@@ -130,8 +137,8 @@ body{
     border:1px solid rgba(0,214,107,.18);
 
     color:#9ff0c1;
-    font-size:11px;
-    font-weight:700;
+    font-size:10px;
+    font-weight:800;
 }
 
 .status{
@@ -150,6 +157,10 @@ body{
     font-weight:700;
 }
 
+.status.error{
+    color:#ffb4ab;
+}
+
 .summary{
     background:
         linear-gradient(
@@ -162,7 +173,6 @@ body{
     border-radius:20px;
 
     padding:18px;
-
     margin-bottom:15px;
 
     box-shadow:
@@ -193,7 +203,7 @@ body{
 
 .count-number{
     color:var(--green);
-    font-size:28px;
+    font-size:30px;
     font-weight:900;
 }
 
@@ -293,7 +303,6 @@ body{
         );
 
     border:1px solid rgba(0,214,107,.15);
-
     border-left:4px solid var(--green);
 
     border-radius:14px;
@@ -305,7 +314,6 @@ body{
     font-weight:800;
 
     text-transform:uppercase;
-
     letter-spacing:.5px;
 
     margin-bottom:6px;
@@ -328,11 +336,8 @@ body{
 
 .metric-grid{
     display:grid;
-    grid-template-columns:
-        repeat(2,1fr);
-
+    grid-template-columns:repeat(2,1fr);
     gap:9px;
-
     padding:0 15px 15px;
 }
 
@@ -352,7 +357,6 @@ body{
     color:#788797;
     font-size:10px;
     font-weight:700;
-
     margin-bottom:7px;
 }
 
@@ -387,9 +391,7 @@ body{
 
 .advanced-grid{
     display:grid;
-    grid-template-columns:
-        repeat(2,1fr);
-
+    grid-template-columns:repeat(2,1fr);
     gap:8px;
 }
 
@@ -426,7 +428,6 @@ body{
     border-top:1px solid rgba(255,255,255,.06);
 
     color:#697888;
-
     font-size:9px;
 }
 
@@ -450,9 +451,7 @@ body{
 
 .navigation{
     display:grid;
-    grid-template-columns:
-        repeat(4,1fr);
-
+    grid-template-columns:repeat(4,1fr);
     gap:9px;
 
     margin-top:18px;
@@ -470,6 +469,8 @@ body{
 
     font-size:11px;
     font-weight:700;
+
+    cursor:pointer;
 }
 
 .navigation button:hover{
@@ -495,8 +496,7 @@ body{
     }
 
     .navigation{
-        grid-template-columns:
-            1fr 1fr;
+        grid-template-columns:1fr 1fr;
     }
 
 }
@@ -528,6 +528,7 @@ body{
 
 <div class="app">
 
+
     <div class="topbar">
 
         <div class="brand">
@@ -538,9 +539,9 @@ body{
 
             <div>
 
-                <h2 class="brand-title">
+                <h1 class="brand-title">
                     APEX <span>PREDICT AI</span>
-                </h2>
+                </h1>
 
                 <div class="brand-subtitle">
                     Professional Football Intelligence
@@ -562,7 +563,7 @@ body{
         id="analysisStatus"
         class="status"
     >
-        🔄 Loading today's analysis...
+        🔄 Connecting to current APEX backend...
     </div>
 
 
@@ -572,9 +573,7 @@ body{
     >
 
         <div class="empty">
-
             🔄 Loading APEX analysis...
-
         </div>
 
     </div>
@@ -624,55 +623,91 @@ body{
 "use strict";
 
 
-const GOOGLE_SHEETS_API =
-"https://script.google.com/macros/s/AKfycbxeZN80_WiP4hNmfbCMlmFDFHsuZ6QMpW7tDce4MRS8ya6RZQJ0F5DK8OPRaUBGiQfOsw/exec";
+/* =========================================================
+   VERIFIED APEX BACKEND
+   ========================================================= */
+
+const APEX_API_URL =
+"https://script.google.com/macros/s/AKfycbxygAHM7CTxHK5SXXCoc7AyfhivumaYJDKSYv5OFdI_woZdSnpVgBM400W8Gkny1Y8I/exec";
+
+const MAX_MATCHES = 30;
+
+const REQUEST_TIMEOUT = 45000;
+
+const RETRIES = 2;
 
 
-function escapeHTML(value){
+/* =========================================================
+   SAFE HTML
+   ========================================================= */
 
-    if(
-        value === null ||
-        value === undefined
-    ){
+function safe(value){
 
-        return "";
-    }
-
-    return String(value)
+    return String(value ?? "")
         .replace(/&/g,"&amp;")
         .replace(/</g,"&lt;")
         .replace(/>/g,"&gt;")
         .replace(/"/g,"&quot;")
         .replace(/'/g,"&#039;");
-
 }
 
 
-function getValue(match,names){
+/* =========================================================
+   NORMALISE KEYS
+   ========================================================= */
+
+function normaliseKey(value){
+
+    return String(value ?? "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g," ");
+}
+
+
+/* =========================================================
+   FLEXIBLE FIELD READER
+   ========================================================= */
+
+function getValue(
+    object,
+    names
+){
+
+    if(
+        !object ||
+        typeof object !== "object"
+    ){
+
+        return "";
+    }
 
     const keys =
-        Object.keys(match);
+        Object.keys(
+            object
+        );
 
-    for(const wanted of names){
+    for(
+        const wantedName of names
+    ){
 
-        const key =
-            keys.find(function(existingKey){
+        const wanted =
+            normaliseKey(
+                wantedName
+            );
 
-                return existingKey
-                    .trim()
-                    .toLowerCase()
-                    ===
-                    wanted
-                        .trim()
-                        .toLowerCase();
+        const found =
+            keys.find(
+                key =>
+                    normaliseKey(key) === wanted
+            );
 
-            });
-
-
-        if(key !== undefined){
+        if(
+            found !== undefined
+        ){
 
             const value =
-                match[key];
+                object[found];
 
             if(
                 value !== null &&
@@ -681,41 +716,787 @@ function getValue(match,names){
             ){
 
                 return value;
-
             }
-
         }
-
     }
 
     return "";
-
 }
 
 
-function getRiskClass(risk){
+/* =========================================================
+   FIELD HELPERS
+   ========================================================= */
+
+function getFixtureId(match){
+
+    return getValue(
+        match,
+        [
+            "Fixture ID",
+            "API Fixture ID",
+            "fixture_id",
+            "fixtureId",
+            "Fixture"
+        ]
+    );
+}
+
+
+function getDate(match){
+
+    return getValue(
+        match,
+        [
+            "Date",
+            "Match Date",
+            "Fixture Date",
+            "date"
+        ]
+    );
+}
+
+
+function getTime(match){
+
+    return getValue(
+        match,
+        [
+            "Time",
+            "Match Time",
+            "Kickoff",
+            "Kick-off",
+            "Kick Off",
+            "Start Time"
+        ]
+    );
+}
+
+
+function getHome(match){
+
+    return getValue(
+        match,
+        [
+            "Home Team",
+            "HomeTeam",
+            "Home",
+            "Team Home"
+        ]
+    );
+}
+
+
+function getAway(match){
+
+    return getValue(
+        match,
+        [
+            "Away Team",
+            "AwayTeam",
+            "Away",
+            "Team Away"
+        ]
+    );
+}
+
+
+function getLeague(match){
+
+    return getValue(
+        match,
+        [
+            "League",
+            "Competition",
+            "League Name",
+            "Tournament"
+        ]
+    );
+}
+
+
+function getPrediction(match){
+
+    return getValue(
+        match,
+        [
+            "Prediction",
+            "AI Prediction",
+            "Prediction Advice",
+            "Advice"
+        ]
+    );
+}
+
+
+function getConfidence(match){
+
+    const value =
+        getValue(
+            match,
+            [
+                "Final Confidence",
+                "Final confidence",
+                "Final Confidence %",
+                "Final confidence %",
+                "Confidence %",
+                "Confidence",
+                "AI Confidence"
+            ]
+        );
+
+    if(
+        value === "" ||
+        value === null ||
+        value === undefined
+    ){
+
+        return null;
+    }
+
+    const parsed =
+        parseFloat(
+            String(value)
+                .replace("%","")
+                .replace(",",".")
+                .trim()
+        );
+
+    return Number.isFinite(parsed)
+        ? parsed
+        : null;
+}
+
+
+function getRisk(match){
+
+    const direct =
+        getValue(
+            match,
+            [
+                "Risk Level",
+                "Risk",
+                "Risk Category",
+                "Risk Rating",
+                "AI Risk"
+            ]
+        );
+
+    if(
+        direct !== ""
+    ){
+
+        return String(direct);
+    }
+
+    const confidence =
+        getConfidence(match);
+
+    if(
+        confidence === null
+    ){
+
+        return "";
+    }
+
+    if(
+        confidence >= 70
+    ){
+
+        return "LOW";
+    }
+
+    if(
+        confidence >= 55
+    ){
+
+        return "MEDIUM";
+    }
+
+    return "HIGH";
+}
+
+
+function getMarket(match){
+
+    const direct =
+        getValue(
+            match,
+            [
+                "Recommended Market",
+                "recommended market",
+                "Recommended market",
+                "Market",
+                "Betting Market",
+                "Selection Market",
+                "Prediction Market"
+            ]
+        );
+
+    if(
+        direct !== ""
+    ){
+
+        return String(direct);
+    }
 
     const text =
-        String(risk || "")
-            .toLowerCase();
+        String(
+            getPrediction(match)
+        ).toLowerCase();
 
-    if(text === "low"){
-        return "low";
+    if(
+        text.includes("double chance")
+    ){
+
+        return "Double Chance";
     }
 
-    if(text === "medium"){
-        return "medium";
+    if(
+        text.includes("over 0.5")
+    ){
+
+        return "Over 0.5 Goals";
     }
 
-    return "high";
+    if(
+        text.includes("over 1.5")
+    ){
 
+        return "Over 1.5 Goals";
+    }
+
+    if(
+        text.includes("over 2.5")
+    ){
+
+        return "Over 2.5 Goals";
+    }
+
+    if(
+        text.includes("under 2.5")
+    ){
+
+        return "Under 2.5 Goals";
+    }
+
+    if(
+        text.includes("under 3.5")
+    ){
+
+        return "Under 3.5 Goals";
+    }
+
+    if(
+        text.includes("btts") ||
+        text.includes("both teams to score")
+    ){
+
+        return "Both Teams To Score";
+    }
+
+    if(
+        text.includes("draw")
+    ){
+
+        return "Draw";
+    }
+
+    return "";
 }
 
+
+function getH2H(match){
+
+    return getValue(
+        match,
+        [
+            "Head to Head",
+            "Head To Head",
+            "head to head",
+            "H2H"
+        ]
+    );
+}
+
+
+function getH2HScore(match){
+
+    return getValue(
+        match,
+        [
+            "Head to Head Score",
+            "Head To Head Score",
+            "head to head score",
+            "H2H Score",
+            "head - to - head-score"
+        ]
+    );
+}
+
+
+function getHomeAdvantage(match){
+
+    return getValue(
+        match,
+        [
+            "Home Advantage",
+            "Home Advantage Score",
+            "Home advantage score"
+        ]
+    );
+}
+
+
+function getOdds(match){
+
+    return getValue(
+        match,
+        [
+            "Bookmaker Odds",
+            "Bookmaker odds",
+            "bookmaker odds",
+            "Odds"
+        ]
+    );
+}
+
+
+function getOddsValue(match){
+
+    return getValue(
+        match,
+        [
+            "Odds Value Score",
+            "Odds value score",
+            "Odds Value",
+            "Value Score"
+        ]
+    );
+}
+
+
+function getFormScore(match){
+
+    return getValue(
+        match,
+        [
+            "Form Score",
+            "form score",
+            "Team Form Score"
+        ]
+    );
+}
+
+
+function getGoalsScore(match){
+
+    return getValue(
+        match,
+        [
+            "Goals Score",
+            "Goals score",
+            "goals score"
+        ]
+    );
+}
+
+
+function getDefensiveScore(match){
+
+    return getValue(
+        match,
+        [
+            "Defensive Score",
+            "Defensive score",
+            "defensive score"
+        ]
+    );
+}
+
+
+function getHomeGoals(match){
+
+    return getValue(
+        match,
+        [
+            "Home Goals Scored Avg",
+            "Home Goals Scored",
+            "Home Avg Goals"
+        ]
+    );
+}
+
+
+function getAwayGoals(match){
+
+    return getValue(
+        match,
+        [
+            "Away Goals Scored Avg",
+            "Away Goals Scored",
+            "Away Avg Goals"
+        ]
+    );
+}
+
+
+/* =========================================================
+   BACKEND RESPONSE
+   ========================================================= */
+
+function extractMatches(data){
+
+    /*
+     * CURRENT APEX RESPONSE:
+     *
+     * {
+     *   status:"SUCCESS",
+     *   matches:[...]
+     * }
+     */
+
+    if(
+        data &&
+        Array.isArray(data.matches)
+    ){
+
+        return data.matches;
+    }
+
+    /* Compatibility */
+
+    if(
+        data &&
+        data.smartGate &&
+        Array.isArray(data.smartGate.objects)
+    ){
+
+        return data.smartGate.objects;
+    }
+
+    if(
+        data &&
+        Array.isArray(data.smartGate)
+    ){
+
+        return data.smartGate;
+    }
+
+    if(
+        data &&
+        data.matchDatabase &&
+        Array.isArray(data.matchDatabase.objects)
+    ){
+
+        return data.matchDatabase.objects;
+    }
+
+    if(
+        data &&
+        Array.isArray(data.data)
+    ){
+
+        return data.data;
+    }
+
+    return [];
+}
+
+
+/* =========================================================
+   PREPARE 30 MATCHES
+   ========================================================= */
+
+function prepareMatches(source){
+
+    const matches =
+        Array.isArray(source)
+            ? source
+            : [];
+
+    const seen =
+        new Set();
+
+    const result =
+        [];
+
+    matches.forEach(
+        function(match,index){
+
+            const home =
+                String(
+                    getHome(match)
+                ).trim();
+
+            const away =
+                String(
+                    getAway(match)
+                ).trim();
+
+            const prediction =
+                String(
+                    getPrediction(match)
+                ).trim();
+
+            if(
+                !home ||
+                !away ||
+                !prediction
+            ){
+
+                return;
+            }
+
+            if(
+                prediction.toLowerCase()
+                ===
+                "no predictions available"
+            ){
+
+                return;
+            }
+
+            const fixture =
+                String(
+                    getFixtureId(match)
+                ).trim();
+
+            const identity =
+                fixture
+                    ?
+                    "fixture:" +
+                    normaliseKey(fixture)
+
+                    :
+
+                    [
+                        getDate(match),
+                        home,
+                        away,
+                        getLeague(match)
+                    ]
+                    .map(normaliseKey)
+                    .join("|");
+
+            const key =
+                identity ||
+                "row:" + index;
+
+            if(
+                seen.has(key)
+            ){
+
+                return;
+            }
+
+            seen.add(key);
+
+            result.push(match);
+
+        }
+    );
+
+    result.sort(
+        function(a,b){
+
+            return(
+                (
+                    getConfidence(b)
+                    ?? -1
+                )
+                -
+                (
+                    getConfidence(a)
+                    ?? -1
+                )
+            );
+
+        }
+    );
+
+    return result.slice(
+        0,
+        MAX_MATCHES
+    );
+}
+
+
+/* =========================================================
+   API REQUEST
+   ========================================================= */
+
+async function fetchAPEXData(){
+
+    const controller =
+        new AbortController();
+
+    const timer =
+        setTimeout(
+            function(){
+
+                controller.abort();
+
+            },
+            REQUEST_TIMEOUT
+        );
+
+    try{
+
+        const url =
+            APEX_API_URL +
+            "?request=dashboard" +
+            "&limit=" +
+            MAX_MATCHES +
+            "&ts=" +
+            Date.now();
+
+        const response =
+            await fetch(
+                url,
+                {
+                    method:"GET",
+                    cache:"no-store",
+                    redirect:"follow",
+                    signal:
+                        controller.signal
+                }
+            );
+
+        const raw =
+            await response.text();
+
+        if(
+            !response.ok
+        ){
+
+            throw new Error(
+                "APEX backend HTTP " +
+                response.status
+            );
+        }
+
+        if(
+            !raw.trim()
+        ){
+
+            throw new Error(
+                "APEX backend returned an empty response."
+            );
+        }
+
+        let data;
+
+        try{
+
+            data =
+                JSON.parse(raw);
+
+        }catch(error){
+
+            console.error(
+                "APEX ANALYSIS RAW RESPONSE:",
+                raw
+            );
+
+            throw new Error(
+                "APEX backend returned invalid JSON."
+            );
+        }
+
+        if(
+            data &&
+            String(data.status).toUpperCase()
+            ===
+            "ERROR"
+        ){
+
+            throw new Error(
+                data.message ||
+                "APEX backend returned an error."
+            );
+        }
+
+        return data;
+
+    }catch(error){
+
+        if(
+            error.name ===
+            "AbortError"
+        ){
+
+            throw new Error(
+                "APEX backend request timed out."
+            );
+        }
+
+        throw error;
+
+    }finally{
+
+        clearTimeout(timer);
+    }
+}
+
+
+/* =========================================================
+   RETRY
+   ========================================================= */
+
+async function loadAPEXData(){
+
+    let lastError =
+        null;
+
+    for(
+        let attempt = 0;
+        attempt <= RETRIES;
+        attempt++
+    ){
+
+        try{
+
+            return await fetchAPEXData();
+
+        }catch(error){
+
+            lastError =
+                error;
+
+            if(
+                attempt <
+                RETRIES
+            ){
+
+                await new Promise(
+                    resolve =>
+                        setTimeout(
+                            resolve,
+                            1000
+                        )
+                );
+            }
+        }
+    }
+
+    throw(
+        lastError ||
+        new Error(
+            "Unable to connect to APEX backend."
+        )
+    );
+}
+
+
+/* =========================================================
+   CREATE METRIC
+   ========================================================= */
 
 function createMetric(
     title,
     value,
-    extraClass
+    className
 ){
 
     if(
@@ -725,7 +1506,6 @@ function createMetric(
     ){
 
         return "";
-
     }
 
     return `
@@ -733,15 +1513,103 @@ function createMetric(
         <div class="metric">
 
             <div class="metric-title">
-                ${escapeHTML(title)}
+
+                ${safe(title)}
+
             </div>
 
             <div class="
                 metric-value
-                ${extraClass || ""}
+                ${className || ""}
             ">
 
-                ${escapeHTML(value)}
+                ${safe(value)}
+
+            </div>
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+
+function renderAnalysis(
+    matches
+){
+
+    const container =
+        document.getElementById(
+            "analysisContainer"
+        );
+
+    if(
+        !container
+    ){
+
+        return;
+    }
+
+    if(
+        !matches.length
+    ){
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                <h2>
+                    ⚠️ No Analysis Available
+                </h2>
+
+                <p>
+                    The APEX backend is connected,
+                    but no qualified analysis records
+                    were returned.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    let html = `
+
+        <div class="summary">
+
+            <div class="summary-top">
+
+                <div>
+
+                    <h1>
+                        🤖 AI Match Analysis
+                    </h1>
+
+                    <p>
+                        Detailed analysis of the current
+                        APEX Smart Gate selections.
+                    </p>
+
+                </div>
+
+
+                <div class="count-box">
+
+                    <div class="count-number">
+                        ${matches.length}
+                    </div>
+
+                    <div class="count-label">
+                        ANALYSIS RECORDS
+                    </div>
+
+                </div>
 
             </div>
 
@@ -749,8 +1617,397 @@ function createMetric(
 
     `;
 
+
+    matches.forEach(
+        function(
+            match,
+            index
+        ){
+
+            const home =
+                getHome(match);
+
+            const away =
+                getAway(match);
+
+            const league =
+                getLeague(match);
+
+            const date =
+                getDate(match);
+
+            const time =
+                getTime(match);
+
+            const prediction =
+                getPrediction(match);
+
+            const confidence =
+                getConfidence(match);
+
+            const risk =
+                getRisk(match);
+
+            const market =
+                getMarket(match);
+
+            const h2h =
+                getH2H(match);
+
+            const h2hScore =
+                getH2HScore(match);
+
+            const homeAdvantage =
+                getHomeAdvantage(match);
+
+            const odds =
+                getOdds(match);
+
+            const oddsValue =
+                getOddsValue(match);
+
+            const formScore =
+                getFormScore(match);
+
+            const goalsScore =
+                getGoalsScore(match);
+
+            const defensiveScore =
+                getDefensiveScore(match);
+
+            const homeGoals =
+                getHomeGoals(match);
+
+            const awayGoals =
+                getAwayGoals(match);
+
+            const riskText =
+                String(
+                    risk || ""
+                ).toLowerCase();
+
+            let riskClass =
+                "high";
+
+            if(
+                riskText.includes("low")
+            ){
+
+                riskClass =
+                    "low";
+
+            }else if(
+                riskText.includes("medium")
+            ){
+
+                riskClass =
+                    "medium";
+            }
+
+
+            html += `
+
+                <div class="match-card">
+
+
+                    <div class="match-top">
+
+                        <div class="match-number">
+                            MATCH ${index + 1}
+                        </div>
+
+                        <div class="league">
+
+                            🏆 ${safe(
+                                league ||
+                                "League"
+                            )}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="match-main">
+
+                        <div class="teams">
+
+                            <div class="team">
+
+                                ${safe(
+                                    home ||
+                                    "Home Team"
+                                )}
+
+                            </div>
+
+
+                            <div class="vs">
+                                VS
+                            </div>
+
+
+                            <div class="team">
+
+                                ${safe(
+                                    away ||
+                                    "Away Team"
+                                )}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="match-date">
+
+                            ${safe(
+                                date ||
+                                "Date unavailable"
+                            )}
+
+                            ${
+                                time
+                                    ? " · " +
+                                      safe(time)
+                                    : ""
+                            }
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="prediction-box">
+
+                        <div class="prediction-label">
+
+                            🤖 AI Prediction
+
+                        </div>
+
+
+                        <div class="prediction-value">
+
+                            ${safe(
+                                prediction ||
+                                "—"
+                            )}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="section-title">
+
+                        📊 Core Analysis
+
+                    </div>
+
+
+                    <div class="metric-grid">
+
+                        ${createMetric(
+                            "Confidence",
+                            confidence !== null
+                                ? confidence + "%"
+                                : "",
+                            "confidence"
+                        )}
+
+
+                        ${createMetric(
+                            "Risk Level",
+                            risk,
+                            riskClass
+                        )}
+
+
+                        ${createMetric(
+                            "Recommended Market",
+                            market
+                        )}
+
+
+                        ${createMetric(
+                            "Home Advantage",
+                            homeAdvantage
+                        )}
+
+
+                        ${createMetric(
+                            "H2H Score",
+                            h2hScore
+                        )}
+
+
+                        ${createMetric(
+                            "Bookmaker Odds",
+                            odds
+                        )}
+
+                    </div>
+
+
+                    <div class="advanced-section">
+
+                        <div
+                            class="section-title"
+                            style="padding-left:0;"
+                        >
+                            🔍 Additional Metrics
+                        </div>
+
+
+                        <div class="advanced-grid">
+
+
+                            <div class="advanced-item">
+
+                                <div class="advanced-label">
+                                    HEAD TO HEAD
+                                </div>
+
+                                <div class="advanced-value">
+                                    ${safe(
+                                        h2h ||
+                                        "Not available"
+                                    )}
+                                </div>
+
+                            </div>
+
+
+                            <div class="advanced-item">
+
+                                <div class="advanced-label">
+                                    ODDS VALUE SCORE
+                                </div>
+
+                                <div class="advanced-value">
+                                    ${safe(
+                                        oddsValue ||
+                                        "Not available"
+                                    )}
+                                </div>
+
+                            </div>
+
+
+                            <div class="advanced-item">
+
+                                <div class="advanced-label">
+                                    FORM SCORE
+                                </div>
+
+                                <div class="advanced-value">
+                                    ${safe(
+                                        formScore ||
+                                        "Not available"
+                                    )}
+                                </div>
+
+                            </div>
+
+
+                            <div class="advanced-item">
+
+                                <div class="advanced-label">
+                                    GOALS SCORE
+                                </div>
+
+                                <div class="advanced-value">
+                                    ${safe(
+                                        goalsScore ||
+                                        "Not available"
+                                    )}
+                                </div>
+
+                            </div>
+
+
+                            <div class="advanced-item">
+
+                                <div class="advanced-label">
+                                    DEFENSIVE SCORE
+                                </div>
+
+                                <div class="advanced-value">
+                                    ${safe(
+                                        defensiveScore ||
+                                        "Not available"
+                                    )}
+                                </div>
+
+                            </div>
+
+
+                            <div class="advanced-item">
+
+                                <div class="advanced-label">
+                                    HOME GOALS AVG
+                                </div>
+
+                                <div class="advanced-value">
+                                    ${safe(
+                                        homeGoals ||
+                                        "Not available"
+                                    )}
+                                </div>
+
+                            </div>
+
+
+                            <div class="advanced-item">
+
+                                <div class="advanced-label">
+                                    AWAY GOALS AVG
+                                </div>
+
+                                <div class="advanced-value">
+                                    ${safe(
+                                        awayGoals ||
+                                        "Not available"
+                                    )}
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="match-footer">
+
+                        <span>
+                            APEX AI ENGINE
+                        </span>
+
+                        <span>
+                            SMART GATE · MATCH ${index + 1}
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+            `;
+        }
+    );
+
+
+    container.innerHTML =
+        html;
 }
 
+
+/* =========================================================
+   MAIN
+   ========================================================= */
 
 async function loadAnalysis(){
 
@@ -767,635 +2024,68 @@ async function loadAnalysis(){
 
     try{
 
+        status.className =
+            "status";
+
         status.textContent =
-            "🔄 Connecting to APEX Predict AI...";
-
-
-        const response =
-            await fetch(
-                GOOGLE_SHEETS_API,
-                {
-                    method:"GET",
-                    cache:"no-store"
-                }
-            );
-
-
-        if(!response.ok){
-
-            throw new Error(
-                "HTTP " + response.status
-            );
-
-        }
+            "🔄 Connecting to current APEX backend...";
 
 
         const data =
-            await response.json();
+            await loadAPEXData();
 
 
-        if(
-            !data ||
-            !data.matchDatabase ||
-            !Array.isArray(
-                data.matchDatabase.objects
-            )
-        ){
-
-            throw new Error(
-                "APEX Match Database was not returned."
-            );
-
-        }
-
-
-        const allMatches =
-            data.matchDatabase.objects;
-
-
-        /*
-         * Preserve the working analysis selection
-         * logic used by the current APEX web app.
-         */
-
-        const completedMatches =
-            allMatches.filter(
-                function(match){
-
-                    const prediction =
-                        getValue(
-                            match,
-                            [
-                                "Prediction",
-                                "prediction",
-                                "AI Prediction"
-                            ]
-                        );
-
-                    const confidence =
-                        getValue(
-                            match,
-                            [
-                                "Confidence %",
-                                "Confidence",
-                                "confidence %",
-                                "Final Confidence"
-                            ]
-                        );
-
-                    const market =
-                        getValue(
-                            match,
-                            [
-                                "Recommended Market",
-                                "recommended market",
-                                "Recommended market",
-                                "Market"
-                            ]
-                        );
-
-                    return(
-                        prediction !== "" ||
-                        confidence !== "" ||
-                        market !== ""
-                    );
-
-                }
+        const source =
+            extractMatches(
+                data
             );
 
 
         const matches =
-            completedMatches
-                .slice()
-                .reverse()
-                .slice(0,10);
+            prepareMatches(
+                source
+            );
+
+
+        renderAnalysis(
+            matches
+        );
 
 
         status.textContent =
-            "✅ APEX AI Connected — " +
+            "✅ APEX AI Connected · " +
             matches.length +
             " analysis records";
 
 
-        if(!matches.length){
-
-            container.innerHTML = `
-
-                <div class="empty">
-
-                    <h2>
-                        ⚠️ No Analysis Available
-                    </h2>
-
-                    <p>
-                        APEX is connected, but completed
-                        AI analysis is not available yet.
-                    </p>
-
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-
-        let html = `
-
-            <div class="summary">
-
-                <div class="summary-top">
-
-                    <div>
-
-                        <h1>
-                            🤖 AI Match Analysis
-                        </h1>
-
-                        <p>
-                            Analysis generated from the
-                            final APEX selections.
-                        </p>
-
-                    </div>
-
-
-                    <div class="count-box">
-
-                        <div class="count-number">
-                            ${matches.length}
-                        </div>
-
-                        <div class="count-label">
-                            ANALYSIS RECORDS
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
-
-
-        matches.forEach(
-            function(match,index){
-
-                const home =
-                    getValue(
-                        match,
-                        [
-                            "Home Team",
-                            "home team",
-                            "HomeTeam",
-                            "home_team",
-                            "Home"
-                        ]
-                    );
-
-
-                const away =
-                    getValue(
-                        match,
-                        [
-                            "Away Team",
-                            "away team",
-                            "AwayTeam",
-                            "away_team",
-                            "Away"
-                        ]
-                    );
-
-
-                const league =
-                    getValue(
-                        match,
-                        [
-                            "League",
-                            "league",
-                            "League Name"
-                        ]
-                    );
-
-
-                const date =
-                    getValue(
-                        match,
-                        [
-                            "Date",
-                            "date",
-                            "Match Date",
-                            "match date"
-                        ]
-                    );
-
-
-                const prediction =
-                    getValue(
-                        match,
-                        [
-                            "Prediction",
-                            "prediction",
-                            "AI Prediction",
-                            "AI prediction"
-                        ]
-                    );
-
-
-                const confidence =
-                    getValue(
-                        match,
-                        [
-                            "Confidence %",
-                            "Confidence",
-                            "confidence %",
-                            "confidence",
-                            "Final Confidence"
-                        ]
-                    );
-
-
-                const risk =
-                    getValue(
-                        match,
-                        [
-                            "Risk Level",
-                            "Risk",
-                            "risk level",
-                            "risk"
-                        ]
-                    );
-
-
-                const market =
-                    getValue(
-                        match,
-                        [
-                            "Recommended Market",
-                            "recommended market",
-                            "Recommended market",
-                            "Market"
-                        ]
-                    );
-
-
-                const homeAdvantage =
-                    getValue(
-                        match,
-                        [
-                            "Home Advantage Score",
-                            "Home advantage score",
-                            "home advantage score",
-                            "Home Advantage"
-                        ]
-                    );
-
-
-                const h2h =
-                    getValue(
-                        match,
-                        [
-                            "Head to Head",
-                            "Head To Head",
-                            "head to head",
-                            "H2H"
-                        ]
-                    );
-
-
-                const h2hScore =
-                    getValue(
-                        match,
-                        [
-                            "Head to Head Score",
-                            "Head To Head Score",
-                            "head to head score",
-                            "H2H Score"
-                        ]
-                    );
-
-
-                const odds =
-                    getValue(
-                        match,
-                        [
-                            "Bookmaker Odds",
-                            "Bookmaker odds",
-                            "bookmaker odds",
-                            "Odds"
-                        ]
-                    );
-
-
-                const oddsValue =
-                    getValue(
-                        match,
-                        [
-                            "Odds Value Score",
-                            "Odds value score",
-                            "odds value score",
-                            "Odds Value"
-                        ]
-                    );
-
-
-                const formScore =
-                    getValue(
-                        match,
-                        [
-                            "Form Score",
-                            "form score",
-                            "Team Form Score"
-                        ]
-                    );
-
-
-                const goalsScore =
-                    getValue(
-                        match,
-                        [
-                            "Goals Score",
-                            "Goals score",
-                            "goals score"
-                        ]
-                    );
-
-
-                const defensiveScore =
-                    getValue(
-                        match,
-                        [
-                            "Defensive Score",
-                            "Defensive score",
-                            "defensive score"
-                        ]
-                    );
-
-
-                const riskClass =
-                    getRiskClass(risk);
-
-
-                html += `
-
-                    <div class="match-card">
-
-
-                        <div class="match-top">
-
-                            <div class="match-number">
-                                MATCH ${index + 1}
-                            </div>
-
-                            <div class="league">
-
-                                🏆 ${escapeHTML(
-                                    league || "League"
-                                )}
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="match-main">
-
-                            <div class="teams">
-
-                                <div class="team">
-
-                                    ${escapeHTML(
-                                        home || "Home Team"
-                                    )}
-
-                                </div>
-
-
-                                <div class="vs">
-                                    VS
-                                </div>
-
-
-                                <div class="team">
-
-                                    ${escapeHTML(
-                                        away || "Away Team"
-                                    )}
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="match-date">
-
-                                ${escapeHTML(
-                                    date || "Date unavailable"
-                                )}
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="prediction-box">
-
-                            <div class="prediction-label">
-                                🤖 AI Prediction
-                            </div>
-
-                            <div class="prediction-value">
-
-                                ${escapeHTML(
-                                    prediction || "—"
-                                )}
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="section-title">
-                            📊 Core Analysis
-                        </div>
-
-
-                        <div class="metric-grid">
-
-                            ${createMetric(
-                                "Confidence",
-                                confidence !== ""
-                                    ? confidence + "%"
-                                    : "",
-                                "confidence"
-                            )}
-
-                            ${createMetric(
-                                "Risk Level",
-                                risk,
-                                riskClass
-                            )}
-
-                            ${createMetric(
-                                "Recommended Market",
-                                market
-                            )}
-
-                            ${createMetric(
-                                "Home Advantage",
-                                homeAdvantage
-                            )}
-
-                            ${createMetric(
-                                "H2H Score",
-                                h2hScore
-                            )}
-
-                            ${createMetric(
-                                "Bookmaker Odds",
-                                odds
-                            )}
-
-                        </div>
-
-
-                        <div class="advanced-section">
-
-                            <div class="section-title"
-                                 style="padding-left:0;">
-
-                                🔍 Additional Metrics
-
-                            </div>
-
-
-                            <div class="advanced-grid">
-
-
-                                <div class="advanced-item">
-
-                                    <div class="advanced-label">
-                                        HEAD TO HEAD
-                                    </div>
-
-                                    <div class="advanced-value">
-
-                                        ${escapeHTML(
-                                            h2h || "Not available"
-                                        )}
-
-                                    </div>
-
-                                </div>
-
-
-                                <div class="advanced-item">
-
-                                    <div class="advanced-label">
-                                        ODDS VALUE SCORE
-                                    </div>
-
-                                    <div class="advanced-value">
-
-                                        ${escapeHTML(
-                                            oddsValue || "Not available"
-                                        )}
-
-                                    </div>
-
-                                </div>
-
-
-                                <div class="advanced-item">
-
-                                    <div class="advanced-label">
-                                        FORM SCORE
-                                    </div>
-
-                                    <div class="advanced-value">
-
-                                        ${escapeHTML(
-                                            formScore || "Not available"
-                                        )}
-
-                                    </div>
-
-                                </div>
-
-
-                                <div class="advanced-item">
-
-                                    <div class="advanced-label">
-                                        GOALS SCORE
-                                    </div>
-
-                                    <div class="advanced-value">
-
-                                        ${escapeHTML(
-                                            goalsScore || "Not available"
-                                        )}
-
-                                    </div>
-
-                                </div>
-
-
-                                <div class="advanced-item">
-
-                                    <div class="advanced-label">
-                                        DEFENSIVE SCORE
-                                    </div>
-
-                                    <div class="advanced-value">
-
-                                        ${escapeHTML(
-                                            defensiveScore || "Not available"
-                                        )}
-
-                                    </div>
-
-                                </div>
-
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="match-footer">
-
-                            <span>
-                                APEX AI ENGINE
-                            </span>
-
-                            <span>
-                                SMART GATE SELECTION
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                `;
-
+        console.log(
+            "APEX ANALYSIS SUCCESS",
+            {
+                backendStatus:
+                    data.status,
+
+                backendMatches:
+                    source.length,
+
+                displayedMatches:
+                    matches.length,
+
+                maximum:
+                    MAX_MATCHES
             }
         );
 
 
-        container.innerHTML =
-            html;
-
-
-    }
-    catch(error){
+    }catch(error){
 
         console.error(
             "APEX Analysis Error:",
             error
         );
 
+
+        status.className =
+            "status error";
 
         status.textContent =
             "❌ APEX Analysis failed to load";
@@ -1410,7 +2100,7 @@ async function loadAnalysis(){
                 </h2>
 
                 <p>
-                    ${escapeHTML(
+                    ${safe(
                         error.message
                     )}
                 </p>
@@ -1418,19 +2108,54 @@ async function loadAnalysis(){
             </div>
 
         `;
-
     }
-
 }
 
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
 
 function go(page){
 
-    window.location.href =
-        page;
+    const allowed = [
 
+        "dashboard.html",
+        "predictions.html",
+        "analysis.html",
+        "statistics.html",
+        "livescores.html",
+        "leagues.html",
+        "headtohead.html",
+        "settings.html",
+        "index.html"
+
+    ];
+
+    window.location.href =
+        "./" +
+        (
+            allowed.includes(page)
+                ? page
+                : "dashboard.html"
+        );
 }
 
+
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
+window.go =
+    go;
+
+window.loadAnalysis =
+    loadAnalysis;
+
+
+/* =========================================================
+   START
+   ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
