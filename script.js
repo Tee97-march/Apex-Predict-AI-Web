@@ -1,852 +1,884 @@
 "use strict";
 
 /* =========================================================
-APEX PREDICT AI
-FINAL DASHBOARD FRONTEND
-VERSION 2.1 XL
-SOURCE: AI ANALYSIS / SMART GATE V7
-========================================================= */
+   APEX PREDICT AI
+   FINAL DASHBOARD FRONTEND
+   VERSION 2.1 XL
+   SOURCE: AI ANALYSIS / SMART GATE V7
+   ========================================================= */
 
 const APEX_CONFIG = Object.freeze({
 
-API_URL:
-    "https://script.google.com/macros/s/AKfycbxygAHM7CTxHK5SXXCoc7AyfhivumaYJDKSYv5OFdI_woZdSnpVgBM400W8Gkny1Y8I/exec",
+    API_URL:
+        "https://script.google.com/macros/s/AKfycbxygAHM7CTxHK5SXXCoc7AyfhivumaYJDKSYv5OFdI_woZdSnpVgBM400W8Gkny1Y8I/exec",
 
-TIMEOUT: 45000,
+    TIMEOUT: 45000,
 
-RETRIES: 2,
+    RETRIES: 2,
 
-MAX_MATCHES: 30
+    MAX_MATCHES: 30
 
 });
 
+
 /* =========================================================
-NAVIGATION
-========================================================= */
+   NAVIGATION
+   ========================================================= */
 
 function go(page){
 
-const allowedPages = [
-    "dashboard.html",
-    "predictions.html",
-    "analysis.html",
-    "statistics.html",
-    "livescores.html",
-    "leagues.html",
-    "headtohead.html",
-    "settings.html"
-];
+    const allowedPages = [
+        "dashboard.html",
+        "predictions.html",
+        "analysis.html",
+        "statistics.html",
+        "livescores.html",
+        "leagues.html",
+        "headtohead.html",
+        "settings.html"
+    ];
 
-window.location.href =
-    "./" +
-    (
-        allowedPages.includes(page)
-            ? page
-            : "dashboard.html"
-    );
-
+    window.location.href =
+        "./" +
+        (
+            allowedPages.includes(page)
+                ? page
+                : "dashboard.html"
+        );
 }
 
 function openDashboard(){
-go("dashboard.html");
+    go("dashboard.html");
 }
 
 function openPredictions(){
-go("predictions.html");
+    go("predictions.html");
 }
 
 function openAnalysis(){
-go("analysis.html");
+    go("analysis.html");
 }
 
 function openStatistics(){
-go("statistics.html");
+    go("statistics.html");
 }
 
 function openLiveScores(){
-go("livescores.html");
+    go("livescores.html");
 }
 
 function openLeagues(){
-go("leagues.html");
+    go("leagues.html");
 }
 
 function openHeadToHead(){
-go("headtohead.html");
+    go("headtohead.html");
 }
 
 function openSettings(){
-go("settings.html");
+    go("settings.html");
 }
 
 function logout(){
-window.location.href = "./index.html";
+    window.location.href = "./index.html";
 }
 
+
 /* =========================================================
-SECURITY
-========================================================= */
+   SECURITY
+   ========================================================= */
 
 function escapeHtml(value){
 
-return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 }
 
-function formatValue(value,fallback="—"){
-
-if(
-    value === null ||
-    value === undefined ||
-    String(value).trim() === ""
+function formatValue(
+    value,
+    fallback = "—"
 ){
 
-    return fallback;
+    if(
+        value === null ||
+        value === undefined ||
+        String(value).trim() === ""
+    ){
+
+        return fallback;
+    }
+
+    return escapeHtml(value);
 }
 
-return escapeHtml(value);
-
-}
 
 /* =========================================================
-KEY NORMALISATION
-========================================================= */
+   KEY NORMALISATION
+   ========================================================= */
 
 function normaliseKey(value){
 
-return String(value ?? "")
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g," ");
-
+    return String(value ?? "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g," ");
 }
 
+
 /* =========================================================
-FLEXIBLE FIELD READER
-========================================================= */
+   FLEXIBLE FIELD READER
+   ========================================================= */
 
-function getValue(object,names){
-
-if(
-    !object ||
-    typeof object !== "object"
+function getValue(
+    object,
+    names
 ){
+
+    if(
+        !object ||
+        typeof object !== "object"
+    ){
+
+        return "";
+    }
+
+    const keys =
+        Object.keys(object);
+
+    for(
+        const wantedName of names
+    ){
+
+        const wanted =
+            normaliseKey(
+                wantedName
+            );
+
+        const found =
+            keys.find(
+                key =>
+                    normaliseKey(key) === wanted
+            );
+
+        if(
+            found !== undefined &&
+            object[found] !== null &&
+            object[found] !== undefined &&
+            String(
+                object[found]
+            ).trim() !== ""
+        ){
+
+            return object[found];
+        }
+    }
 
     return "";
 }
 
-const keys =
-    Object.keys(object);
-
-for(
-    const wantedName of names
-){
-
-    const wanted =
-        normaliseKey(wantedName);
-
-    const found =
-        keys.find(
-            key =>
-                normaliseKey(key) === wanted
-        );
-
-    if(
-        found !== undefined &&
-        object[found] !== null &&
-        object[found] !== undefined &&
-        String(object[found]).trim() !== ""
-    ){
-
-        return object[found];
-    }
-}
-
-return "";
-
-}
 
 /* =========================================================
-NUMBER HELPERS
-========================================================= */
+   NUMBER HELPERS
+   ========================================================= */
 
 function numberValue(value){
 
-if(
-    value === null ||
-    value === undefined ||
-    value === ""
-){
+    if(
+        value === null ||
+        value === undefined ||
+        value === ""
+    ){
 
-    return null;
-}
+        return null;
+    }
 
-const parsed =
-    parseFloat(
-        String(value)
-            .replace("%","")
-            .replace(",",".")
-            .trim()
-    );
+    const parsed =
+        parseFloat(
+            String(value)
+                .replace("%","")
+                .replace(",",".")
+                .trim()
+        );
 
-return Number.isFinite(parsed)
-    ? parsed
-    : null;
-
+    return Number.isFinite(parsed)
+        ? parsed
+        : null;
 }
 
 function percentage(value){
 
-const parsed =
-    numberValue(value);
+    const parsed =
+        numberValue(value);
 
-return parsed === null
-    ? "—"
-    : Math.round(parsed) + "%";
-
+    return parsed === null
+        ? "—"
+        : Math.round(parsed) + "%";
 }
 
+
 /* =========================================================
-AI ANALYSIS FIELD HELPERS
-========================================================= */
+   AI ANALYSIS FIELD HELPERS
+   ========================================================= */
 
 function getMatch(match){
 
-return getValue(
-    match,
-    [
-        "Match"
-    ]
-);
-
+    return getValue(
+        match,
+        [
+            "Match"
+        ]
+    );
 }
 
 function splitMatch(match){
 
-const value =
-    String(
-        getMatch(match)
-    ).trim();
+    const value =
+        String(
+            getMatch(match)
+        ).trim();
 
-if(!value){
+    if(!value){
+
+        return {
+            home:"—",
+            away:"—"
+        };
+    }
+
+    const parts =
+        value.split(
+            /\s+VS\s+/i
+        );
+
+    if(parts.length >= 2){
+
+        return {
+
+            home:
+                parts[0].trim(),
+
+            away:
+                parts
+                    .slice(1)
+                    .join(" VS ")
+                    .trim()
+
+        };
+    }
+
+    /*
+     * Some sources use " v " rather than " VS ".
+     */
+
+    const partsLower =
+        value.split(
+            /\s+v\s+/i
+        );
+
+    if(partsLower.length >= 2){
+
+        return {
+
+            home:
+                partsLower[0].trim(),
+
+            away:
+                partsLower
+                    .slice(1)
+                    .join(" v ")
+                    .trim()
+
+        };
+    }
 
     return {
-        home:"—",
+
+        home:value,
+
         away:"—"
-    };
-}
-
-const parts =
-    value.split(
-        /\s+VS\s+/i
-    );
-
-if(parts.length >= 2){
-
-    return {
-
-        home:
-            parts[0].trim(),
-
-        away:
-            parts
-                .slice(1)
-                .join(" VS ")
-                .trim()
 
     };
 }
 
-const partsLower =
-    value.split(
-        /\s+v\s+/i
-    );
-
-if(partsLower.length >= 2){
-
-    return {
-
-        home:
-            partsLower[0].trim(),
-
-        away:
-            partsLower
-                .slice(1)
-                .join(" v ")
-                .trim()
-
-    };
-}
-
-return {
-
-    home:value,
-
-    away:"—"
-
-};
-
-}
 
 function getPrediction(match){
 
-const prediction =
-    getValue(
+    const prediction =
+        getValue(
+            match,
+            [
+                "Prediction",
+                "AI Prediction"
+            ]
+        );
+
+    if(
+        prediction !== ""
+    ){
+
+        return String(prediction);
+    }
+
+    /*
+     * AI ANALYSIS stores the actual calculated selection
+     * under Recommended Market.
+     */
+
+    return getValue(
         match,
         [
-            "Prediction",
-            "AI Prediction"
+            "Recommended Market",
+            "recommended market"
         ]
     );
-
-if(
-    prediction !== ""
-){
-
-    return String(prediction);
 }
 
-return getValue(
-    match,
-    [
-        "Recommended Market",
-        "recommended market"
-    ]
-);
-
-}
 
 function getMarket(match){
 
-return getValue(
-    match,
-    [
-        "Recommended Market",
-        "recommended market",
-        "Market"
-    ]
-);
-
+    return getValue(
+        match,
+        [
+            "Recommended Market",
+            "recommended market",
+            "Market"
+        ]
+    );
 }
+
 
 function getConfidence(match){
 
-return numberValue(
-    getValue(
-        match,
-        [
-            "Confidence %",
-            "Confidence",
-            "Final Confidence",
-            "Final confidence"
-        ]
-    )
-);
-
+    return numberValue(
+        getValue(
+            match,
+            [
+                "Confidence %",
+                "Confidence",
+                "Final Confidence",
+                "Final confidence"
+            ]
+        )
+    );
 }
+
 
 function getRisk(match){
 
-return getValue(
-    match,
-    [
-        "Risk Level",
-        "Risk"
-    ]
-);
-
+    return getValue(
+        match,
+        [
+            "Risk Level",
+            "Risk"
+        ]
+    );
 }
+
 
 function getDecision(match){
 
-const decision =
-    getValue(
-        match,
-        [
-            "AI Decision",
-            "Decision"
-        ]
-    );
+    const decision =
+        getValue(
+            match,
+            [
+                "AI Decision",
+                "Decision"
+            ]
+        );
 
-if(
-    decision !== ""
-){
+    if(
+        decision !== ""
+    ){
 
-    return String(decision);
+        return String(decision);
+    }
+
+    const risk =
+        String(
+            getRisk(match)
+        ).toUpperCase();
+
+    if(
+        risk === "LOW"
+    ){
+
+        return "GOOD BET";
+    }
+
+    if(
+        risk === "MEDIUM"
+    ){
+
+        return "POSSIBLE BET";
+    }
+
+    if(
+        risk === "HIGH"
+    ){
+
+        return "WATCH";
+    }
+
+    return "APEX AI";
 }
 
-const risk =
-    String(
-        getRisk(match)
-    ).toUpperCase();
-
-if(
-    risk === "LOW"
-){
-
-    return "GOOD BET";
-}
-
-if(
-    risk === "MEDIUM"
-){
-
-    return "POSSIBLE BET";
-}
-
-if(
-    risk === "HIGH"
-){
-
-    return "WATCH";
-}
-
-return "APEX AI";
-
-}
 
 function getRiskClass(risk){
 
-const value =
-    String(
-        risk || ""
-    ).toLowerCase();
+    const value =
+        String(
+            risk || ""
+        ).toLowerCase();
 
-if(
-    value.includes("low")
-){
+    if(
+        value.includes("low")
+    ){
 
-    return "low";
+        return "low";
+    }
+
+    if(
+        value.includes("medium") ||
+        value.includes("moderate")
+    ){
+
+        return "medium";
+    }
+
+    if(
+        value.includes("high")
+    ){
+
+        return "high";
+    }
+
+    return "unknown";
 }
 
-if(
-    value.includes("medium") ||
-    value.includes("moderate")
-){
-
-    return "medium";
-}
-
-if(
-    value.includes("high")
-){
-
-    return "high";
-}
-
-return "unknown";
-
-}
 
 /* =========================================================
-AI SCORE FIELDS
-========================================================= */
+   AI SCORE FIELDS
+   ========================================================= */
 
 function getGoalScore(match){
 
-return getValue(
-    match,
-    ["Goal Score"]
-);
-
+    return getValue(
+        match,
+        ["Goal Score"]
+    );
 }
 
 function getFormScore(match){
 
-return getValue(
-    match,
-    ["Form Score"]
-);
-
+    return getValue(
+        match,
+        ["Form Score"]
+    );
 }
 
 function getAttackScore(match){
 
-return getValue(
-    match,
-    ["Attack Score"]
-);
-
+    return getValue(
+        match,
+        ["Attack Score"]
+    );
 }
 
 function getDefenceScore(match){
 
-return getValue(
-    match,
-    ["Defence Score"]
-);
-
+    return getValue(
+        match,
+        ["Defence Score"]
+    );
 }
 
 function getTotalScore(match){
 
-return getValue(
-    match,
-    ["Total Score"]
-);
-
+    return getValue(
+        match,
+        ["Total Score"]
+    );
 }
 
 function getHomeAdvantage(match){
 
-return getValue(
-    match,
-    ["Home Advantage"]
-);
-
+    return getValue(
+        match,
+        ["Home Advantage"]
+    );
 }
 
 function getBTTSScore(match){
 
-return getValue(
-    match,
-    ["BTTS Score"]
-);
-
+    return getValue(
+        match,
+        ["BTTS Score"]
+    );
 }
 
 function getOver15Score(match){
 
-return getValue(
-    match,
-    ["Over 1.5 Score"]
-);
-
+    return getValue(
+        match,
+        ["Over 1.5 Score"]
+    );
 }
 
 function getOver25Score(match){
 
-return getValue(
-    match,
-    ["Over 2.5 Score"]
-);
-
+    return getValue(
+        match,
+        ["Over 2.5 Score"]
+    );
 }
 
 function getH2HScore(match){
 
-return getValue(
-    match,
-    [
-        "Head-to-Head Score",
-        "Head to Head Score",
-        "Head To Head Score"
-    ]
-);
-
+    return getValue(
+        match,
+        [
+            "Head-to-Head Score",
+            "Head to Head Score",
+            "Head To Head Score"
+        ]
+    );
 }
 
 function getOddsValue(match){
 
-return getValue(
-    match,
-    ["Odds Value"]
-);
-
+    return getValue(
+        match,
+        ["Odds Value"]
+    );
 }
 
+
 /* =========================================================
-RESPONSE CONVERSION
-========================================================= */
+   RESPONSE CONVERSION
+   ========================================================= */
 
-function convertRowsToObjects(headers,rows){
-
-if(
-    !Array.isArray(headers) ||
-    !Array.isArray(rows)
+function convertRowsToObjects(
+    headers,
+    rows
 ){
 
-    return [];
-}
+    if(
+        !Array.isArray(headers) ||
+        !Array.isArray(rows)
+    ){
 
-return rows.map(
-    function(row){
-
-        if(
-            row &&
-            typeof row === "object" &&
-            !Array.isArray(row)
-        ){
-
-            return row;
-        }
-
-        const record = {};
-
-        headers.forEach(
-            function(header,index){
-
-                record[
-                    String(header).trim()
-                ] =
-                    Array.isArray(row)
-                        ? row[index]
-                        : "";
-
-            }
-        );
-
-        return record;
+        return [];
     }
-);
 
+    return rows.map(
+        function(row){
+
+            /*
+             * Already an object.
+             */
+
+            if(
+                row &&
+                typeof row === "object" &&
+                !Array.isArray(row)
+            ){
+
+                return row;
+            }
+
+            /*
+             * Spreadsheet row array.
+             */
+
+            const record = {};
+
+            headers.forEach(
+                function(header,index){
+
+                    record[
+                        String(header).trim()
+                    ] =
+                        Array.isArray(row)
+                            ? row[index]
+                            : "";
+
+                }
+            );
+
+            return record;
+        }
+    );
 }
+
 
 /* =========================================================
-BACKEND RESPONSE EXTRACTION
-========================================================= */
+   BACKEND RESPONSE EXTRACTION
+   ========================================================= */
 
 function extractRecords(payload){
 
-if(
-    !payload ||
-    typeof payload !== "object"
-){
+    if(
+        !payload ||
+        typeof payload !== "object"
+    ){
+
+        return [];
+    }
+
+
+    /*
+     * Preferred format:
+     *
+     * {
+     *   matches: [...]
+     * }
+     */
+
+    if(
+        Array.isArray(
+            payload.matches
+        )
+    ){
+
+        return payload.matches;
+    }
+
+
+    /*
+     * IMPORTANT:
+     *
+     * Check headers + data BEFORE the generic data array.
+     *
+     * This allows Google Sheets rows such as:
+     *
+     * headers: ["Match","Confidence %",...]
+     * data: [
+     *   ["Team A VS Team B",80,...]
+     * ]
+     *
+     * to be converted into proper objects.
+     */
+
+    if(
+        Array.isArray(
+            payload.headers
+        ) &&
+        Array.isArray(
+            payload.data
+        )
+    ){
+
+        return convertRowsToObjects(
+            payload.headers,
+            payload.data
+        );
+    }
+
+
+    /*
+     * Backend may return:
+     *
+     * {
+     *   data: [...]
+     * }
+     *
+     * where data is already an array
+     * of objects.
+     */
+
+    if(
+        Array.isArray(
+            payload.data
+        )
+    ){
+
+        return payload.data;
+    }
+
+
+    /*
+     * Alternative wrapped response.
+     */
+
+    if(
+        payload.data &&
+        Array.isArray(
+            payload.data.matches
+        )
+    ){
+
+        return payload.data.matches;
+    }
+
+
+    /*
+     * Match Database object structure.
+     */
+
+    if(
+        payload.matchDatabase &&
+        Array.isArray(
+            payload.matchDatabase.objects
+        )
+    ){
+
+        return payload.matchDatabase.objects;
+    }
+
+
+    /*
+     * Smart Gate object structure.
+     */
+
+    if(
+        payload.smartGate &&
+        Array.isArray(
+            payload.smartGate.objects
+        )
+    ){
+
+        return payload.smartGate.objects;
+    }
+
+
+    /*
+     * Smart Gate direct array.
+     */
+
+    if(
+        Array.isArray(
+            payload.smartGate
+        )
+    ){
+
+        return payload.smartGate;
+    }
+
 
     return [];
 }
 
 
-/*
- * 1. Direct matches array.
- */
-
-if(
-    Array.isArray(
-        payload.matches
-    )
-){
-
-    return payload.matches;
-}
-
-
-/*
- * 2. Spreadsheet response:
- *
- * {
- *   headers:[...],
- *   data:[
- *      [...],
- *      [...]
- *   ]
- * }
- *
- * THIS CHECK MUST HAPPEN BEFORE
- * RETURNING payload.data DIRECTLY.
- */
-
-if(
-    Array.isArray(
-        payload.headers
-    ) &&
-    Array.isArray(
-        payload.data
-    )
-){
-
-    return convertRowsToObjects(
-        payload.headers,
-        payload.data
-    );
-}
-
-
-/*
- * 3. Direct object array.
- */
-
-if(
-    Array.isArray(
-        payload.data
-    )
-){
-
-    return payload.data;
-}
-
-
-/*
- * 4. Wrapped matches.
- */
-
-if(
-    payload.data &&
-    Array.isArray(
-        payload.data.matches
-    )
-){
-
-    return payload.data.matches;
-}
-
-
-/*
- * 5. Alternative backend structures.
- */
-
-if(
-    payload.matchDatabase &&
-    Array.isArray(
-        payload.matchDatabase.objects
-    )
-){
-
-    return payload.matchDatabase.objects;
-}
-
-
-if(
-    payload.smartGate &&
-    Array.isArray(
-        payload.smartGate.objects
-    )
-){
-
-    return payload.smartGate.objects;
-}
-
-
-if(
-    Array.isArray(
-        payload.smartGate
-    )
-){
-
-    return payload.smartGate;
-}
-
-
-return [];
-
-}
-
 /* =========================================================
-VALID AI RECORD
-========================================================= */
+   VALID AI RECORD
+   ========================================================= */
 
 function isValidAIRecord(match){
 
-if(
-    !match ||
-    typeof match !== "object"
-){
+    if(
+        !match ||
+        typeof match !== "object"
+    ){
 
-    return false;
+        return false;
+    }
+
+
+    const matchName =
+        String(
+            getMatch(match)
+        ).trim();
+
+
+    const market =
+        String(
+            getMarket(match)
+        ).trim();
+
+
+    const confidence =
+        getConfidence(match);
+
+
+    return(
+        matchName !== "" &&
+        market !== "" &&
+        confidence !== null &&
+        confidence > 0
+    );
 }
 
-const matchName =
-    String(
-        getMatch(match)
-    ).trim();
-
-const market =
-    String(
-        getMarket(match)
-    ).trim();
-
-const confidence =
-    getConfidence(match);
-
-return(
-    matchName !== "" &&
-    market !== "" &&
-    confidence !== null &&
-    confidence > 0
-);
-
-}
 
 /* =========================================================
-PREPARE EXACT 30
-========================================================= */
+   PREPARE EXACT MAXIMUM MATCHES
+   ========================================================= */
 
 function prepareMatches(source){
 
-const result = [];
+    const result =
+        [];
 
-const seen =
-    new Set();
-
-const matches =
-    Array.isArray(source)
-        ? source
-        : [];
+    const seen =
+        new Set();
 
 
-matches.forEach(
-    function(match){
+    const matches =
+        Array.isArray(source)
+            ? source
+            : [];
 
-        if(
-            !isValidAIRecord(match)
+
+    matches.forEach(
+        function(
+            match,
+            index
         ){
 
-            return;
-        }
+            /*
+             * Only real AI records.
+             */
+
+            if(
+                !isValidAIRecord(
+                    match
+                )
+            ){
+
+                return;
+            }
 
 
-        /*
-         * AI ANALYSIS is the authoritative final set.
-         */
+            /*
+             * Match is the authoritative identity
+             * because AI ANALYSIS is the final calculated set.
+             */
 
-        const identity =
-            normaliseKey(
-                getMatch(match)
-            );
-
-
-        if(
-            identity &&
-            seen.has(identity)
-        ){
-
-            return;
-        }
+            const identity =
+                normaliseKey(
+                    getMatch(match)
+                );
 
 
-        if(identity){
+            if(
+                identity &&
+                seen.has(identity)
+            ){
 
-            seen.add(identity);
-        }
-
-
-        result.push(match);
-
-    }
-);
+                return;
+            }
 
 
-/*
- * Preserve Smart Gate order when rank exists.
- * Otherwise preserve backend order.
- */
+            if(identity){
 
-const ranked =
-    result.some(
-        function(match){
+                seen.add(identity);
+            }
 
-            return (
-                numberValue(
-                    getValue(
-                        match,
-                        [
-                            "Smart Gate Rank",
-                            "Rank"
-                        ]
-                    )
-                ) !== null
+
+            result.push(
+                match
             );
 
         }
     );
 
 
-if(ranked){
+    /*
+     * Preserve Smart Gate order where available.
+     */
 
     result.sort(
         function(a,b){
@@ -875,1217 +907,1358 @@ if(ranked){
                 );
 
 
-            if(rankA === null) return 1;
-            if(rankB === null) return -1;
+            if(
+                rankA !== null &&
+                rankB !== null
+            ){
 
-            return rankA - rankB;
+                return (
+                    rankA -
+                    rankB
+                );
+            }
+
+
+            /*
+             * If no rank exists,
+             * keep backend order.
+             */
+
+            return 0;
 
         }
     );
 
+
+    return result.slice(
+        0,
+        APEX_CONFIG.MAX_MATCHES
+    );
 }
 
-
-return result.slice(
-    0,
-    APEX_CONFIG.MAX_MATCHES
-);
-
-}
 
 /* =========================================================
-CONNECTION STATUS
-========================================================= */
+   CONNECTION STATUS
+   ========================================================= */
 
 function setConnectionStatus(
-message,
-type
+    message,
+    type
 ){
 
-const element =
-    document.getElementById(
-        "connectionStatus"
-    );
+    const element =
+        document.getElementById(
+            "connectionStatus"
+        );
 
 
-if(!element){
+    if(!element){
 
-    return;
+        return;
+    }
+
+
+    element.textContent =
+        message;
+
+
+    element.className =
+        "connection " +
+        (
+            type ||
+            ""
+        );
 }
 
-
-element.textContent =
-    message;
-
-
-element.className =
-    "connection " +
-    (
-        type ||
-        ""
-    );
-
-}
 
 /* =========================================================
-FETCH AI ANALYSIS
-========================================================= */
+   FETCH AI ANALYSIS
+   ========================================================= */
 
 async function fetchAPEXData(){
 
-const controller =
-    new AbortController();
+    const controller =
+        new AbortController();
 
 
-const timeout =
-    setTimeout(
-        function(){
+    const timeout =
+        setTimeout(
+            function(){
 
-            controller.abort();
+                controller.abort();
 
-        },
-        APEX_CONFIG.TIMEOUT
-    );
-
-
-try{
-
-    const url =
-        APEX_CONFIG.API_URL +
-        "?sheet=" +
-        encodeURIComponent(
-            "AI ANALYSIS"
-        ) +
-        "&ts=" +
-        Date.now();
-
-
-    console.log(
-        "APEX dashboard request:",
-        url
-    );
-
-
-    const response =
-        await fetch(
-            url,
-            {
-                method:"GET",
-                cache:"no-store",
-                redirect:"follow",
-                signal:
-                    controller.signal
-            }
+            },
+            APEX_CONFIG.TIMEOUT
         );
-
-
-    const raw =
-        await response.text();
-
-
-    console.log(
-        "APEX raw response:",
-        raw
-    );
-
-
-    if(
-        !response.ok
-    ){
-
-        throw new Error(
-            "APEX backend HTTP " +
-            response.status
-        );
-    }
-
-
-    if(
-        !raw.trim()
-    ){
-
-        throw new Error(
-            "APEX backend returned an empty response."
-        );
-    }
-
-
-    let payload;
 
 
     try{
 
-        payload =
-            JSON.parse(raw);
+        /*
+         * Read the AI ANALYSIS sheet directly.
+         *
+         * The backend Code.gs already knows how to return
+         * sheet data for ?sheet=AI ANALYSIS.
+         */
 
-    }catch(error){
+        const url =
+            APEX_CONFIG.API_URL +
+            "?sheet=" +
+            encodeURIComponent(
+                "AI ANALYSIS"
+            ) +
+            "&ts=" +
+            Date.now();
 
-        throw new Error(
-            "APEX backend returned invalid JSON."
+
+        console.log(
+            "APEX dashboard request:",
+            url
         );
-    }
 
 
-    if(
-        String(
-            payload.status ||
-            ""
-        ).toUpperCase() ===
-        "ERROR"
-    ){
+        const response =
+            await fetch(
+                url,
+                {
+                    method:"GET",
+                    cache:"no-store",
+                    redirect:"follow",
+                    signal:
+                        controller.signal
+                }
+            );
 
-        throw new Error(
-            payload.message ||
-            "APEX backend returned an error."
+
+        const raw =
+            await response.text();
+
+
+        console.log(
+            "APEX raw response:",
+            raw
         );
-    }
-
-
-    return payload;
-
-
-}catch(error){
-
-    if(
-        error.name ===
-        "AbortError"
-    ){
-
-        throw new Error(
-            "APEX backend request timed out."
-        );
-    }
-
-
-    throw error;
-
-
-}finally{
-
-    clearTimeout(timeout);
-}
-
-}
-
-/* =========================================================
-RETRIES
-========================================================= */
-
-async function loadAPEXData(){
-
-let lastError = null;
-
-
-for(
-    let attempt = 0;
-
-    attempt <=
-    APEX_CONFIG.RETRIES;
-
-    attempt++
-){
-
-    try{
-
-        return await fetchAPEXData();
-
-    }catch(error){
-
-        lastError = error;
 
 
         if(
-            attempt <
-            APEX_CONFIG.RETRIES
+            !response.ok
         ){
 
-            await new Promise(
-                function(resolve){
-
-                    setTimeout(
-                        resolve,
-                        1200
-                    );
-
-                }
+            throw new Error(
+                "APEX backend HTTP " +
+                response.status
             );
+        }
+
+
+        if(
+            !raw.trim()
+        ){
+
+            throw new Error(
+                "APEX backend returned an empty response."
+            );
+        }
+
+
+        let payload;
+
+
+        try{
+
+            payload =
+                JSON.parse(
+                    raw
+                );
+
+        }catch(error){
+
+            throw new Error(
+                "APEX backend returned invalid JSON."
+            );
+        }
+
+
+        if(
+            String(
+                payload.status ||
+                ""
+            ).toUpperCase() ===
+            "ERROR"
+        ){
+
+            throw new Error(
+                payload.message ||
+                "APEX backend returned an error."
+            );
+        }
+
+
+        return payload;
+
+
+    }catch(error){
+
+        if(
+            error.name ===
+            "AbortError"
+        ){
+
+            throw new Error(
+                "APEX backend request timed out."
+            );
+        }
+
+
+        throw error;
+
+
+    }finally{
+
+        clearTimeout(
+            timeout
+        );
+    }
+}
+
+
+/* =========================================================
+   RETRIES
+   ========================================================= */
+
+async function loadAPEXData(){
+
+    let lastError =
+        null;
+
+
+    for(
+        let attempt = 0;
+
+        attempt <=
+        APEX_CONFIG.RETRIES;
+
+        attempt++
+    ){
+
+        try{
+
+            return await fetchAPEXData();
+
+        }catch(error){
+
+            lastError =
+                error;
+
+
+            if(
+                attempt <
+                APEX_CONFIG.RETRIES
+            ){
+
+                await new Promise(
+                    function(resolve){
+
+                        setTimeout(
+                            resolve,
+                            1200
+                        );
+
+                    }
+                );
+            }
+        }
+    }
+
+
+    throw(
+        lastError ||
+        new Error(
+            "Unable to connect to APEX backend."
+        )
+    );
+}
+
+
+/* =========================================================
+   DASHBOARD LOAD
+   ========================================================= */
+
+async function loadDashboard(){
+
+    try{
+
+        setConnectionStatus(
+            "🔄 Loading AI Analysis...",
+            "loading"
+        );
+
+
+        const payload =
+            await loadAPEXData();
+
+
+        const source =
+            extractRecords(
+                payload
+            );
+
+
+        console.log(
+            "APEX records received:",
+            source
+        );
+
+
+        const matches =
+            prepareMatches(
+                source
+            );
+
+
+        console.log(
+            "APEX valid calculated matches:",
+            matches.length
+        );
+
+
+        if(
+            matches.length === 0
+        ){
+
+            throw new Error(
+                "AI ANALYSIS returned records, but no valid calculated matches were found."
+            );
+        }
+
+
+        renderDashboard(
+            matches
+        );
+
+
+        setConnectionStatus(
+            "✅ APEX AI Connected · " +
+            matches.length +
+            " calculated matches",
+            "success"
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "APEX dashboard error:",
+            error
+        );
+
+
+        setConnectionStatus(
+            "❌ APEX connection failed",
+            "error"
+        );
+
+
+        const featuredState =
+            document.getElementById(
+                "featuredState"
+            );
+
+
+        if(featuredState){
+
+            featuredState.style.display =
+                "block";
+
+            featuredState.className =
+                "state error";
+
+            featuredState.textContent =
+                error.message;
+        }
+
+
+        const matchesState =
+            document.getElementById(
+                "matchesState"
+            );
+
+
+        if(matchesState){
+
+            matchesState.style.display =
+                "block";
+
+            matchesState.className =
+                "state error";
+
+            matchesState.textContent =
+                error.message;
         }
     }
 }
 
 
-throw(
-    lastError ||
-    new Error(
-        "Unable to connect to APEX backend."
-    )
-);
-
-}
-
 /* =========================================================
-DASHBOARD LOAD
-========================================================= */
+   MAIN RENDER
+   ========================================================= */
 
-async function loadDashboard(){
+function renderDashboard(matches){
 
-try{
-
-    setConnectionStatus(
-        "🔄 Loading AI Analysis...",
-        "loading"
-    );
-
-
-    const payload =
-        await loadAPEXData();
-
-
-    const source =
-        extractRecords(payload);
-
-
-    console.log(
-        "APEX records received:",
-        source.length,
-        source
-    );
-
-
-    const matches =
-        prepareMatches(source);
-
-
-    console.log(
-        "APEX valid calculated matches:",
-        matches.length,
+    updateKPIs(
         matches
     );
 
+    updateFeatured(
+        matches[0]
+    );
 
-    if(
-        matches.length === 0
-    ){
+    updateSummary(
+        matches
+    );
 
-        throw new Error(
-            "AI ANALYSIS returned records, but no valid calculated matches were found."
+    renderMatchList(
+        matches
+    );
+}
+
+
+/* =========================================================
+   KPI
+   ========================================================= */
+
+function updateKPIs(matches){
+
+    const matchesCount =
+        document.getElementById(
+            "matchesCount"
         );
+
+
+    if(matchesCount){
+
+        matchesCount.textContent =
+            matches.length;
     }
 
 
-    renderDashboard(matches);
+    const predictionCount =
+        document.getElementById(
+            "predictionCount"
+        );
 
 
-    setConnectionStatus(
-        "✅ APEX AI Connected · " +
-        matches.length +
-        " calculated matches",
-        "success"
-    );
+    if(predictionCount){
+
+        predictionCount.textContent =
+            matches.filter(
+                function(match){
+
+                    return (
+                        getPrediction(
+                            match
+                        ) !== ""
+                    );
+
+                }
+            ).length;
+    }
 
 
-}catch(error){
+    const values =
+        matches
+            .map(
+                getConfidence
+            )
+            .filter(
+                function(value){
 
-    console.error(
-        "APEX dashboard error:",
-        error
-    );
+                    return value !== null;
+                }
+            );
 
 
-    setConnectionStatus(
-        "❌ APEX connection failed",
-        "error"
-    );
+    const best =
+        values.length
+            ? Math.max(
+                ...values
+            )
+            : null;
 
 
-    const featuredState =
+    const bestConfidence =
+        document.getElementById(
+            "bestConfidence"
+        );
+
+
+    if(bestConfidence){
+
+        bestConfidence.textContent =
+            best === null
+                ? "—"
+                : best + "%";
+    }
+
+
+    const lowRisk =
+        matches.filter(
+            function(match){
+
+                return (
+                    String(
+                        getRisk(match)
+                    ).toUpperCase() ===
+                    "LOW"
+                );
+            }
+        ).length;
+
+
+    const lowRiskCount =
+        document.getElementById(
+            "lowRiskCount"
+        );
+
+
+    if(lowRiskCount){
+
+        lowRiskCount.textContent =
+            lowRisk;
+    }
+}
+
+
+/* =========================================================
+   FEATURED
+   ========================================================= */
+
+function updateFeatured(match){
+
+    const state =
         document.getElementById(
             "featuredState"
         );
 
 
-    if(featuredState){
-
-        featuredState.style.display =
-            "block";
-
-        featuredState.className =
-            "state error";
-
-        featuredState.textContent =
-            error.message;
-    }
-
-
-    const matchesState =
+    const content =
         document.getElementById(
-            "matchesState"
+            "featuredContent"
         );
 
 
-    if(matchesState){
+    if(!match){
 
-        matchesState.style.display =
-            "block";
+        if(state){
 
-        matchesState.className =
-            "state error";
+            state.style.display =
+                "block";
 
-        matchesState.textContent =
-            error.message;
-    }
-}
+            state.className =
+                "state error";
 
-}
-
-/* =========================================================
-MAIN RENDER
-========================================================= */
-
-function renderDashboard(matches){
-
-updateKPIs(matches);
-
-updateFeatured(matches[0]);
-
-updateSummary(matches);
-
-renderMatchList(matches);
-
-}
-
-/* =========================================================
-KPI
-========================================================= */
-
-function updateKPIs(matches){
-
-const matchesCount =
-    document.getElementById(
-        "matchesCount"
-    );
-
-
-if(matchesCount){
-
-    matchesCount.textContent =
-        matches.length;
-}
-
-
-const predictionCount =
-    document.getElementById(
-        "predictionCount"
-    );
-
-
-if(predictionCount){
-
-    predictionCount.textContent =
-        matches.filter(
-            function(match){
-
-                return (
-                    getPrediction(match) !== ""
-                );
-
-            }
-        ).length;
-}
-
-
-const values =
-    matches
-        .map(getConfidence)
-        .filter(
-            function(value){
-
-                return value !== null;
-            }
-        );
-
-
-const best =
-    values.length
-        ? Math.max(...values)
-        : null;
-
-
-const bestConfidence =
-    document.getElementById(
-        "bestConfidence"
-    );
-
-
-if(bestConfidence){
-
-    bestConfidence.textContent =
-        best === null
-            ? "—"
-            : best + "%";
-}
-
-
-const lowRisk =
-    matches.filter(
-        function(match){
-
-            return (
-                String(
-                    getRisk(match)
-                ).toUpperCase() ===
-                "LOW"
-            );
+            state.textContent =
+                "No calculated APEX selection available.";
         }
-    ).length;
 
 
-const lowRiskCount =
-    document.getElementById(
-        "lowRiskCount"
-    );
+        if(content){
+
+            content.style.display =
+                "none";
+        }
 
 
-if(lowRiskCount){
+        return;
+    }
 
-    lowRiskCount.textContent =
-        lowRisk;
-}
-
-}
-
-/* =========================================================
-FEATURED
-========================================================= */
-
-function updateFeatured(match){
-
-const state =
-    document.getElementById(
-        "featuredState"
-    );
-
-
-const content =
-    document.getElementById(
-        "featuredContent"
-    );
-
-
-if(!match){
 
     if(state){
 
         state.style.display =
-            "block";
-
-        state.className =
-            "state error";
-
-        state.textContent =
-            "No calculated APEX selection available.";
+            "none";
     }
 
 
     if(content){
 
         content.style.display =
-            "none";
+            "block";
     }
 
 
-    return;
-}
-
-
-if(state){
-
-    state.style.display =
-        "none";
-}
-
-
-if(content){
-
-    content.style.display =
-        "block";
-}
-
-
-const teams =
-    splitMatch(match);
-
-
-const confidence =
-    getConfidence(match);
-
-
-const risk =
-    getRisk(match);
-
-
-const prediction =
-    getPrediction(match);
-
-
-const market =
-    getMarket(match);
-
-
-const league =
-    getValue(
-        match,
-        [
-            "League",
-            "Competition"
-        ]
-    );
-
-
-const featuredLeague =
-    document.getElementById(
-        "featuredLeague"
-    );
-
-
-if(featuredLeague){
-
-    featuredLeague.textContent =
-        league !== ""
-            ? "🏆 " + league
-            : "🤖 Smart Gate V7 · AI Analysis";
-}
-
-
-setText(
-    "featuredHome",
-    teams.home
-);
-
-
-setText(
-    "featuredAway",
-    teams.away
-);
-
-
-setText(
-    "featuredPrediction",
-    prediction || "—"
-);
-
-
-setText(
-    "featuredConfidence",
-    percentage(confidence)
-);
-
-
-setText(
-    "featuredMarket",
-    market || "—"
-);
-
-
-setText(
-    "featuredRisk",
-    risk || "UNKNOWN"
-);
-
-
-setText(
-    "featuredStatus",
-    getDecision(match)
-);
-
-
-const score =
-    confidence === null
-        ? 0
-        : Math.max(
-            0,
-            Math.min(
-                100,
-                confidence
-            )
+    const teams =
+        splitMatch(
+            match
         );
 
 
-setText(
-    "featuredScore",
-    score + " / 100"
-);
+    const confidence =
+        getConfidence(
+            match
+        );
 
 
-const scoreFill =
-    document.getElementById(
-        "featuredScoreFill"
+    const risk =
+        getRisk(
+            match
+        );
+
+
+    const prediction =
+        getPrediction(
+            match
+        );
+
+
+    const market =
+        getMarket(
+            match
+        );
+
+
+    const league =
+        getValue(
+            match,
+            [
+                "League",
+                "Competition"
+            ]
+        );
+
+
+    const featuredLeague =
+        document.getElementById(
+            "featuredLeague"
+        );
+
+
+    if(featuredLeague){
+
+        featuredLeague.textContent =
+            league !== ""
+                ? "🏆 " + league
+                : "🤖 Smart Gate V7 · AI Analysis";
+    }
+
+
+    setText(
+        "featuredHome",
+        teams.home
     );
 
 
-if(scoreFill){
-
-    scoreFill.style.width =
-        score + "%";
-}
-
-
-setText(
-    "confidenceNumber",
-    percentage(confidence)
-);
-
-
-const progress =
-    document.getElementById(
-        "confidenceProgress"
+    setText(
+        "featuredAway",
+        teams.away
     );
 
 
-if(progress){
+    setText(
+        "featuredPrediction",
+        prediction || "—"
+    );
 
-    progress.style.width =
-        score + "%";
+
+    setText(
+        "featuredConfidence",
+        percentage(confidence)
+    );
+
+
+    setText(
+        "featuredMarket",
+        market || "—"
+    );
+
+
+    setText(
+        "featuredRisk",
+        risk || "UNKNOWN"
+    );
+
+
+    setText(
+        "featuredStatus",
+        getDecision(match)
+    );
+
+
+    const score =
+        confidence === null
+            ? 0
+            : Math.max(
+                0,
+                Math.min(
+                    100,
+                    confidence
+                )
+            );
+
+
+    setText(
+        "featuredScore",
+        score + " / 100"
+    );
+
+
+    const scoreFill =
+        document.getElementById(
+            "featuredScoreFill"
+        );
+
+
+    if(scoreFill){
+
+        scoreFill.style.width =
+            score + "%";
+    }
+
+
+    setText(
+        "confidenceNumber",
+        percentage(confidence)
+    );
+
+
+    const progress =
+        document.getElementById(
+            "confidenceProgress"
+        );
+
+
+    if(progress){
+
+        progress.style.width =
+            score + "%";
+    }
+
+
+    setText(
+        "factorPrediction",
+        prediction || "—"
+    );
+
+
+    setText(
+        "factorMarket",
+        market || "—"
+    );
+
+
+    setText(
+        "factorRisk",
+        risk || "—"
+    );
+
+
+    setText(
+        "factorGoalScore",
+        getGoalScore(match)
+    );
+
+
+    setText(
+        "factorFormScore",
+        getFormScore(match)
+    );
+
+
+    setText(
+        "factorAttackScore",
+        getAttackScore(match)
+    );
+
+
+    setText(
+        "factorDefenceScore",
+        getDefenceScore(match)
+    );
+
+
+    setText(
+        "factorBTTSScore",
+        getBTTSScore(match)
+    );
+
+
+    setText(
+        "factorOver15Score",
+        getOver15Score(match)
+    );
+
+
+    setText(
+        "factorOver25Score",
+        getOver25Score(match)
+    );
+
+
+    setText(
+        "factorH2HScore",
+        getH2HScore(match)
+    );
+
+
+    setText(
+        "factorOddsValue",
+        getOddsValue(match)
+    );
 }
 
-
-setText(
-    "factorPrediction",
-    prediction || "—"
-);
-
-
-setText(
-    "factorMarket",
-    market || "—"
-);
-
-
-setText(
-    "factorRisk",
-    risk || "—"
-);
-
-
-setText(
-    "factorGoalScore",
-    getGoalScore(match)
-);
-
-
-setText(
-    "factorFormScore",
-    getFormScore(match)
-);
-
-
-setText(
-    "factorAttackScore",
-    getAttackScore(match)
-);
-
-
-setText(
-    "factorDefenceScore",
-    getDefenceScore(match)
-);
-
-
-setText(
-    "factorBTTSScore",
-    getBTTSScore(match)
-);
-
-
-setText(
-    "factorOver15Score",
-    getOver15Score(match)
-);
-
-
-setText(
-    "factorOver25Score",
-    getOver25Score(match)
-);
-
-
-setText(
-    "factorH2HScore",
-    getH2HScore(match)
-);
-
-
-setText(
-    "factorOddsValue",
-    getOddsValue(match)
-);
-
-}
 
 /* =========================================================
-TEXT
-========================================================= */
+   TEXT
+   ========================================================= */
 
-function setText(id,value){
-
-const element =
-    document.getElementById(id);
-
-
-if(!element){
-
-    return;
-}
-
-
-if(
-    value === null ||
-    value === undefined ||
-    String(value).trim() === ""
+function setText(
+    id,
+    value
 ){
 
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if(!element){
+
+        return;
+    }
+
+
+    if(
+        value === null ||
+        value === undefined ||
+        String(value).trim() === ""
+    ){
+
+        element.textContent =
+            "—";
+
+        return;
+    }
+
+
     element.textContent =
-        "—";
-
-    return;
+        String(value);
 }
 
-
-element.textContent =
-    String(value);
-
-}
 
 /* =========================================================
-SUMMARY
-========================================================= */
+   SUMMARY
+   ========================================================= */
 
 function updateSummary(matches){
 
-if(!matches.length){
+    if(!matches.length){
 
-    return;
-}
+        return;
+    }
 
 
-const values =
-    matches
-        .map(getConfidence)
-        .filter(
-            function(value){
+    const values =
+        matches
+            .map(
+                getConfidence
+            )
+            .filter(
+                function(value){
 
-                return value !== null;
+                    return value !== null;
+                }
+            );
+
+
+    const average =
+        values.length
+            ? Math.round(
+                values.reduce(
+                    function(
+                        total,
+                        value
+                    ){
+
+                        return total + value;
+
+                    },
+                    0
+                ) /
+                values.length
+            )
+            : null;
+
+
+    const lowRisk =
+        matches.filter(
+            function(match){
+
+                return (
+                    String(
+                        getRisk(match)
+                    ).toUpperCase() ===
+                    "LOW"
+                );
             }
-        );
+        ).length;
 
 
-const average =
-    values.length
-        ? Math.round(
-            values.reduce(
-                function(total,value){
-
-                    return total + value;
-
-                },
-                0
-            ) /
-            values.length
-        )
-        : null;
+    const markets = {};
 
 
-const lowRisk =
-    matches.filter(
+    matches.forEach(
         function(match){
 
-            return (
-                String(
-                    getRisk(match)
-                ).toUpperCase() ===
-                "LOW"
-            );
+            const market =
+                getMarket(
+                    match
+                );
+
+
+            if(
+                !market
+            ){
+
+                return;
+            }
+
+
+            markets[market] =
+                (
+                    markets[market] ||
+                    0
+                ) + 1;
         }
-    ).length;
+    );
 
 
-const markets = {};
+    let mainMarket =
+        "—";
+
+    let highestCount =
+        0;
 
 
-matches.forEach(
-    function(match){
+    Object.keys(markets).forEach(
+        function(market){
 
-        const market =
-            getMarket(match);
+            if(
+                markets[market] >
+                highestCount
+            ){
 
+                highestCount =
+                    markets[market];
 
-        if(!market){
-
-            return;
+                mainMarket =
+                    market;
+            }
         }
+    );
 
 
-        markets[market] =
-            (
-                markets[market] ||
-                0
-            ) + 1;
-    }
-);
+    setText(
+        "summaryMatches",
+        matches.length
+    );
 
 
-let mainMarket =
-    "—";
-
-let highestCount =
-    0;
-
-
-Object.keys(markets).forEach(
-    function(market){
-
-        if(
-            markets[market] >
-            highestCount
-        ){
-
-            highestCount =
-                markets[market];
-
-            mainMarket =
-                market;
-        }
-    }
-);
+    setText(
+        "summaryConfidence",
+        average === null
+            ? "—"
+            : average + "%"
+    );
 
 
-setText(
-    "summaryMatches",
-    matches.length
-);
+    setText(
+        "summaryLowRisk",
+        lowRisk
+    );
 
 
-setText(
-    "summaryConfidence",
-    average === null
-        ? "—"
-        : average + "%"
-);
-
-
-setText(
-    "summaryLowRisk",
-    lowRisk
-);
-
-
-setText(
-    "summaryMarket",
-    mainMarket
-);
-
+    setText(
+        "summaryMarket",
+        mainMarket
+    );
 }
 
+
 /* =========================================================
-MATCH LIST
-========================================================= */
+   MATCH LIST
+   ========================================================= */
 
 function renderMatchList(matches){
 
-const state =
-    document.getElementById(
-        "matchesState"
-    );
+    const state =
+        document.getElementById(
+            "matchesState"
+        );
 
 
-const table =
-    document.getElementById(
-        "matchesTable"
-    );
+    const table =
+        document.getElementById(
+            "matchesTable"
+        );
 
 
-const container =
-    document.getElementById(
-        "matchRows"
-    );
+    const container =
+        document.getElementById(
+            "matchRows"
+        );
 
 
-if(!container){
+    if(!container){
 
-    return;
-}
-
-
-container.innerHTML =
-    "";
+        return;
+    }
 
 
-matches.forEach(
-    function(match,index){
-
-        const teams =
-            splitMatch(match);
+    container.innerHTML =
+        "";
 
 
-        const prediction =
-            getPrediction(match);
+    matches.forEach(
+        function(
+            match,
+            index
+        ){
+
+            const teams =
+                splitMatch(
+                    match
+                );
 
 
-        const market =
-            getMarket(match);
+            const prediction =
+                getPrediction(
+                    match
+                );
 
 
-        const confidence =
-            getConfidence(match);
+            const market =
+                getMarket(
+                    match
+                );
 
 
-        const risk =
-            getRisk(match);
+            const confidence =
+                getConfidence(
+                    match
+                );
 
 
-        const decision =
-            getDecision(match);
+            const risk =
+                getRisk(
+                    match
+                );
 
 
-        const riskClass =
-            getRiskClass(risk);
+            const decision =
+                getDecision(
+                    match
+                );
 
 
-        const goalScore =
-            getGoalScore(match);
+            const riskClass =
+                getRiskClass(
+                    risk
+                );
 
 
-        const formScore =
-            getFormScore(match);
+            const goalScore =
+                getGoalScore(
+                    match
+                );
 
 
-        const attackScore =
-            getAttackScore(match);
+            const formScore =
+                getFormScore(
+                    match
+                );
 
 
-        const defenceScore =
-            getDefenceScore(match);
+            const attackScore =
+                getAttackScore(
+                    match
+                );
 
 
-        const totalScore =
-            getTotalScore(match);
+            const defenceScore =
+                getDefenceScore(
+                    match
+                );
 
 
-        const bttsScore =
-            getBTTSScore(match);
+            const totalScore =
+                getTotalScore(
+                    match
+                );
 
 
-        const over15Score =
-            getOver15Score(match);
+            const bttsScore =
+                getBTTSScore(
+                    match
+                );
 
 
-        const over25Score =
-            getOver25Score(match);
+            const over15Score =
+                getOver15Score(
+                    match
+                );
 
 
-        const row =
-            document.createElement(
-                "div"
-            );
+            const over25Score =
+                getOver25Score(
+                    match
+                );
 
 
-        row.className =
-            "match-row";
+            const row =
+                document.createElement(
+                    "div"
+                );
 
 
-        row.innerHTML = `
+            row.className =
+                "match-row";
 
-            <div class="match-number">
-                ${index + 1}
-            </div>
 
-            <div>
+            row.innerHTML = `
 
-                <div class="match-teams-small">
+                <div
+                    class="match-number"
+                >
+                    ${index + 1}
+                </div>
 
-                    ${escapeHtml(
-                        teams.home
-                    )}
 
-                    <span>VS</span>
+                <div>
 
-                    ${escapeHtml(
-                        teams.away
-                    )}
+                    <div
+                        class="
+                            match-teams-small
+                        "
+                    >
+
+                        ${escapeHtml(
+                            teams.home
+                        )}
+
+                        <span>
+                            VS
+                        </span>
+
+                        ${escapeHtml(
+                            teams.away
+                        )}
+
+                    </div>
+
+
+                    <div
+                        class="
+                            match-league
+                        "
+                    >
+
+                        AI ANALYSIS ·
+                        Smart Gate V7
+
+                    </div>
 
                 </div>
 
-                <div class="match-league">
-                    AI ANALYSIS · Smart Gate V7
-                </div>
 
-            </div>
-
-            <div class="match-prediction">
-
-                ${escapeHtml(
-                    prediction || "—"
-                )}
-
-                <span class="market-small">
-
-                    ${escapeHtml(
-                        market || "—"
-                    )}
-
-                </span>
-
-            </div>
-
-            <div class="match-confidence">
-
-                ${escapeHtml(
-                    percentage(confidence)
-                )}
-
-            </div>
-
-            <div class="match-info">
-
-                Goal:
-                ${escapeHtml(
-                    goalScore || "—"
-                )}<br>
-
-                Form:
-                ${escapeHtml(
-                    formScore || "—"
-                )}<br>
-
-                Attack:
-                ${escapeHtml(
-                    attackScore || "—"
-                )}<br>
-
-                Defence:
-                ${escapeHtml(
-                    defenceScore || "—"
-                )}<br>
-
-                Total:
-                ${escapeHtml(
-                    totalScore || "—"
-                )}<br>
-
-                BTTS:
-                ${escapeHtml(
-                    bttsScore || "—"
-                )}<br>
-
-                O1.5:
-                ${escapeHtml(
-                    over15Score || "—"
-                )}<br>
-
-                O2.5:
-                ${escapeHtml(
-                    over25Score || "—"
-                )}
-
-            </div>
-
-            <div>
-
-                <span
+                <div
                     class="
-                        decision
-                        ${riskClass}
+                        match-prediction
                     "
                 >
 
                     ${escapeHtml(
-                        decision
+                        prediction || "—"
                     )}
 
-                </span>
 
-            </div>
+                    <span
+                        class="
+                            market-small
+                        "
+                    >
 
-        `;
+                        ${escapeHtml(
+                            market || "—"
+                        )}
+
+                    </span>
+
+                </div>
 
 
-        container.appendChild(row);
+                <div
+                    class="
+                        match-confidence
+                    "
+                >
+
+                    ${escapeHtml(
+                        percentage(
+                            confidence
+                        )
+                    )}
+
+                </div>
+
+
+                <div
+                    class="
+                        match-info
+                    "
+                >
+
+                    Goal:
+                    ${escapeHtml(
+                        goalScore || "—"
+                    )}<br>
+
+                    Form:
+                    ${escapeHtml(
+                        formScore || "—"
+                    )}<br>
+
+                    Attack:
+                    ${escapeHtml(
+                        attackScore || "—"
+                    )}<br>
+
+                    Defence:
+                    ${escapeHtml(
+                        defenceScore || "—"
+                    )}<br>
+
+                    Total:
+                    ${escapeHtml(
+                        totalScore || "—"
+                    )}<br>
+
+                    BTTS:
+                    ${escapeHtml(
+                        bttsScore || "—"
+                    )}<br>
+
+                    O1.5:
+                    ${escapeHtml(
+                        over15Score || "—"
+                    )}<br>
+
+                    O2.5:
+                    ${escapeHtml(
+                        over25Score || "—"
+                    )}
+
+                </div>
+
+
+                <div>
+
+                    <span
+                        class="
+                            decision
+                            ${riskClass}
+                        "
+                    >
+
+                        ${escapeHtml(
+                            decision
+                        )}
+
+                    </span>
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                row
+            );
+        }
+    );
+
+
+    if(state){
+
+        state.style.display =
+            "none";
+    }
+
+
+    if(table){
+
+        table.style.display =
+            "block";
+    }
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        loadDashboard();
 
     }
 );
 
 
-if(state){
-
-    state.style.display =
-        "none";
-}
-
-
-if(table){
-
-    table.style.display =
-        "block";
-}
-
-}
-
 /* =========================================================
-PUBLIC API
-========================================================= */
+   PUBLIC API
+   ========================================================= */
 
 window.APEX_CONFIG =
-APEX_CONFIG;
+    APEX_CONFIG;
 
 window.go =
-go;
+    go;
 
 window.openDashboard =
-openDashboard;
+    openDashboard;
 
 window.openPredictions =
-openPredictions;
+    openPredictions;
 
 window.openAnalysis =
-openAnalysis;
+    openAnalysis;
 
 window.openStatistics =
-openStatistics;
+    openStatistics;
 
 window.openLiveScores =
-openLiveScores;
+    openLiveScores;
 
 window.openLeagues =
-openLeagues;
+    openLeagues;
 
 window.openHeadToHead =
-openHeadToHead;
+    openHeadToHead;
 
 window.openSettings =
-openSettings;
+    openSettings;
 
 window.logout =
-logout;
+    logout;
 
 window.loadDashboard =
-loadDashboard;
+    loadDashboard;
 
 window.loadAPEXData =
-loadAPEXData;
+    loadAPEXData;
 
 window.fetchAPEXData =
-fetchAPEXData;
-
-/* =========================================================
-START
-========================================================= */
-
-document.addEventListener(
-"DOMContentLoaded",
-function(){
-
-    loadDashboard();
-
-}
-
-);
+    fetchAPEXData;
