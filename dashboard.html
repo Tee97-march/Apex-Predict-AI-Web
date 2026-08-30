@@ -769,7 +769,7 @@ button{font:inherit}
         <span class="engine-dot"></span>
         APEX AI ENGINE
     </div>
-    <div class="engine-small">Backend connection</div>
+    <div class="engine-small">AI Analysis · Smart Gate V7</div>
 </div>
 
 <button class="logout" onclick="logout()">🚪 Logout</button>
@@ -797,19 +797,19 @@ button{font:inherit}
 <div class="kpi">
     <div class="kpi-label">⚽ Today's Matches</div>
     <div id="matchesCount" class="kpi-value">—</div>
-    <div class="kpi-note">Up to 30 selected matches</div>
+    <div class="kpi-note">Smart Gate V7 selections</div>
 </div>
 
 <div class="kpi blue">
     <div class="kpi-label">🎯 Best Confidence</div>
     <div id="bestConfidence" class="kpi-value">—</div>
-    <div id="bestConfidenceNote" class="kpi-note">Highest final confidence</div>
+    <div id="bestConfidenceNote" class="kpi-note">Highest AI confidence</div>
 </div>
 
 <div class="kpi purple">
     <div class="kpi-label">🤖 AI Predictions</div>
     <div id="predictionCount" class="kpi-value">—</div>
-    <div class="kpi-note">Qualified prediction records</div>
+    <div class="kpi-note">Calculated AI selections</div>
 </div>
 
 <div class="kpi orange">
@@ -825,7 +825,7 @@ button{font:inherit}
 <div class="section-heading">
     <div>
         <h2>⭐ Today's Top Prediction</h2>
-        <p>Highest-confidence qualified APEX selection</p>
+        <p>Highest-confidence APEX AI selection</p>
     </div>
 
     <div class="top-badge">TOP AI</div>
@@ -903,7 +903,7 @@ button{font:inherit}
 <div class="section-heading">
     <div>
         <h2>📊 AI Analysis Summary</h2>
-        <p>Current APEX selection overview</p>
+        <p>Current Smart Gate V7 selection overview</p>
     </div>
 </div>
 
@@ -937,7 +937,7 @@ button{font:inherit}
 <div class="section-heading">
     <div>
         <h2>🎯 Confidence Breakdown</h2>
-        <p>Current prediction confidence</p>
+        <p>Actual AI analysis factors</p>
     </div>
 </div>
 
@@ -971,23 +971,48 @@ button{font:inherit}
 </div>
 
 <div class="factor-row">
-    <span class="factor-name">Home Goals Avg</span>
-    <span id="factorHomeGoals" class="factor-score">—</span>
+    <span class="factor-name">Goal Score</span>
+    <span id="factorGoalScore" class="factor-score">—</span>
 </div>
 
 <div class="factor-row">
-    <span class="factor-name">Away Goals Avg</span>
-    <span id="factorAwayGoals" class="factor-score">—</span>
+    <span class="factor-name">Form Score</span>
+    <span id="factorFormScore" class="factor-score">—</span>
 </div>
 
 <div class="factor-row">
-    <span class="factor-name">BTTS</span>
-    <span id="factorBTTS" class="factor-score">—</span>
+    <span class="factor-name">Attack Score</span>
+    <span id="factorAttackScore" class="factor-score">—</span>
 </div>
 
 <div class="factor-row">
-    <span class="factor-name">Over 1.5</span>
-    <span id="factorOver15" class="factor-score">—</span>
+    <span class="factor-name">Defence Score</span>
+    <span id="factorDefenceScore" class="factor-score">—</span>
+</div>
+
+<div class="factor-row">
+    <span class="factor-name">BTTS Score</span>
+    <span id="factorBTTSScore" class="factor-score">—</span>
+</div>
+
+<div class="factor-row">
+    <span class="factor-name">Over 1.5 Score</span>
+    <span id="factorOver15Score" class="factor-score">—</span>
+</div>
+
+<div class="factor-row">
+    <span class="factor-name">Over 2.5 Score</span>
+    <span id="factorOver25Score" class="factor-score">—</span>
+</div>
+
+<div class="factor-row">
+    <span class="factor-name">Head-to-Head</span>
+    <span id="factorH2HScore" class="factor-score">—</span>
+</div>
+
+<div class="factor-row">
+    <span class="factor-name">Odds Value</span>
+    <span id="factorOddsValue" class="factor-score">—</span>
 </div>
 
 </div>
@@ -1000,7 +1025,7 @@ button{font:inherit}
 <div class="section-heading">
     <div>
         <h2>⚽ Today's Top Matches</h2>
-        <p>Up to 30 qualified APEX selections</p>
+        <p>Exact AI Analysis records from Smart Gate V7</p>
     </div>
 
     <div class="match-limit">MAX 30</div>
@@ -1029,7 +1054,7 @@ button{font:inherit}
 <footer class="footer">
     <span>APEX PREDICT AI</span>
     <span>Version 2.1 XL</span>
-    <span>API-Football + Football-Data.org</span>
+    <span>Football-Data.org · Smart Gate V7 · AI Engine V7</span>
 </footer>
 
 </main>
@@ -1039,7 +1064,7 @@ button{font:inherit}
 
 // ============================================================
 // APEX PREDICT AI DASHBOARD
-// CURRENT BACKEND — VERSION 7
+// FINAL CONTROLLED AI ANALYSIS READER
 // ============================================================
 
 const API_URL =
@@ -1047,9 +1072,9 @@ const API_URL =
 
 const MAX_MATCHES = 30;
 
-// Current system date requested by APEX Smart Gate.
-const TODAY = "2026-08-29";
-const TOMORROW = "2026-08-30";
+// The dashboard now reads AI ANALYSIS directly.
+// No date filter is required because AI ANALYSIS contains
+// exactly the 30 records produced by Smart Gate V7.
 
 function go(page){
     window.location.href = page;
@@ -1063,33 +1088,30 @@ function logout(){
     window.location.href = "login.html";
 }
 
-function normaliseDate(value){
-
-    if(!value) return "";
-
-    const d = new Date(value);
-
-    if(isNaN(d.getTime())){
-        return String(value).substring(0,10);
-    }
-
-    return d.toISOString().substring(0,10);
-}
-
 function numberValue(value){
 
-    if(value === null || value === undefined || value === ""){
+    if(
+        value === null ||
+        value === undefined ||
+        value === ""
+    ){
         return null;
     }
 
-    const n = Number(
-        String(value).replace("%","").trim()
-    );
+    const n =
+        Number(
+            String(value)
+                .replace("%","")
+                .replace(",",".")
+                .trim()
+        );
 
-    return isNaN(n) ? null : n;
+    return Number.isFinite(n)
+        ? n
+        : null;
 }
 
-function textValue(value, fallback="—"){
+function textValue(value,fallback="—"){
 
     if(
         value === null ||
@@ -1102,67 +1124,160 @@ function textValue(value, fallback="—"){
     return String(value);
 }
 
-function confidenceValue(match){
+function getField(match,names,fallback=""){
 
-    return (
-        numberValue(match["Final confidence"]) ??
-        numberValue(match["Final confidence "]) ??
-        numberValue(match["Confidence %"]) ??
-        numberValue(match["Confidence"]) ??
-        0
+    for(const name of names){
+
+        if(
+            Object.prototype.hasOwnProperty.call(
+                match,
+                name
+            )
+        ){
+
+            const value =
+                match[name];
+
+            if(
+                value !== null &&
+                value !== undefined &&
+                String(value).trim() !== ""
+            ){
+                return value;
+            }
+        }
+    }
+
+    return fallback;
+}
+
+function matchText(match){
+
+    return textValue(
+        getField(
+            match,
+            ["Match"],
+            ""
+        )
     );
 }
 
-function homeTeam(match){
-    return textValue(match["Home Team"]);
+function splitMatch(match){
+
+    const value =
+        matchText(match);
+
+    const parts =
+        value.split(
+            /\s+VS\s+/i
+        );
+
+    if(parts.length >= 2){
+
+        return {
+            home:parts[0].trim(),
+            away:parts.slice(1).join(" VS ").trim()
+        };
+    }
+
+    return {
+        home:value,
+        away:""
+    };
 }
 
-function awayTeam(match){
-    return textValue(match["Away Team"]);
-}
+function confidenceValue(match){
 
-function leagueName(match){
-    return textValue(match["League"]);
-}
-
-function predictionValue(match){
-    return textValue(
-        match["Prediction"],
-        "Prediction unavailable"
+    return (
+        numberValue(
+            getField(
+                match,
+                [
+                    "Confidence %",
+                    "Confidence",
+                    "Final Confidence",
+                    "Final confidence"
+                ],
+                0
+            )
+        ) ?? 0
     );
 }
 
 function marketValue(match){
 
     return textValue(
-        match["recommended market"] ??
-        match["Recommended Market"],
+        getField(
+            match,
+            [
+                "Recommended Market",
+                "recommended market",
+                "Market"
+            ],
+            ""
+        ),
         "Market unavailable"
     );
+}
+
+function predictionValue(match){
+
+    return marketValue(match);
 }
 
 function riskValue(match){
 
     return textValue(
-        match["Risk Level"] ??
-        match["Risk"],
+        getField(
+            match,
+            [
+                "Risk Level",
+                "Risk"
+            ],
+            ""
+        ),
         "UNKNOWN"
     );
 }
 
-function aiDecision(risk){
+function decisionValue(match){
 
-    const r = String(risk).toUpperCase();
+    return textValue(
+        getField(
+            match,
+            [
+                "AI Decision",
+                "Decision"
+            ],
+            ""
+        ),
+        ""
+    );
+}
 
-    if(r === "LOW"){
+function aiDecision(match){
+
+    const existing =
+        decisionValue(match);
+
+    if(existing !== ""){
+        return existing;
+    }
+
+    const risk =
+        String(
+            riskValue(match)
+        ).toUpperCase();
+
+    if(risk === "LOW"){
         return "GOOD BET";
     }
 
-    if(r === "MEDIUM"){
+    if(risk === "MEDIUM"){
         return "POSSIBLE BET";
     }
 
-    if(r === "HIGH"){
+    if(risk === "HIGH"){
         return "WATCH";
     }
 
@@ -1171,7 +1286,9 @@ function aiDecision(risk){
 
 function riskClass(risk){
 
-    const r = String(risk).toUpperCase();
+    const r =
+        String(risk)
+            .toUpperCase();
 
     if(r === "LOW") return "low";
     if(r === "MEDIUM") return "medium";
@@ -1180,35 +1297,84 @@ function riskClass(risk){
     return "unknown";
 }
 
-function isCurrentMatch(match){
-
-    const date = normaliseDate(match["Date"]);
-
-    return date === TODAY || date === TOMORROW;
-}
-
 function sortMatches(matches){
 
-    return matches.sort(function(a,b){
+    return matches.sort(
+        function(a,b){
 
-        const rankA =
-            numberValue(a["Smart Gate Rank"]) ??
-            numberValue(a["Rank"]) ??
-            9999;
+            const rankA =
+                numberValue(
+                    getField(
+                        a,
+                        [
+                            "Smart Gate Rank",
+                            "Rank"
+                        ],
+                        9999
+                    )
+                ) ?? 9999;
 
-        const rankB =
-            numberValue(b["Smart Gate Rank"]) ??
-            numberValue(b["Rank"]) ??
-            9999;
+            const rankB =
+                numberValue(
+                    getField(
+                        b,
+                        [
+                            "Smart Gate Rank",
+                            "Rank"
+                        ],
+                        9999
+                    )
+                ) ?? 9999;
 
-        return rankA - rankB;
-    });
+            return rankA - rankB;
+        }
+    );
 }
+
+// ------------------------------------------------------------
+// NORMALISE API PAYLOAD
+// ------------------------------------------------------------
+
+function extractRecords(payload){
+
+    if(
+        payload &&
+        Array.isArray(payload.matches)
+    ){
+
+        return payload.matches;
+    }
+
+    if(
+        payload &&
+        Array.isArray(payload.data)
+    ){
+
+        return payload.data;
+    }
+
+    if(
+        payload &&
+        payload.data &&
+        Array.isArray(payload.data.matches)
+    ){
+
+        return payload.data.matches;
+    }
+
+    return [];
+}
+
+// ------------------------------------------------------------
+// LOAD AI ANALYSIS DIRECTLY
+// ------------------------------------------------------------
 
 async function loadDashboard(){
 
     const connection =
-        document.getElementById("connectionStatus");
+        document.getElementById(
+            "connectionStatus"
+        );
 
     try{
 
@@ -1216,73 +1382,147 @@ async function loadDashboard(){
             "connection loading";
 
         connection.textContent =
-            "🔄 Loading APEX V5...";
+            "🔄 Loading AI Analysis...";
+
+        // ----------------------------------------------------
+        // READ THE AI ANALYSIS SHEET DIRECTLY THROUGH THE
+        // EXISTING BACKEND SHEET ENDPOINT.
+        // ----------------------------------------------------
 
         const response =
-            await fetch(API_URL + "?action=dashboard&_=" + Date.now(), {
-                method:"GET",
-                cache:"no-store"
-            });
+            await fetch(
+                API_URL +
+                "?sheet=" +
+                encodeURIComponent("AI ANALYSIS") +
+                "&_=" +
+                Date.now(),
+                {
+                    method:"GET",
+                    cache:"no-store"
+                }
+            );
 
         if(!response.ok){
+
             throw new Error(
-                "Backend HTTP " + response.status
+                "Backend HTTP " +
+                response.status
             );
         }
 
         const payload =
             await response.json();
 
+        // The existing backend returns sheet data.
+        // It may use either data or matches, so both
+        // structures are supported.
+
+        let records =
+            extractRecords(payload);
+
+        // ----------------------------------------------------
+        // SUPPORT BACKEND FORMAT:
+        // {
+        //   headers: [...],
+        //   data: [...]
+        // }
+        // ----------------------------------------------------
+
         if(
-            !payload ||
-            String(payload.status).toUpperCase() !== "SUCCESS"
+            records.length === 0 &&
+            payload &&
+            Array.isArray(payload.headers) &&
+            Array.isArray(payload.data)
         ){
+
+            const headers =
+                payload.headers;
+
+            records =
+                payload.data.map(
+                    function(row){
+
+                        const item = {};
+
+                        headers.forEach(
+                            function(header,index){
+
+                                item[
+                                    String(header).trim()
+                                ] =
+                                    row[index];
+
+                            }
+                        );
+
+                        return item;
+                    }
+                );
+        }
+
+        // ----------------------------------------------------
+        // ONLY VALID AI ANALYSIS RECORDS
+        // ----------------------------------------------------
+
+        records =
+            records.filter(
+                function(match){
+
+                    const m =
+                        String(
+                            getField(
+                                match,
+                                ["Match"],
+                                ""
+                            )
+                        ).trim();
+
+                    const market =
+                        String(
+                            getField(
+                                match,
+                                [
+                                    "Recommended Market",
+                                    "recommended market"
+                                ],
+                                ""
+                            )
+                        ).trim();
+
+                    const confidence =
+                        confidenceValue(match);
+
+                    return (
+                        m !== "" &&
+                        market !== "" &&
+                        confidence > 0
+                    );
+                }
+            );
+
+        records =
+            sortMatches(records)
+                .slice(
+                    0,
+                    MAX_MATCHES
+                );
+
+        if(records.length === 0){
+
             throw new Error(
-                "APEX API returned an unsuccessful response."
+                "AI ANALYSIS returned no valid calculated matches."
             );
         }
 
-        let matches =
-            Array.isArray(payload.matches)
-                ? payload.matches
-                : [];
-
-        // ----------------------------------------------------
-        // CRITICAL DATE FILTER
-        // ONLY TODAY + TOMORROW
-        // ----------------------------------------------------
-
-        matches =
-            matches.filter(isCurrentMatch);
-
-        // ----------------------------------------------------
-        // MAXIMUM 30
-        // ----------------------------------------------------
-
-        matches =
-            sortMatches(matches)
-            .slice(0,MAX_MATCHES);
-
-        if(matches.length === 0){
-
-            throw new Error(
-                "The Backend API returned no matches for " +
-                TODAY +
-                " or " +
-                TOMORROW +
-                "."
-            );
-        }
-
-        renderDashboard(matches);
+        renderDashboard(records);
 
         connection.className =
             "connection success";
 
         connection.textContent =
             "✅ APEX AI Connected · " +
-            matches.length +
-            " current matches";
+            records.length +
+            " calculated matches";
 
     }catch(error){
 
@@ -1294,19 +1534,31 @@ async function loadDashboard(){
         connection.textContent =
             "❌ APEX connection error";
 
-        document.getElementById("featuredState").className =
+        document.getElementById(
+            "featuredState"
+        ).className =
             "state error";
 
-        document.getElementById("featuredState").textContent =
+        document.getElementById(
+            "featuredState"
+        ).textContent =
             error.message;
 
-        document.getElementById("matchesState").className =
+        document.getElementById(
+            "matchesState"
+        ).className =
             "state error";
 
-        document.getElementById("matchesState").textContent =
+        document.getElementById(
+            "matchesState"
+        ).textContent =
             error.message;
     }
 }
+
+// ------------------------------------------------------------
+// RENDER
+// ------------------------------------------------------------
 
 function renderDashboard(matches){
 
@@ -1316,44 +1568,77 @@ function renderDashboard(matches){
     renderMatchList(matches);
 }
 
+// ------------------------------------------------------------
+// KPIs
+// ------------------------------------------------------------
+
 function updateKPIs(matches){
 
-    document.getElementById("matchesCount").textContent =
+    document.getElementById(
+        "matchesCount"
+    ).textContent =
         matches.length;
 
-    document.getElementById("predictionCount").textContent =
-        matches.filter(function(m){
-            return predictionValue(m) !== "Prediction unavailable";
-        }).length;
+    document.getElementById(
+        "predictionCount"
+    ).textContent =
+        matches.filter(
+            function(match){
+
+                return (
+                    predictionValue(match) !==
+                    "Market unavailable"
+                );
+            }
+        ).length;
 
     const confidences =
-        matches.map(confidenceValue);
+        matches.map(
+            confidenceValue
+        );
 
     const best =
-        Math.max.apply(null,confidences);
+        Math.max.apply(
+            null,
+            confidences
+        );
 
     const lowRisk =
-        matches.filter(function(m){
-            return String(riskValue(m)).toUpperCase() === "LOW";
-        }).length;
+        matches.filter(
+            function(match){
 
-    document.getElementById("bestConfidence").textContent =
+                return (
+                    String(
+                        riskValue(match)
+                    ).toUpperCase() ===
+                    "LOW"
+                );
+            }
+        ).length;
+
+    document.getElementById(
+        "bestConfidence"
+    ).textContent =
         best + "%";
 
-    document.getElementById("bestConfidenceNote").textContent =
-        "Highest final confidence";
-
-    document.getElementById("lowRiskCount").textContent =
+    document.getElementById(
+        "lowRiskCount"
+    ).textContent =
         lowRisk;
 }
 
+// ------------------------------------------------------------
+// FEATURED
+// ------------------------------------------------------------
+
 function updateFeatured(match){
 
-    document.getElementById("featuredState").style.display =
-        "none";
+    if(!match){
+        return;
+    }
 
-    document.getElementById("featuredContent").style.display =
-        "block";
+    const teams =
+        splitMatch(match);
 
     const confidence =
         confidenceValue(match);
@@ -1361,230 +1646,477 @@ function updateFeatured(match){
     const risk =
         riskValue(match);
 
-    document.getElementById("featuredLeague").textContent =
-        "🏆 " + leagueName(match);
-
-    document.getElementById("featuredHome").textContent =
-        homeTeam(match);
-
-    document.getElementById("featuredAway").textContent =
-        awayTeam(match);
-
-    document.getElementById("featuredPrediction").textContent =
+    const prediction =
         predictionValue(match);
 
-    document.getElementById("featuredConfidence").textContent =
-        confidence + "%";
-
-    document.getElementById("featuredMarket").textContent =
+    const market =
         marketValue(match);
 
-    document.getElementById("featuredRisk").textContent =
+    document.getElementById(
+        "featuredState"
+    ).style.display =
+        "none";
+
+    document.getElementById(
+        "featuredContent"
+    ).style.display =
+        "block";
+
+    // AI ANALYSIS has no separate League column.
+    // Match remains the exact value supplied by AI Engine.
+    document.getElementById(
+        "featuredLeague"
+    ).textContent =
+        "🤖 Smart Gate V7 · AI Analysis";
+
+    document.getElementById(
+        "featuredHome"
+    ).textContent =
+        teams.home;
+
+    document.getElementById(
+        "featuredAway"
+    ).textContent =
+        teams.away;
+
+    document.getElementById(
+        "featuredPrediction"
+    ).textContent =
+        prediction;
+
+    document.getElementById(
+        "featuredConfidence"
+    ).textContent =
+        confidence + "%";
+
+    document.getElementById(
+        "featuredMarket"
+    ).textContent =
+        market;
+
+    document.getElementById(
+        "featuredRisk"
+    ).textContent =
         risk;
 
-    document.getElementById("featuredStatus").textContent =
-        aiDecision(risk);
+    document.getElementById(
+        "featuredStatus"
+    ).textContent =
+        aiDecision(match);
 
-    document.getElementById("featuredScore").textContent =
+    document.getElementById(
+        "featuredScore"
+    ).textContent =
         confidence + " / 100";
 
-    document.getElementById("featuredScoreFill").style.width =
-        Math.max(0,Math.min(100,confidence)) + "%";
+    document.getElementById(
+        "featuredScoreFill"
+    ).style.width =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                confidence
+            )
+        ) + "%";
 
-    document.getElementById("confidenceNumber").textContent =
+    document.getElementById(
+        "confidenceNumber"
+    ).textContent =
         confidence + "%";
 
-    document.getElementById("confidenceProgress").style.width =
-        Math.max(0,Math.min(100,confidence)) + "%";
+    document.getElementById(
+        "confidenceProgress"
+    ).style.width =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                confidence
+            )
+        ) + "%";
 
-    document.getElementById("factorPrediction").textContent =
-        predictionValue(match);
+    document.getElementById(
+        "factorPrediction"
+    ).textContent =
+        prediction;
 
-    document.getElementById("factorMarket").textContent =
-        marketValue(match);
+    document.getElementById(
+        "factorMarket"
+    ).textContent =
+        market;
 
-    document.getElementById("factorRisk").textContent =
+    document.getElementById(
+        "factorRisk"
+    ).textContent =
         risk;
 
-    document.getElementById("factorHomeGoals").textContent =
+    document.getElementById(
+        "factorGoalScore"
+    ).textContent =
         textValue(
-            match["Home Goals Scored Avg"] ??
-            match["Home Avg Goals"]
+            getField(
+                match,
+                ["Goal Score"],
+                ""
+            )
         );
 
-    document.getElementById("factorAwayGoals").textContent =
+    document.getElementById(
+        "factorFormScore"
+    ).textContent =
         textValue(
-            match["Away Goals Scored Avg"] ??
-            match["Away Avg Goals"]
+            getField(
+                match,
+                ["Form Score"],
+                ""
+            )
         );
 
-    document.getElementById("factorBTTS").textContent =
-        textValue(match["BTTS %"]);
+    document.getElementById(
+        "factorAttackScore"
+    ).textContent =
+        textValue(
+            getField(
+                match,
+                ["Attack Score"],
+                ""
+            )
+        );
 
-    document.getElementById("factorOver15").textContent =
-        textValue(match["Over 1.5 %"]);
+    document.getElementById(
+        "factorDefenceScore"
+    ).textContent =
+        textValue(
+            getField(
+                match,
+                ["Defence Score"],
+                ""
+            )
+        );
+
+    document.getElementById(
+        "factorBTTSScore"
+    ).textContent =
+        textValue(
+            getField(
+                match,
+                ["BTTS Score"],
+                ""
+            )
+        );
+
+    document.getElementById(
+        "factorOver15Score"
+    ).textContent =
+        textValue(
+            getField(
+                match,
+                ["Over 1.5 Score"],
+                ""
+            )
+        );
+
+    document.getElementById(
+        "factorOver25Score"
+    ).textContent =
+        textValue(
+            getField(
+                match,
+                ["Over 2.5 Score"],
+                ""
+            )
+        );
+
+    document.getElementById(
+        "factorH2HScore"
+    ).textContent =
+        textValue(
+            getField(
+                match,
+                ["Head-to-Head Score"],
+                ""
+            )
+        );
+
+    document.getElementById(
+        "factorOddsValue"
+    ).textContent =
+        textValue(
+            getField(
+                match,
+                ["Odds Value"],
+                ""
+            )
+        );
 }
 
+// ------------------------------------------------------------
+// SUMMARY
+// ------------------------------------------------------------
+
 function updateSummary(matches){
+
+    if(!matches.length){
+        return;
+    }
 
     const average =
         Math.round(
             matches.reduce(
-                function(total,m){
-                    return total + confidenceValue(m);
+                function(total,match){
+
+                    return (
+                        total +
+                        confidenceValue(
+                            match
+                        )
+                    );
+
                 },
                 0
             ) / matches.length
         );
 
     const lowRisk =
-        matches.filter(function(m){
-            return String(riskValue(m)).toUpperCase() === "LOW";
-        }).length;
+        matches.filter(
+            function(match){
+
+                return (
+                    String(
+                        riskValue(match)
+                    ).toUpperCase() ===
+                    "LOW"
+                );
+            }
+        ).length;
 
     const markets = {};
 
-    matches.forEach(function(m){
+    matches.forEach(
+        function(match){
 
-        const market =
-            marketValue(m);
+            const market =
+                marketValue(match);
 
-        markets[market] =
-            (markets[market] || 0) + 1;
-    });
+            markets[market] =
+                (
+                    markets[market] ||
+                    0
+                ) + 1;
 
-    let mainMarket = "—";
-    let marketCount = 0;
-
-    Object.keys(markets).forEach(function(market){
-
-        if(markets[market] > marketCount){
-
-            marketCount =
-                markets[market];
-
-            mainMarket =
-                market;
         }
-    });
+    );
 
-    document.getElementById("summaryMatches").textContent =
+    let mainMarket =
+        "—";
+
+    let marketCount =
+        0;
+
+    Object.keys(markets).forEach(
+        function(market){
+
+            if(
+                markets[market] >
+                marketCount
+            ){
+
+                marketCount =
+                    markets[market];
+
+                mainMarket =
+                    market;
+            }
+
+        }
+    );
+
+    document.getElementById(
+        "summaryMatches"
+    ).textContent =
         matches.length;
 
-    document.getElementById("summaryConfidence").textContent =
+    document.getElementById(
+        "summaryConfidence"
+    ).textContent =
         average + "%";
 
-    document.getElementById("summaryLowRisk").textContent =
+    document.getElementById(
+        "summaryLowRisk"
+    ).textContent =
         lowRisk;
 
-    document.getElementById("summaryMarket").textContent =
+    document.getElementById(
+        "summaryMarket"
+    ).textContent =
         mainMarket;
 }
+
+// ------------------------------------------------------------
+// MATCH LIST
+// ------------------------------------------------------------
 
 function renderMatchList(matches){
 
     const state =
-        document.getElementById("matchesState");
+        document.getElementById(
+            "matchesState"
+        );
 
     const table =
-        document.getElementById("matchesTable");
+        document.getElementById(
+            "matchesTable"
+        );
 
     const container =
-        document.getElementById("matchRows");
+        document.getElementById(
+            "matchRows"
+        );
 
     container.innerHTML = "";
 
-    matches.forEach(function(match,index){
+    matches.forEach(
+        function(match,index){
 
-        const home =
-            homeTeam(match);
+            const teams =
+                splitMatch(match);
 
-        const away =
-            awayTeam(match);
+            const prediction =
+                predictionValue(match);
 
-        const league =
-            leagueName(match);
+            const market =
+                marketValue(match);
 
-        const prediction =
-            predictionValue(match);
+            const confidence =
+                confidenceValue(match);
 
-        const market =
-            marketValue(match);
+            const risk =
+                riskValue(match);
 
-        const confidence =
-            confidenceValue(match);
+            const decision =
+                aiDecision(match);
 
-        const risk =
-            riskValue(match);
+            const goalScore =
+                textValue(
+                    getField(
+                        match,
+                        ["Goal Score"],
+                        ""
+                    )
+                );
 
-        const decision =
-            aiDecision(risk);
+            const formScore =
+                textValue(
+                    getField(
+                        match,
+                        ["Form Score"],
+                        ""
+                    )
+                );
 
-        const homeAvg =
-            textValue(
-                match["Home Goals Scored Avg"] ??
-                match["Home Avg Goals"]
-            );
+            const attackScore =
+                textValue(
+                    getField(
+                        match,
+                        ["Attack Score"],
+                        ""
+                    )
+                );
 
-        const awayAvg =
-            textValue(
-                match["Away Goals Scored Avg"] ??
-                match["Away Avg Goals"]
-            );
+            const defenceScore =
+                textValue(
+                    getField(
+                        match,
+                        ["Defence Score"],
+                        ""
+                    )
+                );
 
-        const btts =
-            textValue(match["BTTS %"]);
+            const totalScore =
+                textValue(
+                    getField(
+                        match,
+                        ["Total Score"],
+                        ""
+                    )
+                );
 
-        const row =
-            document.createElement("div");
+            const bttsScore =
+                textValue(
+                    getField(
+                        match,
+                        ["BTTS Score"],
+                        ""
+                    )
+                );
 
-        row.className =
-            "match-row";
+            const over15Score =
+                textValue(
+                    getField(
+                        match,
+                        ["Over 1.5 Score"],
+                        ""
+                    )
+                );
 
-        row.innerHTML = `
-            <div class="match-number">
-                ${index + 1}
-            </div>
+            const row =
+                document.createElement(
+                    "div"
+                );
 
-            <div>
-                <div class="match-teams-small">
-                    ${escapeHtml(home)}
-                    <span>VS</span>
-                    ${escapeHtml(away)}
+            row.className =
+                "match-row";
+
+            row.innerHTML = `
+                <div class="match-number">
+                    ${index + 1}
                 </div>
 
-                <div class="match-league">
-                    ${escapeHtml(league)}
+                <div>
+                    <div class="match-teams-small">
+                        ${escapeHtml(teams.home)}
+                        <span>VS</span>
+                        ${escapeHtml(teams.away)}
+                    </div>
+
+                    <div class="match-league">
+                        AI ANALYSIS · Smart Gate V7
+                    </div>
                 </div>
-            </div>
 
-            <div class="match-prediction">
-                ${escapeHtml(prediction)}
+                <div class="match-prediction">
+                    ${escapeHtml(prediction)}
 
-                <span class="market-small">
-                    ${escapeHtml(market)}
-                </span>
-            </div>
+                    <span class="market-small">
+                        ${escapeHtml(market)}
+                    </span>
+                </div>
 
-            <div class="match-confidence">
-                ${confidence}%
-            </div>
+                <div class="match-confidence">
+                    ${confidence}%
+                </div>
 
-            <div class="match-info">
-                Home: ${escapeHtml(homeAvg)}<br>
-                Away: ${escapeHtml(awayAvg)}<br>
-                BTTS: ${escapeHtml(btts)}
-            </div>
+                <div class="match-info">
+                    Goal: ${escapeHtml(goalScore)}<br>
+                    Form: ${escapeHtml(formScore)}<br>
+                    Attack: ${escapeHtml(attackScore)}<br>
+                    Defence: ${escapeHtml(defenceScore)}<br>
+                    Total: ${escapeHtml(totalScore)}<br>
+                    BTTS: ${escapeHtml(bttsScore)}<br>
+                    O1.5: ${escapeHtml(over15Score)}
+                </div>
 
-            <div>
-                <span class="decision ${riskClass(risk)}">
-                    ${escapeHtml(decision)}
-                </span>
-            </div>
-        `;
+                <div>
+                    <span class="decision ${riskClass(risk)}">
+                        ${escapeHtml(decision)}
+                    </span>
+                </div>
+            `;
 
-        container.appendChild(row);
-    });
+            container.appendChild(row);
+        }
+    );
 
     state.style.display =
         "none";
@@ -1593,14 +2125,33 @@ function renderMatchList(matches){
         "block";
 }
 
+// ------------------------------------------------------------
+// HTML SAFETY
+// ------------------------------------------------------------
+
 function escapeHtml(value){
 
     return String(value)
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 }
 
 document.addEventListener(
