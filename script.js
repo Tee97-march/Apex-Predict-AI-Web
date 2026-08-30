@@ -3,9 +3,9 @@
 
 /* =========================================================
    APEX PREDICT AI
-   DASHBOARD FRONTEND ENGINE
+   FINAL DASHBOARD FRONTEND
    VERSION 2.1 XL
-   CONTROLLED SOURCE: AI ANALYSIS / SMART GATE V7
+   SOURCE: AI ANALYSIS / SMART GATE V7
    ========================================================= */
 
 const APEX_CONFIG = Object.freeze({
@@ -48,51 +48,40 @@ function go(page){
         );
 }
 
-
 function openDashboard(){
     go("dashboard.html");
 }
-
 
 function openPredictions(){
     go("predictions.html");
 }
 
-
 function openAnalysis(){
     go("analysis.html");
 }
-
 
 function openStatistics(){
     go("statistics.html");
 }
 
-
 function openLiveScores(){
     go("livescores.html");
 }
-
 
 function openLeagues(){
     go("leagues.html");
 }
 
-
 function openHeadToHead(){
     go("headtohead.html");
 }
-
 
 function openSettings(){
     go("settings.html");
 }
 
-
 function logout(){
-
-    window.location.href =
-        "./index.html";
+    window.location.href = "./index.html";
 }
 
 
@@ -109,7 +98,6 @@ function escapeHtml(value){
         .replace(/"/g,"&quot;")
         .replace(/'/g,"&#039;");
 }
-
 
 function formatValue(
     value,
@@ -195,7 +183,7 @@ function getValue(
 
 
 /* =========================================================
-   NUMBERS
+   NUMBER HELPERS
    ========================================================= */
 
 function numberValue(value){
@@ -222,7 +210,6 @@ function numberValue(value){
         : null;
 }
 
-
 function percentage(value){
 
     const parsed =
@@ -235,30 +222,8 @@ function percentage(value){
 
 
 /* =========================================================
-   ACTUAL AI ANALYSIS FIELD HELPERS
+   AI ANALYSIS FIELD HELPERS
    ========================================================= */
-
-/*
- * AI ANALYSIS actually contains:
- *
- * Match
- * Goal Score
- * Form Score
- * Attack Score
- * Defence Score
- * Total Score
- * Confidence %
- * Risk Level
- * Home Advantage
- * BTTS Score
- * Over 1.5 Score
- * Over 2.5 Score
- * Head-to-Head Score
- * Odds Value
- * AI Decision
- * Recommended Market
- */
-
 
 function getMatch(match){
 
@@ -270,15 +235,14 @@ function getMatch(match){
     );
 }
 
-
 function splitMatch(match){
 
-    const full =
+    const value =
         String(
             getMatch(match)
         ).trim();
 
-    if(!full){
+    if(!value){
 
         return {
             home:"—",
@@ -287,7 +251,7 @@ function splitMatch(match){
     }
 
     const parts =
-        full.split(
+        value.split(
             /\s+VS\s+/i
         );
 
@@ -307,13 +271,36 @@ function splitMatch(match){
         };
     }
 
+    /*
+     * Some sources use " v " rather than " VS ".
+     */
+
+    const partsLower =
+        value.split(
+            /\s+v\s+/i
+        );
+
+    if(partsLower.length >= 2){
+
+        return {
+
+            home:
+                partsLower[0].trim(),
+
+            away:
+                partsLower
+                    .slice(1)
+                    .join(" v ")
+                    .trim()
+
+        };
+    }
+
     return {
 
-        home:
-            full,
+        home:value,
 
-        away:
-            "—"
+        away:"—"
 
     };
 }
@@ -321,32 +308,32 @@ function splitMatch(match){
 
 function getPrediction(match){
 
-    /*
-     * Recommended Market is the actual calculated
-     * market produced by the AI Engine.
-     */
-
-    const market =
+    const prediction =
         getValue(
             match,
             [
-                "Recommended Market",
-                "recommended market"
+                "Prediction",
+                "AI Prediction"
             ]
         );
 
     if(
-        market !== ""
+        prediction !== ""
     ){
 
-        return String(market);
+        return String(prediction);
     }
+
+    /*
+     * AI ANALYSIS stores the actual calculated selection
+     * under Recommended Market.
+     */
 
     return getValue(
         match,
         [
-            "Prediction",
-            "AI Prediction"
+            "Recommended Market",
+            "recommended market"
         ]
     );
 }
@@ -474,104 +461,81 @@ function getRiskClass(risk){
 }
 
 
+/* =========================================================
+   AI SCORE FIELDS
+   ========================================================= */
+
 function getGoalScore(match){
 
     return getValue(
         match,
-        [
-            "Goal Score"
-        ]
+        ["Goal Score"]
     );
 }
-
 
 function getFormScore(match){
 
     return getValue(
         match,
-        [
-            "Form Score"
-        ]
+        ["Form Score"]
     );
 }
-
 
 function getAttackScore(match){
 
     return getValue(
         match,
-        [
-            "Attack Score"
-        ]
+        ["Attack Score"]
     );
 }
-
 
 function getDefenceScore(match){
 
     return getValue(
         match,
-        [
-            "Defence Score"
-        ]
+        ["Defence Score"]
     );
 }
-
 
 function getTotalScore(match){
 
     return getValue(
         match,
-        [
-            "Total Score"
-        ]
+        ["Total Score"]
     );
 }
-
 
 function getHomeAdvantage(match){
 
     return getValue(
         match,
-        [
-            "Home Advantage"
-        ]
+        ["Home Advantage"]
     );
 }
-
 
 function getBTTSScore(match){
 
     return getValue(
         match,
-        [
-            "BTTS Score"
-        ]
+        ["BTTS Score"]
     );
 }
-
 
 function getOver15Score(match){
 
     return getValue(
         match,
-        [
-            "Over 1.5 Score"
-        ]
+        ["Over 1.5 Score"]
     );
 }
-
 
 function getOver25Score(match){
 
     return getValue(
         match,
-        [
-            "Over 2.5 Score"
-        ]
+        ["Over 2.5 Score"]
     );
 }
-
 
 function getH2HScore(match){
 
@@ -585,44 +549,131 @@ function getH2HScore(match){
     );
 }
 
-
 function getOddsValue(match){
 
     return getValue(
         match,
-        [
-            "Odds Value"
-        ]
+        ["Odds Value"]
     );
 }
 
 
 /* =========================================================
-   API RESPONSE NORMALISATION
+   RESPONSE CONVERSION
+   ========================================================= */
+
+function convertRowsToObjects(
+    headers,
+    rows
+){
+
+    if(
+        !Array.isArray(headers) ||
+        !Array.isArray(rows)
+    ){
+
+        return [];
+    }
+
+    return rows.map(
+        function(row){
+
+            /*
+             * Already an object.
+             */
+
+            if(
+                row &&
+                typeof row === "object" &&
+                !Array.isArray(row)
+            ){
+
+                return row;
+            }
+
+            /*
+             * Spreadsheet row array.
+             */
+
+            const record = {};
+
+            headers.forEach(
+                function(header,index){
+
+                    record[
+                        String(header).trim()
+                    ] =
+                        Array.isArray(row)
+                            ? row[index]
+                            : "";
+
+                }
+            );
+
+            return record;
+        }
+    );
+}
+
+
+/* =========================================================
+   BACKEND RESPONSE EXTRACTION
    ========================================================= */
 
 function extractRecords(payload){
 
     if(
-        payload &&
-        Array.isArray(payload.matches)
+        !payload ||
+        typeof payload !== "object"
+    ){
+
+        return [];
+    }
+
+
+    /*
+     * Preferred format:
+     *
+     * {
+     *   matches: [...]
+     * }
+     */
+
+    if(
+        Array.isArray(
+            payload.matches
+        )
     ){
 
         return payload.matches;
     }
 
 
+    /*
+     * Backend may return:
+     *
+     * {
+     *   data: [...]
+     * }
+     *
+     * where data is ALREADY an array of objects.
+     */
+
     if(
-        payload &&
-        Array.isArray(payload.data)
+        Array.isArray(
+            payload.data
+        )
     ){
 
         return payload.data;
     }
 
 
+    /*
+     * Alternative wrapped response.
+     */
+
     if(
-        payload &&
         payload.data &&
         Array.isArray(
             payload.data.matches
@@ -633,12 +684,75 @@ function extractRecords(payload){
     }
 
 
+    /*
+     * Spreadsheet response:
+     *
+     * headers: [...]
+     * data: [...]
+     *
+     * Handle both:
+     *   data = objects
+     *   data = arrays
+     */
+
+    if(
+        Array.isArray(
+            payload.headers
+        ) &&
+        Array.isArray(
+            payload.data
+        )
+    ){
+
+        return convertRowsToObjects(
+            payload.headers,
+            payload.data
+        );
+    }
+
+
+    /*
+     * Other possible backend structures.
+     */
+
+    if(
+        payload.matchDatabase &&
+        Array.isArray(
+            payload.matchDatabase.objects
+        )
+    ){
+
+        return payload.matchDatabase.objects;
+    }
+
+
+    if(
+        payload.smartGate &&
+        Array.isArray(
+            payload.smartGate.objects
+        )
+    ){
+
+        return payload.smartGate.objects;
+    }
+
+
+    if(
+        Array.isArray(
+            payload.smartGate
+        )
+    ){
+
+        return payload.smartGate;
+    }
+
+
     return [];
 }
 
 
 /* =========================================================
-   VALIDATE AI RECORD
+   VALID AI RECORD
    ========================================================= */
 
 function isValidAIRecord(match){
@@ -651,67 +765,60 @@ function isValidAIRecord(match){
         return false;
     }
 
+
     const matchName =
         String(
             getMatch(match)
         ).trim();
+
 
     const market =
         String(
             getMarket(match)
         ).trim();
 
+
     const confidence =
         getConfidence(match);
 
-    if(
-        matchName === ""
-    ){
 
-        return false;
-    }
-
-    if(
-        market === ""
-    ){
-
-        return false;
-    }
-
-    if(
-        confidence === null ||
-        confidence <= 0
-    ){
-
-        return false;
-    }
-
-    return true;
+    return(
+        matchName !== "" &&
+        market !== "" &&
+        confidence !== null &&
+        confidence > 0
+    );
 }
 
 
 /* =========================================================
-   PREPARE EXACT 30 RECORDS
+   PREPARE EXACT 30
    ========================================================= */
 
 function prepareMatches(source){
 
+    const result =
+        [];
+
     const seen =
         new Set();
 
-    const result =
-        [];
 
     const matches =
         Array.isArray(source)
             ? source
             : [];
 
+
     matches.forEach(
         function(
             match,
             index
         ){
+
+            /*
+             * Only real AI records.
+             */
 
             if(
                 !isValidAIRecord(
@@ -722,10 +829,17 @@ function prepareMatches(source){
                 return;
             }
 
+
+            /*
+             * Match is the authoritative identity
+             * because AI ANALYSIS is the final 30-record set.
+             */
+
             const identity =
                 normaliseKey(
                     getMatch(match)
                 );
+
 
             if(
                 identity &&
@@ -735,21 +849,23 @@ function prepareMatches(source){
                 return;
             }
 
+
             if(identity){
 
                 seen.add(identity);
             }
 
-            result.push(match);
+
+            result.push(
+                match
+            );
 
         }
     );
 
 
     /*
-     * The backend already preserves Smart Gate order.
-     * If Smart Gate Rank exists, use it.
-     * Otherwise retain the API order.
+     * Preserve Smart Gate order where available.
      */
 
     result.sort(
@@ -766,6 +882,7 @@ function prepareMatches(source){
                     )
                 );
 
+
             const rankB =
                 numberValue(
                     getValue(
@@ -777,15 +894,26 @@ function prepareMatches(source){
                     )
                 );
 
+
             if(
                 rankA !== null &&
                 rankB !== null
             ){
 
-                return rankA - rankB;
+                return (
+                    rankA -
+                    rankB
+                );
             }
 
+
+            /*
+             * If no rank exists,
+             * keep backend order.
+             */
+
             return 0;
+
         }
     );
 
@@ -811,30 +939,35 @@ function setConnectionStatus(
             "connectionStatus"
         );
 
+
     if(!element){
 
         return;
     }
 
+
     element.textContent =
         message;
+
 
     element.className =
         "connection " +
         (
-            type || ""
+            type ||
+            ""
         );
 }
 
 
 /* =========================================================
-   FETCH CONTROLLED AI ANALYSIS
+   FETCH AI ANALYSIS
    ========================================================= */
 
 async function fetchAPEXData(){
 
     const controller =
         new AbortController();
+
 
     const timeout =
         setTimeout(
@@ -852,9 +985,10 @@ async function fetchAPEXData(){
         /*
          * IMPORTANT:
          *
-         * Read the actual AI ANALYSIS sheet.
-         * We do NOT use the old ?request=dashboard
-         * route that was returning mixed records.
+         * Read the AI ANALYSIS sheet directly.
+         *
+         * The backend Code.gs already knows how to return
+         * sheet data for ?sheet=AI ANALYSIS.
          */
 
         const url =
@@ -865,6 +999,12 @@ async function fetchAPEXData(){
             ) +
             "&ts=" +
             Date.now();
+
+
+        console.log(
+            "APEX dashboard request:",
+            url
+        );
 
 
         const response =
@@ -884,7 +1024,15 @@ async function fetchAPEXData(){
             await response.text();
 
 
-        if(!response.ok){
+        console.log(
+            "APEX raw response:",
+            raw
+        );
+
+
+        if(
+            !response.ok
+        ){
 
             throw new Error(
                 "APEX backend HTTP " +
@@ -893,7 +1041,9 @@ async function fetchAPEXData(){
         }
 
 
-        if(!raw.trim()){
+        if(
+            !raw.trim()
+        ){
 
             throw new Error(
                 "APEX backend returned an empty response."
@@ -913,11 +1063,6 @@ async function fetchAPEXData(){
 
         }catch(error){
 
-            console.error(
-                "APEX raw response:",
-                raw
-            );
-
             throw new Error(
                 "APEX backend returned invalid JSON."
             );
@@ -925,9 +1070,9 @@ async function fetchAPEXData(){
 
 
         if(
-            payload &&
             String(
-                payload.status || ""
+                payload.status ||
+                ""
             ).toUpperCase() ===
             "ERROR"
         ){
@@ -936,55 +1081,6 @@ async function fetchAPEXData(){
                 payload.message ||
                 "APEX backend returned an error."
             );
-        }
-
-
-        /*
-         * Existing Code.gs sheet endpoint returns:
-         *
-         * {
-         *   status: "CONNECTED",
-         *   headers: [...],
-         *   data: [...]
-         * }
-         *
-         * Convert that format into normal objects.
-         */
-
-        if(
-            payload &&
-            Array.isArray(
-                payload.headers
-            ) &&
-            Array.isArray(
-                payload.data
-            )
-        ){
-
-            payload.matches =
-                payload.data.map(
-                    function(row){
-
-                        const record =
-                            {};
-
-                        payload.headers.forEach(
-                            function(
-                                header,
-                                index
-                            ){
-
-                                record[
-                                    String(header).trim()
-                                ] =
-                                    row[index];
-
-                            }
-                        );
-
-                        return record;
-                    }
-                );
         }
 
 
@@ -1003,6 +1099,7 @@ async function fetchAPEXData(){
             );
         }
 
+
         throw error;
 
 
@@ -1016,7 +1113,7 @@ async function fetchAPEXData(){
 
 
 /* =========================================================
-   RETRY LOADER
+   RETRIES
    ========================================================= */
 
 async function loadAPEXData(){
@@ -1042,6 +1139,7 @@ async function loadAPEXData(){
 
             lastError =
                 error;
+
 
             if(
                 attempt <
@@ -1073,7 +1171,7 @@ async function loadAPEXData(){
 
 
 /* =========================================================
-   LOAD AND RENDER DASHBOARD
+   DASHBOARD LOAD
    ========================================================= */
 
 async function loadDashboard(){
@@ -1086,14 +1184,20 @@ async function loadDashboard(){
         );
 
 
-        const data =
+        const payload =
             await loadAPEXData();
 
 
         const source =
             extractRecords(
-                data
+                payload
             );
+
+
+        console.log(
+            "APEX records received:",
+            source
+        );
 
 
         const matches =
@@ -1102,12 +1206,18 @@ async function loadDashboard(){
             );
 
 
+        console.log(
+            "APEX valid calculated matches:",
+            matches.length
+        );
+
+
         if(
             matches.length === 0
         ){
 
             throw new Error(
-                "AI ANALYSIS returned no valid calculated matches."
+                "AI ANALYSIS returned records, but no valid calculated matches were found."
             );
         }
 
@@ -1144,6 +1254,7 @@ async function loadDashboard(){
                 "featuredState"
             );
 
+
         if(featuredState){
 
             featuredState.style.display =
@@ -1162,6 +1273,7 @@ async function loadDashboard(){
                 "matchesState"
             );
 
+
         if(matchesState){
 
             matchesState.style.display =
@@ -1178,7 +1290,7 @@ async function loadDashboard(){
 
 
 /* =========================================================
-   MAIN DASHBOARD RENDER
+   MAIN RENDER
    ========================================================= */
 
 function renderDashboard(matches){
@@ -1202,7 +1314,7 @@ function renderDashboard(matches){
 
 
 /* =========================================================
-   KPI SECTION
+   KPI
    ========================================================= */
 
 function updateKPIs(matches){
@@ -1212,6 +1324,7 @@ function updateKPIs(matches){
             "matchesCount"
         );
 
+
     if(matchesCount){
 
         matchesCount.textContent =
@@ -1219,34 +1332,30 @@ function updateKPIs(matches){
     }
 
 
-    const predictions =
-        matches.filter(
-            function(match){
-
-                return (
-                    String(
-                        getPrediction(
-                            match
-                        )
-                    ).trim() !== ""
-                );
-            }
-        ).length;
-
-
     const predictionCount =
         document.getElementById(
             "predictionCount"
         );
 
+
     if(predictionCount){
 
         predictionCount.textContent =
-            predictions;
+            matches.filter(
+                function(match){
+
+                    return (
+                        getPrediction(
+                            match
+                        ) !== ""
+                    );
+
+                }
+            ).length;
     }
 
 
-    const confidences =
+    const values =
         matches
             .map(
                 getConfidence
@@ -1260,9 +1369,9 @@ function updateKPIs(matches){
 
 
     const best =
-        confidences.length
+        values.length
             ? Math.max(
-                ...confidences
+                ...values
             )
             : null;
 
@@ -1271,6 +1380,7 @@ function updateKPIs(matches){
         document.getElementById(
             "bestConfidence"
         );
+
 
     if(bestConfidence){
 
@@ -1288,8 +1398,7 @@ function updateKPIs(matches){
                 return (
                     String(
                         getRisk(match)
-                    ).toUpperCase()
-                    ===
+                    ).toUpperCase() ===
                     "LOW"
                 );
             }
@@ -1301,6 +1410,7 @@ function updateKPIs(matches){
             "lowRiskCount"
         );
 
+
     if(lowRiskCount){
 
         lowRiskCount.textContent =
@@ -1310,7 +1420,7 @@ function updateKPIs(matches){
 
 
 /* =========================================================
-   FEATURED MATCH
+   FEATURED
    ========================================================= */
 
 function updateFeatured(match){
@@ -1319,6 +1429,7 @@ function updateFeatured(match){
         document.getElementById(
             "featuredState"
         );
+
 
     const content =
         document.getElementById(
@@ -1333,15 +1444,20 @@ function updateFeatured(match){
             state.style.display =
                 "block";
 
+            state.className =
+                "state error";
+
             state.textContent =
-                "No qualified APEX prediction available.";
+                "No calculated APEX selection available.";
         }
+
 
         if(content){
 
             content.style.display =
                 "none";
         }
+
 
         return;
     }
@@ -1401,110 +1517,61 @@ function updateFeatured(match){
         );
 
 
-    const leagueText =
-        league !== ""
-            ? "🏆 " + league
-            : "🤖 Smart Gate V7 · AI Analysis";
-
-
     const featuredLeague =
         document.getElementById(
             "featuredLeague"
         );
 
+
     if(featuredLeague){
 
         featuredLeague.textContent =
-            leagueText;
+            league !== ""
+                ? "🏆 " + league
+                : "🤖 Smart Gate V7 · AI Analysis";
     }
 
 
-    const featuredHome =
-        document.getElementById(
-            "featuredHome"
-        );
-
-    if(featuredHome){
-
-        featuredHome.textContent =
-            teams.home;
-    }
+    setText(
+        "featuredHome",
+        teams.home
+    );
 
 
-    const featuredAway =
-        document.getElementById(
-            "featuredAway"
-        );
-
-    if(featuredAway){
-
-        featuredAway.textContent =
-            teams.away;
-    }
+    setText(
+        "featuredAway",
+        teams.away
+    );
 
 
-    const featuredPrediction =
-        document.getElementById(
-            "featuredPrediction"
-        );
-
-    if(featuredPrediction){
-
-        featuredPrediction.textContent =
-            prediction || "—";
-    }
+    setText(
+        "featuredPrediction",
+        prediction || "—"
+    );
 
 
-    const featuredConfidence =
-        document.getElementById(
-            "featuredConfidence"
-        );
-
-    if(featuredConfidence){
-
-        featuredConfidence.textContent =
-            percentage(
-                confidence
-            );
-    }
+    setText(
+        "featuredConfidence",
+        percentage(confidence)
+    );
 
 
-    const featuredMarket =
-        document.getElementById(
-            "featuredMarket"
-        );
-
-    if(featuredMarket){
-
-        featuredMarket.textContent =
-            market || "—";
-    }
+    setText(
+        "featuredMarket",
+        market || "—"
+    );
 
 
-    const featuredRisk =
-        document.getElementById(
-            "featuredRisk"
-        );
-
-    if(featuredRisk){
-
-        featuredRisk.textContent =
-            risk || "UNKNOWN";
-    }
+    setText(
+        "featuredRisk",
+        risk || "UNKNOWN"
+    );
 
 
-    const featuredStatus =
-        document.getElementById(
-            "featuredStatus"
-        );
-
-    if(featuredStatus){
-
-        featuredStatus.textContent =
-            getDecision(
-                match
-            );
-    }
+    setText(
+        "featuredStatus",
+        getDecision(match)
+    );
 
 
     const score =
@@ -1519,91 +1586,60 @@ function updateFeatured(match){
             );
 
 
-    const featuredScore =
-        document.getElementById(
-            "featuredScore"
-        );
-
-    if(featuredScore){
-
-        featuredScore.textContent =
-            score +
-            " / 100";
-    }
+    setText(
+        "featuredScore",
+        score + " / 100"
+    );
 
 
-    const featuredScoreFill =
+    const scoreFill =
         document.getElementById(
             "featuredScoreFill"
         );
 
-    if(featuredScoreFill){
 
-        featuredScoreFill.style.width =
+    if(scoreFill){
+
+        scoreFill.style.width =
             score + "%";
     }
 
 
-    const confidenceNumber =
-        document.getElementById(
-            "confidenceNumber"
-        );
-
-    if(confidenceNumber){
-
-        confidenceNumber.textContent =
-            percentage(
-                confidence
-            );
-    }
+    setText(
+        "confidenceNumber",
+        percentage(confidence)
+    );
 
 
-    const confidenceProgress =
+    const progress =
         document.getElementById(
             "confidenceProgress"
         );
 
-    if(confidenceProgress){
 
-        confidenceProgress.style.width =
+    if(progress){
+
+        progress.style.width =
             score + "%";
     }
 
 
-    const factorPrediction =
-        document.getElementById(
-            "factorPrediction"
-        );
-
-    if(factorPrediction){
-
-        factorPrediction.textContent =
-            prediction || "—";
-    }
+    setText(
+        "factorPrediction",
+        prediction || "—"
+    );
 
 
-    const factorMarket =
-        document.getElementById(
-            "factorMarket"
-        );
-
-    if(factorMarket){
-
-        factorMarket.textContent =
-            market || "—";
-    }
+    setText(
+        "factorMarket",
+        market || "—"
+    );
 
 
-    const factorRisk =
-        document.getElementById(
-            "factorRisk"
-        );
-
-    if(factorRisk){
-
-        factorRisk.textContent =
-            risk || "—";
-    }
+    setText(
+        "factorRisk",
+        risk || "—"
+    );
 
 
     setText(
@@ -1611,40 +1647,48 @@ function updateFeatured(match){
         getGoalScore(match)
     );
 
+
     setText(
         "factorFormScore",
         getFormScore(match)
     );
+
 
     setText(
         "factorAttackScore",
         getAttackScore(match)
     );
 
+
     setText(
         "factorDefenceScore",
         getDefenceScore(match)
     );
+
 
     setText(
         "factorBTTSScore",
         getBTTSScore(match)
     );
 
+
     setText(
         "factorOver15Score",
         getOver15Score(match)
     );
+
 
     setText(
         "factorOver25Score",
         getOver25Score(match)
     );
 
+
     setText(
         "factorH2HScore",
         getH2HScore(match)
     );
+
 
     setText(
         "factorOddsValue",
@@ -1654,7 +1698,7 @@ function updateFeatured(match){
 
 
 /* =========================================================
-   SET TEXT HELPER
+   TEXT
    ========================================================= */
 
 function setText(
@@ -1667,19 +1711,28 @@ function setText(
             id
         );
 
+
     if(!element){
 
         return;
     }
 
+
+    if(
+        value === null ||
+        value === undefined ||
+        String(value).trim() === ""
+    ){
+
+        element.textContent =
+            "—";
+
+        return;
+    }
+
+
     element.textContent =
-        (
-            value === null ||
-            value === undefined ||
-            String(value).trim() === ""
-        )
-            ? "—"
-            : String(value);
+        String(value);
 }
 
 
@@ -1695,7 +1748,7 @@ function updateSummary(matches){
     }
 
 
-    const confidenceValues =
+    const values =
         matches
             .map(
                 getConfidence
@@ -1709,23 +1762,20 @@ function updateSummary(matches){
 
 
     const average =
-        confidenceValues.length
+        values.length
             ? Math.round(
-                confidenceValues.reduce(
+                values.reduce(
                     function(
                         total,
                         value
                     ){
 
-                        return (
-                            total +
-                            value
-                        );
+                        return total + value;
 
                     },
                     0
                 ) /
-                confidenceValues.length
+                values.length
             )
             : null;
 
@@ -1737,8 +1787,7 @@ function updateSummary(matches){
                 return (
                     String(
                         getRisk(match)
-                    ).toUpperCase()
-                    ===
+                    ).toUpperCase() ===
                     "LOW"
                 );
             }
@@ -1757,7 +1806,9 @@ function updateSummary(matches){
                 );
 
 
-            if(!market){
+            if(
+                !market
+            ){
 
                 return;
             }
@@ -1768,7 +1819,6 @@ function updateSummary(matches){
                     markets[market] ||
                     0
                 ) + 1;
-
         }
     );
 
@@ -1794,7 +1844,6 @@ function updateSummary(matches){
                 mainMarket =
                     market;
             }
-
         }
     );
 
@@ -1837,10 +1886,12 @@ function renderMatchList(matches){
             "matchesState"
         );
 
+
     const table =
         document.getElementById(
             "matchesTable"
         );
+
 
     const container =
         document.getElementById(
@@ -1936,14 +1987,20 @@ function renderMatchList(matches){
                 );
 
 
-            const btts =
+            const bttsScore =
                 getBTTSScore(
                     match
                 );
 
 
-            const over15 =
+            const over15Score =
                 getOver15Score(
+                    match
+                );
+
+
+            const over25Score =
+                getOver25Score(
                     match
                 );
 
@@ -1960,17 +2017,19 @@ function renderMatchList(matches){
 
             row.innerHTML = `
 
-                <div class="match-number">
-
+                <div
+                    class="match-number"
+                >
                     ${index + 1}
-
                 </div>
 
 
                 <div>
 
                     <div
-                        class="match-teams-small"
+                        class="
+                            match-teams-small
+                        "
                     >
 
                         ${escapeHtml(
@@ -1989,7 +2048,9 @@ function renderMatchList(matches){
 
 
                     <div
-                        class="match-league"
+                        class="
+                            match-league
+                        "
                     >
 
                         AI ANALYSIS ·
@@ -2001,15 +2062,20 @@ function renderMatchList(matches){
 
 
                 <div
-                    class="match-prediction"
+                    class="
+                        match-prediction
+                    "
                 >
 
                     ${escapeHtml(
                         prediction || "—"
                     )}
 
+
                     <span
-                        class="market-small"
+                        class="
+                            market-small
+                        "
                     >
 
                         ${escapeHtml(
@@ -2022,7 +2088,9 @@ function renderMatchList(matches){
 
 
                 <div
-                    class="match-confidence"
+                    class="
+                        match-confidence
+                    "
                 >
 
                     ${escapeHtml(
@@ -2035,7 +2103,9 @@ function renderMatchList(matches){
 
 
                 <div
-                    class="match-info"
+                    class="
+                        match-info
+                    "
                 >
 
                     Goal:
@@ -2065,12 +2135,17 @@ function renderMatchList(matches){
 
                     BTTS:
                     ${escapeHtml(
-                        btts || "—"
+                        bttsScore || "—"
                     )}<br>
 
                     O1.5:
                     ${escapeHtml(
-                        over15 || "—"
+                        over15Score || "—"
+                    )}<br>
+
+                    O2.5:
+                    ${escapeHtml(
+                        over25Score || "—"
                     )}
 
                 </div>
@@ -2099,7 +2174,6 @@ function renderMatchList(matches){
             container.appendChild(
                 row
             );
-
         }
     );
 
@@ -2178,17 +2252,5 @@ window.loadAPEXData =
 
 window.fetchAPEXData =
     fetchAPEXData;
-
-window.getPrediction =
-    getPrediction;
-
-window.getConfidence =
-    getConfidence;
-
-window.getMarket =
-    getMarket;
-
-window.getRisk =
-    getRisk;
 
 </script>
