@@ -3,8 +3,9 @@
 
 /* =========================================================
    APEX PREDICT AI
-   SHARED FRONTEND ENGINE
+   DASHBOARD FRONTEND ENGINE
    VERSION 2.1 XL
+   CONTROLLED SOURCE: AI ANALYSIS / SMART GATE V7
    ========================================================= */
 
 const APEX_CONFIG = Object.freeze({
@@ -110,7 +111,10 @@ function escapeHtml(value){
 }
 
 
-function formatValue(value){
+function formatValue(
+    value,
+    fallback = "—"
+){
 
     if(
         value === null ||
@@ -118,7 +122,7 @@ function formatValue(value){
         String(value).trim() === ""
     ){
 
-        return "—";
+        return fallback;
     }
 
     return escapeHtml(value);
@@ -170,8 +174,7 @@ function getValue(
         const found =
             keys.find(
                 key =>
-                    normaliseKey(key) ===
-                    wanted
+                    normaliseKey(key) === wanted
             );
 
         if(
@@ -232,105 +235,131 @@ function percentage(value){
 
 
 /* =========================================================
-   MATCH FIELD HELPERS
+   ACTUAL AI ANALYSIS FIELD HELPERS
    ========================================================= */
 
-function getFixtureId(match){
+/*
+ * AI ANALYSIS actually contains:
+ *
+ * Match
+ * Goal Score
+ * Form Score
+ * Attack Score
+ * Defence Score
+ * Total Score
+ * Confidence %
+ * Risk Level
+ * Home Advantage
+ * BTTS Score
+ * Over 1.5 Score
+ * Over 2.5 Score
+ * Head-to-Head Score
+ * Odds Value
+ * AI Decision
+ * Recommended Market
+ */
+
+
+function getMatch(match){
 
     return getValue(
         match,
         [
-            "Fixture ID",
-            "API Fixture ID",
-            "fixture_id",
-            "Fixture",
-            "ID"
+            "Match"
         ]
     );
 }
 
 
-function getDate(match){
+function splitMatch(match){
 
-    return getValue(
-        match,
-        [
-            "Date",
-            "Match Date",
-            "Fixture Date",
-            "date"
-        ]
-    );
-}
+    const full =
+        String(
+            getMatch(match)
+        ).trim();
 
+    if(!full){
 
-function getTime(match){
+        return {
+            home:"—",
+            away:"—"
+        };
+    }
 
-    return getValue(
-        match,
-        [
-            "Time",
-            "Match Time",
-            "Kickoff",
-            "Kick-off",
-            "Kick Off",
-            "Start Time"
-        ]
-    );
-}
+    const parts =
+        full.split(
+            /\s+VS\s+/i
+        );
 
+    if(parts.length >= 2){
 
-function getHomeTeam(match){
+        return {
 
-    return getValue(
-        match,
-        [
-            "Home Team",
-            "Home",
-            "HomeTeam",
-            "Team Home"
-        ]
-    );
-}
+            home:
+                parts[0].trim(),
 
+            away:
+                parts
+                    .slice(1)
+                    .join(" VS ")
+                    .trim()
 
-function getAwayTeam(match){
+        };
+    }
 
-    return getValue(
-        match,
-        [
-            "Away Team",
-            "Away",
-            "AwayTeam",
-            "Team Away"
-        ]
-    );
-}
+    return {
 
+        home:
+            full,
 
-function getLeague(match){
+        away:
+            "—"
 
-    return getValue(
-        match,
-        [
-            "League",
-            "Competition",
-            "League Name",
-            "Tournament"
-        ]
-    );
+    };
 }
 
 
 function getPrediction(match){
 
+    /*
+     * Recommended Market is the actual calculated
+     * market produced by the AI Engine.
+     */
+
+    const market =
+        getValue(
+            match,
+            [
+                "Recommended Market",
+                "recommended market"
+            ]
+        );
+
+    if(
+        market !== ""
+    ){
+
+        return String(market);
+    }
+
     return getValue(
         match,
         [
             "Prediction",
-            "AI Prediction",
-            "Prediction Advice",
-            "Advice"
+            "AI Prediction"
+        ]
+    );
+}
+
+
+function getMarket(match){
+
+    return getValue(
+        match,
+        [
+            "Recommended Market",
+            "recommended market",
+            "Market"
         ]
     );
 }
@@ -342,13 +371,10 @@ function getConfidence(match){
         getValue(
             match,
             [
-                "Final Confidence",
-                "Final confidence",
-                "Final Confidence %",
-                "Final confidence %",
                 "Confidence %",
                 "Confidence",
-                "AI Confidence"
+                "Final Confidence",
+                "Final confidence"
             ]
         )
     );
@@ -357,271 +383,148 @@ function getConfidence(match){
 
 function getRisk(match){
 
-    const direct =
-        getValue(
-            match,
-            [
-                "Risk Level",
-                "Risk",
-                "Risk Category",
-                "Risk Rating",
-                "AI Risk"
-            ]
-        );
-
-    if(
-        direct !== ""
-    ){
-
-        return String(
-            direct
-        );
-    }
-
-    const score =
-        getConfidence(match);
-
-    if(
-        score === null
-    ){
-
-        return "";
-    }
-
-    if(
-        score >= 70
-    ){
-
-        return "LOW";
-    }
-
-    if(
-        score >= 55
-    ){
-
-        return "MEDIUM";
-    }
-
-    return "HIGH";
+    return getValue(
+        match,
+        [
+            "Risk Level",
+            "Risk"
+        ]
+    );
 }
 
 
-function getMarket(match){
+function getDecision(match){
 
-    const direct =
+    const decision =
         getValue(
             match,
             [
-                "recommended market",
-                "Recommended Market",
-                "Recommended market",
-                "Market",
-                "Betting Market",
-                "Selection Market",
-                "Prediction Market"
+                "AI Decision",
+                "Decision"
             ]
         );
 
     if(
-        direct !== ""
+        decision !== ""
     ){
 
-        return String(
-            direct
-        );
+        return String(decision);
     }
 
-    const prediction =
+    const risk =
         String(
-            getPrediction(match)
+            getRisk(match)
+        ).toUpperCase();
+
+    if(
+        risk === "LOW"
+    ){
+
+        return "GOOD BET";
+    }
+
+    if(
+        risk === "MEDIUM"
+    ){
+
+        return "POSSIBLE BET";
+    }
+
+    if(
+        risk === "HIGH"
+    ){
+
+        return "WATCH";
+    }
+
+    return "APEX AI";
+}
+
+
+function getRiskClass(risk){
+
+    const value =
+        String(
+            risk || ""
         ).toLowerCase();
 
     if(
-        prediction.includes(
-            "double chance"
-        )
+        value.includes("low")
     ){
 
-        return "Double Chance";
+        return "low";
     }
 
     if(
-        prediction.includes("over 0.5") ||
-        prediction.includes("+0.5")
+        value.includes("medium") ||
+        value.includes("moderate")
     ){
 
-        return "Over 0.5 Goals";
+        return "medium";
     }
 
     if(
-        prediction.includes("over 1.5") ||
-        prediction.includes("+1.5")
+        value.includes("high")
     ){
 
-        return "Over 1.5 Goals";
+        return "high";
     }
 
-    if(
-        prediction.includes("over 2.5") ||
-        prediction.includes("+2.5")
-    ){
-
-        return "Over 2.5 Goals";
-    }
-
-    if(
-        prediction.includes("under 2.5") ||
-        prediction.includes("-2.5")
-    ){
-
-        return "Under 2.5 Goals";
-    }
-
-    if(
-        prediction.includes("under 3.5") ||
-        prediction.includes("-3.5")
-    ){
-
-        return "Under 3.5 Goals";
-    }
-
-    if(
-        prediction.includes("btts") ||
-        prediction.includes(
-            "both teams to score"
-        )
-    ){
-
-        return "Both Teams To Score";
-    }
-
-    if(
-        prediction.includes("draw")
-    ){
-
-        return "Draw";
-    }
-
-    return "";
+    return "unknown";
 }
 
 
-function getHomeGoals(match){
+function getGoalScore(match){
 
     return getValue(
         match,
         [
-            "Home Goals Scored Avg",
-            "Home Goals Scored",
-            "Home Avg Goals"
+            "Goal Score"
         ]
     );
 }
 
 
-function getAwayGoals(match){
+function getFormScore(match){
 
     return getValue(
         match,
         [
-            "Away Goals Scored Avg",
-            "Away Goals Scored",
-            "Away Avg Goals"
+            "Form Score"
         ]
     );
 }
 
 
-function getHomeGoalsConceded(match){
+function getAttackScore(match){
 
     return getValue(
         match,
         [
-            "Home Goals Conceded Avg",
-            "Home Goals Conceded"
+            "Attack Score"
         ]
     );
 }
 
 
-function getAwayGoalsConceded(match){
+function getDefenceScore(match){
 
     return getValue(
         match,
         [
-            "Away Goals Conceded Avg",
-            "Away Goals Conceded"
+            "Defence Score"
         ]
     );
 }
 
 
-function getBTTS(match){
+function getTotalScore(match){
 
-    return numberValue(
-        getValue(
-            match,
-            [
-                "BTTS %",
-                "BTTS"
-            ]
-        )
-    );
-}
-
-
-function getOver15(match){
-
-    return numberValue(
-        getValue(
-            match,
-            [
-                "Over 1.5 %",
-                "Over 1.5"
-            ]
-        )
-    );
-}
-
-
-function getOver25(match){
-
-    return numberValue(
-        getValue(
-            match,
-            [
-                "Over 2.5 %",
-                "Over 2.5"
-            ]
-        )
-    );
-}
-
-
-function getHomeWin(match){
-
-    return numberValue(
-        getValue(
-            match,
-            [
-                "Home Win %",
-                "Home Win"
-            ]
-        )
-    );
-}
-
-
-function getAwayWin(match){
-
-    return numberValue(
-        getValue(
-            match,
-            [
-                "Away Win %",
-                "Away Win"
-            ]
-        )
+    return getValue(
+        match,
+        [
+            "Total Score"
+        ]
     );
 }
 
@@ -631,8 +534,40 @@ function getHomeAdvantage(match){
     return getValue(
         match,
         [
-            "Home Advantage",
-            "Home Advantage Score"
+            "Home Advantage"
+        ]
+    );
+}
+
+
+function getBTTSScore(match){
+
+    return getValue(
+        match,
+        [
+            "BTTS Score"
+        ]
+    );
+}
+
+
+function getOver15Score(match){
+
+    return getValue(
+        match,
+        [
+            "Over 1.5 Score"
+        ]
+    );
+}
+
+
+function getOver25Score(match){
+
+    return getValue(
+        match,
+        [
+            "Over 2.5 Score"
         ]
     );
 }
@@ -643,207 +578,58 @@ function getH2HScore(match){
     return getValue(
         match,
         [
+            "Head-to-Head Score",
             "Head to Head Score",
-            "Head To Head Score",
-            "H2H Score",
-            "head - to - head-score"
+            "Head To Head Score"
         ]
     );
 }
 
 
-function getOddsHome(match){
+function getOddsValue(match){
 
-    return numberValue(
-        getValue(
-            match,
-            [
-                "Odds Home",
-                "Home Odds",
-                "Bookmaker Odds Home"
-            ]
-        )
-    );
-}
-
-
-function getOddsDraw(match){
-
-    return numberValue(
-        getValue(
-            match,
-            [
-                "Odds Draw",
-                "Draw Odds",
-                "Bookmaker Odds Draw"
-            ]
-        )
-    );
-}
-
-
-function getOddsAway(match){
-
-    return numberValue(
-        getValue(
-            match,
-            [
-                "Odds Away",
-                "Away Odds",
-                "Bookmaker Odds Away"
-            ]
-        )
+    return getValue(
+        match,
+        [
+            "Odds Value"
+        ]
     );
 }
 
 
 /* =========================================================
-   AI STATUS
+   API RESPONSE NORMALISATION
    ========================================================= */
 
-function getRiskClass(risk){
-
-    const text =
-        String(
-            risk || ""
-        ).toLowerCase();
+function extractRecords(payload){
 
     if(
-        text.includes("low")
+        payload &&
+        Array.isArray(payload.matches)
     ){
 
-        return "low";
+        return payload.matches;
     }
 
+
     if(
-        text.includes("medium") ||
-        text.includes("moderate")
+        payload &&
+        Array.isArray(payload.data)
     ){
 
-        return "medium";
+        return payload.data;
     }
 
-    if(
-        text.includes("high")
-    ){
-
-        return "high";
-    }
-
-    return "unknown";
-}
-
-
-function getAIStatus(match){
-
-    const confidence =
-        getConfidence(
-            match
-        );
 
     if(
-        confidence === null
-    ){
-
-        return "WATCH";
-    }
-
-    if(
-        confidence >= 80
-    ){
-
-        return "STRONG BET";
-    }
-
-    if(
-        confidence >= 70
-    ){
-
-        return "GOOD BET";
-    }
-
-    if(
-        confidence >= 60
-    ){
-
-        return "POSSIBLE BET";
-    }
-
-    return "WATCH";
-}
-
-
-/* =========================================================
-   BACKEND RESPONSE EXTRACTION
-   ========================================================= */
-
-function getMatches(data){
-
-    /*
-     * Current APEX backend contract:
-     *
-     * {
-     *     status: "SUCCESS",
-     *     matches: [...]
-     * }
-     *
-     * This is checked first.
-     */
-
-    if(
-        data &&
+        payload &&
+        payload.data &&
         Array.isArray(
-            data.matches
+            payload.data.matches
         )
     ){
 
-        return data.matches;
-    }
-
-
-    if(
-        data &&
-        data.matchDatabase &&
-        Array.isArray(
-            data.matchDatabase.objects
-        )
-    ){
-
-        return data.matchDatabase.objects;
-    }
-
-
-    if(
-        data &&
-        data.smartGate &&
-        Array.isArray(
-            data.smartGate.objects
-        )
-    ){
-
-        return data.smartGate.objects;
-    }
-
-
-    if(
-        data &&
-        Array.isArray(
-            data.smartGate
-        )
-    ){
-
-        return data.smartGate;
-    }
-
-
-    if(
-        data &&
-        Array.isArray(
-            data.data
-        )
-    ){
-
-        return data.data;
+        return payload.data.matches;
     }
 
 
@@ -852,10 +638,10 @@ function getMatches(data){
 
 
 /* =========================================================
-   MATCH VALIDATION
+   VALIDATE AI RECORD
    ========================================================= */
 
-function isUsableMatch(match){
+function isValidAIRecord(match){
 
     if(
         !match ||
@@ -865,97 +651,50 @@ function isUsableMatch(match){
         return false;
     }
 
-    const home =
+    const matchName =
         String(
-            getHomeTeam(match)
+            getMatch(match)
         ).trim();
 
-    const away =
+    const market =
         String(
-            getAwayTeam(match)
+            getMarket(match)
         ).trim();
 
-    const prediction =
-        String(
-            getPrediction(match)
-        ).trim();
+    const confidence =
+        getConfidence(match);
 
-    return(
-        home !== "" &&
-        away !== "" &&
-        prediction !== "" &&
-        prediction.toLowerCase() !==
-            "no predictions available"
-    );
+    if(
+        matchName === ""
+    ){
+
+        return false;
+    }
+
+    if(
+        market === ""
+    ){
+
+        return false;
+    }
+
+    if(
+        confidence === null ||
+        confidence <= 0
+    ){
+
+        return false;
+    }
+
+    return true;
 }
 
 
 /* =========================================================
-   DUPLICATE PROTECTION
+   PREPARE EXACT 30 RECORDS
    ========================================================= */
 
-function getMatchIdentity(
-    match,
-    index
-){
-
-    const fixture =
-        String(
-            getFixtureId(match)
-        ).trim();
-
-    if(
-        fixture !== ""
-    ){
-
-        return(
-            "fixture:" +
-            normaliseKey(
-                fixture
-            )
-        );
-    }
-
-
-    const identity = [
-
-        normaliseKey(
-            getDate(match)
-        ),
-
-        normaliseKey(
-            getHomeTeam(match)
-        ),
-
-        normaliseKey(
-            getAwayTeam(match)
-        ),
-
-        normaliseKey(
-            getLeague(match)
-        )
-
-    ].join("|");
-
-
-    if(
-        identity !== "|||"
-    ){
-
-        return identity;
-    }
-
-
-    return(
-        "row:" +
-        index
-    );
-}
-
-
-function prepareMatches(
-    source
-){
+function prepareMatches(source){
 
     const seen =
         new Set();
@@ -963,12 +702,10 @@ function prepareMatches(
     const result =
         [];
 
-
     const matches =
         Array.isArray(source)
             ? source
             : [];
-
 
     matches.forEach(
         function(
@@ -977,7 +714,7 @@ function prepareMatches(
         ){
 
             if(
-                !isUsableMatch(
+                !isValidAIRecord(
                     match
                 )
             ){
@@ -985,60 +722,70 @@ function prepareMatches(
                 return;
             }
 
-
             const identity =
-                getMatchIdentity(
-                    match,
-                    index
+                normaliseKey(
+                    getMatch(match)
                 );
 
-
             if(
-                seen.has(
-                    identity
-                )
+                identity &&
+                seen.has(identity)
             ){
 
                 return;
             }
 
+            if(identity){
 
-            seen.add(
-                identity
-            );
+                seen.add(identity);
+            }
 
+            result.push(match);
 
-            result.push(
-                match
-            );
         }
     );
 
 
     /*
-     * Keep the strongest predictions first.
-     *
-     * This does NOT change Smart Gate.
-     * It only controls frontend ordering.
+     * The backend already preserves Smart Gate order.
+     * If Smart Gate Rank exists, use it.
+     * Otherwise retain the API order.
      */
 
     result.sort(
-        function(
-            a,
-            b
-        ){
+        function(a,b){
 
-            return(
-                (
-                    getConfidence(b) ||
-                    0
-                )
-                -
-                (
-                    getConfidence(a) ||
-                    0
-                )
-            );
+            const rankA =
+                numberValue(
+                    getValue(
+                        a,
+                        [
+                            "Smart Gate Rank",
+                            "Rank"
+                        ]
+                    )
+                );
+
+            const rankB =
+                numberValue(
+                    getValue(
+                        b,
+                        [
+                            "Smart Gate Rank",
+                            "Rank"
+                        ]
+                    )
+                );
+
+            if(
+                rankA !== null &&
+                rankB !== null
+            ){
+
+                return rankA - rankB;
+            }
+
+            return 0;
         }
     );
 
@@ -1059,38 +806,35 @@ function setConnectionStatus(
     type
 ){
 
-    const elements =
-        document.querySelectorAll(
-            "#connectionStatus"
+    const element =
+        document.getElementById(
+            "connectionStatus"
         );
 
+    if(!element){
 
-    elements.forEach(
-        function(element){
+        return;
+    }
 
-            element.textContent =
-                message;
+    element.textContent =
+        message;
 
-            element.className =
-                "connection " +
-                (
-                    type ||
-                    ""
-                );
-        }
-    );
+    element.className =
+        "connection " +
+        (
+            type || ""
+        );
 }
 
 
 /* =========================================================
-   FETCH APEX BACKEND
+   FETCH CONTROLLED AI ANALYSIS
    ========================================================= */
 
 async function fetchAPEXData(){
 
     const controller =
         new AbortController();
-
 
     const timeout =
         setTimeout(
@@ -1105,11 +849,20 @@ async function fetchAPEXData(){
 
     try{
 
+        /*
+         * IMPORTANT:
+         *
+         * Read the actual AI ANALYSIS sheet.
+         * We do NOT use the old ?request=dashboard
+         * route that was returning mixed records.
+         */
+
         const url =
             APEX_CONFIG.API_URL +
-            "?request=dashboard" +
-            "&limit=" +
-            APEX_CONFIG.MAX_MATCHES +
+            "?sheet=" +
+            encodeURIComponent(
+                "AI ANALYSIS"
+            ) +
             "&ts=" +
             Date.now();
 
@@ -1131,9 +884,7 @@ async function fetchAPEXData(){
             await response.text();
 
 
-        if(
-            !response.ok
-        ){
+        if(!response.ok){
 
             throw new Error(
                 "APEX backend HTTP " +
@@ -1142,9 +893,7 @@ async function fetchAPEXData(){
         }
 
 
-        if(
-            !raw.trim()
-        ){
+        if(!raw.trim()){
 
             throw new Error(
                 "APEX backend returned an empty response."
@@ -1152,12 +901,12 @@ async function fetchAPEXData(){
         }
 
 
-        let data;
+        let payload;
 
 
         try{
 
-            data =
+            payload =
                 JSON.parse(
                     raw
                 );
@@ -1176,22 +925,70 @@ async function fetchAPEXData(){
 
 
         if(
-            data &&
-            data.status &&
+            payload &&
             String(
-                data.status
+                payload.status || ""
             ).toUpperCase() ===
             "ERROR"
         ){
 
             throw new Error(
-                data.message ||
+                payload.message ||
                 "APEX backend returned an error."
             );
         }
 
 
-        return data;
+        /*
+         * Existing Code.gs sheet endpoint returns:
+         *
+         * {
+         *   status: "CONNECTED",
+         *   headers: [...],
+         *   data: [...]
+         * }
+         *
+         * Convert that format into normal objects.
+         */
+
+        if(
+            payload &&
+            Array.isArray(
+                payload.headers
+            ) &&
+            Array.isArray(
+                payload.data
+            )
+        ){
+
+            payload.matches =
+                payload.data.map(
+                    function(row){
+
+                        const record =
+                            {};
+
+                        payload.headers.forEach(
+                            function(
+                                header,
+                                index
+                            ){
+
+                                record[
+                                    String(header).trim()
+                                ] =
+                                    row[index];
+
+                            }
+                        );
+
+                        return record;
+                    }
+                );
+        }
+
+
+        return payload;
 
 
     }catch(error){
@@ -1206,7 +1003,6 @@ async function fetchAPEXData(){
             );
         }
 
-
         throw error;
 
 
@@ -1220,7 +1016,7 @@ async function fetchAPEXData(){
 
 
 /* =========================================================
-   FETCH WITH RETRIES
+   RETRY LOADER
    ========================================================= */
 
 async function loadAPEXData(){
@@ -1247,18 +1043,20 @@ async function loadAPEXData(){
             lastError =
                 error;
 
-
             if(
                 attempt <
                 APEX_CONFIG.RETRIES
             ){
 
                 await new Promise(
-                    resolve =>
+                    function(resolve){
+
                         setTimeout(
                             resolve,
                             1200
-                        )
+                        );
+
+                    }
                 );
             }
         }
@@ -1275,990 +1073,15 @@ async function loadAPEXData(){
 
 
 /* =========================================================
-   GENERIC DASHBOARD RENDER
+   LOAD AND RENDER DASHBOARD
    ========================================================= */
 
-function renderDashboardData(
-    data
-){
-
-    const source =
-        getMatches(
-            data
-        );
-
-
-    const matches =
-        prepareMatches(
-            source
-        );
-
-
-    /*
-     * Shared status.
-     */
-
-    setConnectionStatus(
-        "✅ APEX AI Connected · " +
-        matches.length +
-        " matches loaded",
-        "success"
-    );
-
-
-    /*
-     * KPI fields.
-     */
-
-    const matchesCount =
-        document.getElementById(
-            "matchesCount"
-        );
-
-    if(
-        matchesCount
-    ){
-
-        matchesCount.textContent =
-            matches.length;
-    }
-
-
-    const predictionCount =
-        document.getElementById(
-            "predictionCount"
-        );
-
-    if(
-        predictionCount
-    ){
-
-        predictionCount.textContent =
-            matches.length;
-    }
-
-
-    const confidenceValues =
-        matches
-            .map(
-                getConfidence
-            )
-            .filter(
-                value =>
-                    value !== null
-            );
-
-
-    const best =
-        confidenceValues.length
-            ? Math.max(
-                ...confidenceValues
-            )
-            : null;
-
-
-    const bestConfidence =
-        document.getElementById(
-            "bestConfidence"
-        );
-
-    if(
-        bestConfidence
-    ){
-
-        bestConfidence.textContent =
-            best === null
-                ? "—"
-                : best + "%";
-    }
-
-
-    const bestConfidenceNote =
-        document.getElementById(
-            "bestConfidenceNote"
-        );
-
-    if(
-        bestConfidenceNote
-    ){
-
-        bestConfidenceNote.textContent =
-            best === null
-                ? "No confidence data"
-                : "Highest final confidence";
-    }
-
-
-    const lowRisk =
-        matches.filter(
-            match =>
-                getRiskClass(
-                    getRisk(match)
-                ) === "low"
-        ).length;
-
-
-    const lowRiskCount =
-        document.getElementById(
-            "lowRiskCount"
-        );
-
-    if(
-        lowRiskCount
-    ){
-
-        lowRiskCount.textContent =
-            lowRisk;
-    }
-
-
-    /*
-     * Featured match.
-     */
-
-    const featured =
-        matches[0];
-
-
-    const featuredContainer =
-        document.getElementById(
-            "featuredMatch"
-        );
-
-
-    if(
-        featuredContainer
-    ){
-
-        if(
-            !featured
-        ){
-
-            featuredContainer.innerHTML =
-                `
-                <div class="state">
-                    No qualified APEX prediction available.
-                </div>
-                `;
-
-        }else{
-
-            const confidence =
-                getConfidence(
-                    featured
-                );
-
-
-            const width =
-                confidence === null
-                    ? 0
-                    : Math.max(
-                        0,
-                        Math.min(
-                            100,
-                            confidence
-                        )
-                    );
-
-
-            featuredContainer.innerHTML = `
-
-                <div class="featured-league">
-
-                    🏆 ${formatValue(
-                        getLeague(featured)
-                    )}
-
-                </div>
-
-
-                <div class="featured-teams">
-
-
-                    <div class="team">
-
-                        ${formatValue(
-                            getHomeTeam(featured)
-                        )}
-
-                        <small>
-                            HOME
-                        </small>
-
-                    </div>
-
-
-                    <div class="vs">
-                        VS
-                    </div>
-
-
-                    <div class="team">
-
-                        ${formatValue(
-                            getAwayTeam(featured)
-                        )}
-
-                        <small>
-                            AWAY
-                        </small>
-
-                    </div>
-
-                </div>
-
-
-                <div class="featured-prediction">
-
-                    <span
-                        class="
-                            featured-prediction-label
-                        "
-                    >
-                        AI PREDICTION
-                    </span>
-
-
-                    <div
-                        class="
-                            featured-prediction-value
-                        "
-                    >
-
-                        ${formatValue(
-                            getPrediction(featured)
-                        )}
-
-                    </div>
-
-                </div>
-
-
-                <div class="featured-metrics">
-
-
-                    <div class="featured-metric">
-
-                        <div
-                            class="featured-metric-title"
-                        >
-                            CONFIDENCE
-                        </div>
-
-                        <div
-                            class="
-                                featured-metric-value
-                                green
-                            "
-                        >
-
-                            ${formatValue(
-                                percentage(
-                                    confidence
-                                )
-                            )}
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="featured-metric">
-
-                        <div
-                            class="featured-metric-title"
-                        >
-                            MARKET
-                        </div>
-
-                        <div
-                            class="featured-metric-value"
-                        >
-
-                            ${formatValue(
-                                getMarket(
-                                    featured
-                                )
-                            )}
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="featured-metric">
-
-                        <div
-                            class="featured-metric-title"
-                        >
-                            RISK
-                        </div>
-
-                        <div
-                            class="featured-metric-value"
-                        >
-
-                            ${formatValue(
-                                getRisk(
-                                    featured
-                                )
-                            )}
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="featured-metric">
-
-                        <div
-                            class="featured-metric-title"
-                        >
-                            AI STATUS
-                        </div>
-
-                        <div
-                            class="featured-metric-value"
-                        >
-
-                            ${formatValue(
-                                getAIStatus(
-                                    featured
-                                )
-                            )}
-
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-
-                <div class="score-wrap">
-
-                    <div class="score-head">
-
-                        <span>
-                            AI CONFIDENCE
-                        </span>
-
-                        <strong>
-                            ${width} / 100
-                        </strong>
-
-                    </div>
-
-
-                    <div class="score-bar">
-
-                        <div
-                            class="score-fill"
-                            style="
-                                width:${width}%;
-                            "
-                        ></div>
-
-                    </div>
-
-                </div>
-
-            `;
-        }
-    }
-
-
-    /*
-     * Summary.
-     */
-
-    const analysis =
-        document.getElementById(
-            "analysisSummary"
-        );
-
-
-    if(
-        analysis
-    ){
-
-        const average =
-            confidenceValues.length
-                ? Math.round(
-                    confidenceValues.reduce(
-                        (
-                            total,
-                            value
-                        ) =>
-                            total + value,
-                        0
-                    ) /
-                    confidenceValues.length
-                )
-                : null;
-
-
-        analysis.innerHTML = `
-
-            <div class="summary-grid">
-
-
-                <div class="summary-box">
-
-                    <span>
-                        SELECTED MATCHES
-                    </span>
-
-                    <strong>
-                        ${matches.length}
-                    </strong>
-
-                </div>
-
-
-                <div class="summary-box">
-
-                    <span>
-                        AVERAGE CONFIDENCE
-                    </span>
-
-                    <strong>
-                        ${formatValue(
-                            percentage(
-                                average
-                            )
-                        )}
-                    </strong>
-
-                </div>
-
-
-                <div class="summary-box">
-
-                    <span>
-                        LOW RISK
-                    </span>
-
-                    <strong>
-                        ${lowRisk}
-                    </strong>
-
-                </div>
-
-
-                <div class="summary-box">
-
-                    <span>
-                        DATA STATUS
-                    </span>
-
-                    <strong>
-                        Connected
-                    </strong>
-
-                </div>
-
-
-            </div>
-
-        `;
-    }
-
-
-    /*
-     * Confidence panel.
-     */
-
-    const confidencePanel =
-        document.getElementById(
-            "confidenceSummary"
-        );
-
-
-    const factorPanel =
-        document.getElementById(
-            "factorSummary"
-        );
-
-
-    if(
-        confidencePanel &&
-        factorPanel
-    ){
-
-        if(
-            !featured
-        ){
-
-            confidencePanel.innerHTML =
-                `
-                <div class="state">
-                    No confidence data.
-                </div>
-                `;
-
-            factorPanel.innerHTML =
-                "";
-
-        }else{
-
-            const score =
-                getConfidence(
-                    featured
-                );
-
-
-            const width =
-                score === null
-                    ? 0
-                    : Math.max(
-                        0,
-                        Math.min(
-                            100,
-                            score
-                        )
-                    );
-
-
-            confidencePanel.innerHTML = `
-
-                <div class="confidence-number">
-
-                    ${formatValue(
-                        percentage(
-                            score
-                        )
-                    )}
-
-                </div>
-
-
-                <div class="confidence-label">
-
-                    Final Confidence
-
-                </div>
-
-
-                <div class="progress">
-
-                    <div
-                        class="progress-bar"
-                        style="
-                            width:${width}%;
-                        "
-                    ></div>
-
-                </div>
-
-            `;
-
-
-            factorPanel.innerHTML = `
-
-                <div class="factor-row">
-
-                    <span class="factor-name">
-                        Prediction
-                    </span>
-
-                    <span class="factor-score">
-                        ${formatValue(
-                            getPrediction(
-                                featured
-                            )
-                        )}
-                    </span>
-
-                </div>
-
-
-                <div class="factor-row">
-
-                    <span class="factor-name">
-                        Market
-                    </span>
-
-                    <span class="factor-score">
-                        ${formatValue(
-                            getMarket(
-                                featured
-                            )
-                        )}
-                    </span>
-
-                </div>
-
-
-                <div class="factor-row">
-
-                    <span class="factor-name">
-                        Risk
-                    </span>
-
-                    <span class="factor-score">
-                        ${formatValue(
-                            getRisk(
-                                featured
-                            )
-                        )}
-                    </span>
-
-                </div>
-
-
-                <div class="factor-row">
-
-                    <span class="factor-name">
-                        Home Goals Avg
-                    </span>
-
-                    <span class="factor-score">
-                        ${formatValue(
-                            getHomeGoals(
-                                featured
-                            )
-                        )}
-                    </span>
-
-                </div>
-
-
-                <div class="factor-row">
-
-                    <span class="factor-name">
-                        Away Goals Avg
-                    </span>
-
-                    <span class="factor-score">
-                        ${formatValue(
-                            getAwayGoals(
-                                featured
-                            )
-                        )}
-                    </span>
-
-                </div>
-
-
-                <div class="factor-row">
-
-                    <span class="factor-name">
-                        BTTS
-                    </span>
-
-                    <span class="factor-score">
-
-                        ${
-                            getBTTS(featured) !== null
-                                ? formatValue(
-                                    getBTTS(featured)
-                                ) + "%"
-                                : "—"
-                        }
-
-                    </span>
-
-                </div>
-
-
-                <div class="factor-row">
-
-                    <span class="factor-name">
-                        Over 1.5
-                    </span>
-
-                    <span class="factor-score">
-
-                        ${
-                            getOver15(featured) !== null
-                                ? formatValue(
-                                    getOver15(featured)
-                                ) + "%"
-                                : "—"
-                        }
-
-                    </span>
-
-                </div>
-
-            `;
-        }
-    }
-
-
-    /*
-     * Match list.
-     */
-
-    const list =
-        document.getElementById(
-            "matchList"
-        );
-
-
-    if(
-        list
-    ){
-
-        if(
-            !matches.length
-        ){
-
-            list.innerHTML =
-                `
-                <div class="state">
-                    No qualified APEX matches available.
-                </div>
-                `;
-
-        }else{
-
-            list.innerHTML =
-                matches
-                    .map(
-                        function(
-                            match,
-                            index
-                        ){
-
-                            const confidence =
-                                getConfidence(
-                                    match
-                                );
-
-                            const risk =
-                                getRisk(
-                                    match
-                                );
-
-                            const riskClass =
-                                getRiskClass(
-                                    risk
-                                );
-
-
-                            return `
-
-                                <article
-                                    class="match-row"
-                                >
-
-                                    <div
-                                        class="match-number"
-                                    >
-                                        ${index + 1}
-                                    </div>
-
-
-                                    <div>
-
-                                        <div
-                                            class="
-                                                match-teams-small
-                                            "
-                                        >
-
-                                            ${formatValue(
-                                                getHomeTeam(
-                                                    match
-                                                )
-                                            )}
-
-                                            <span>
-                                                VS
-                                            </span>
-
-                                            ${formatValue(
-                                                getAwayTeam(
-                                                    match
-                                                )
-                                            )}
-
-                                        </div>
-
-
-                                        <div
-                                            class="
-                                                match-league
-                                            "
-                                        >
-
-                                            ${formatValue(
-                                                getLeague(
-                                                    match
-                                                )
-                                            )}
-
-                                        </div>
-
-                                    </div>
-
-
-                                    <div
-                                        class="
-                                            match-prediction
-                                        "
-                                    >
-
-                                        ${formatValue(
-                                            getPrediction(
-                                                match
-                                            )
-                                        )}
-
-
-                                        <span
-                                            class="
-                                                market-small
-                                            "
-                                        >
-
-                                            ${formatValue(
-                                                getMarket(
-                                                    match
-                                                )
-                                            )}
-
-                                        </span>
-
-                                    </div>
-
-
-                                    <div>
-
-                                        <div
-                                            class="
-                                                match-confidence
-                                            "
-                                        >
-
-                                            ${formatValue(
-                                                percentage(
-                                                    confidence
-                                                )
-                                            )}
-
-                                        </div>
-
-
-                                        <span
-                                            class="
-                                                decision
-                                                ${riskClass}
-                                            "
-                                        >
-
-                                            ${formatValue(
-                                                risk ||
-                                                "UNKNOWN"
-                                            )}
-
-                                        </span>
-
-                                    </div>
-
-
-                                    <div
-                                        class="match-info"
-                                    >
-
-                                        <div>
-                                            Home:
-                                            ${formatValue(
-                                                getHomeGoals(
-                                                    match
-                                                )
-                                            )}
-                                        </div>
-
-                                        <div>
-                                            Away:
-                                            ${formatValue(
-                                                getAwayGoals(
-                                                    match
-                                                )
-                                            )}
-                                        </div>
-
-                                        <div>
-                                            BTTS:
-                                            ${
-                                                getBTTS(match) !== null
-                                                    ? formatValue(
-                                                        getBTTS(
-                                                            match
-                                                        )
-                                                    ) + "%"
-                                                    : "—"
-                                            }
-                                        </div>
-
-                                    </div>
-
-
-                                    <div>
-
-                                        <span
-                                            class="
-                                                decision
-                                                ${riskClass}
-                                            "
-                                        >
-
-                                            ${formatValue(
-                                                getAIStatus(
-                                                    match
-                                                )
-                                            )}
-
-                                        </span>
-
-                                    </div>
-
-                                </article>
-
-                            `;
-                        }
-                    )
-                    .join("");
-        }
-    }
-
-
-    /*
-     * Useful diagnostic information.
-     */
-
-    console.log(
-        "APEX FRONTEND DATA",
-        {
-            backendMatches:
-                source.length,
-
-            displayedMatches:
-                matches.length,
-
-            maximum:
-                APEX_CONFIG.MAX_MATCHES,
-
-            response:
-                data
-        }
-    );
-}
-
-
-/* =========================================================
-   SHARED DATA LOADER
-   ========================================================= */
-
-async function initializeAPEX(){
+async function loadDashboard(){
 
     try{
 
         setConnectionStatus(
-            "🔄 Connecting to APEX AI...",
+            "🔄 Loading AI Analysis...",
             "loading"
         );
 
@@ -2267,15 +1090,45 @@ async function initializeAPEX(){
             await loadAPEXData();
 
 
-        renderDashboardData(
-            data
+        const source =
+            extractRecords(
+                data
+            );
+
+
+        const matches =
+            prepareMatches(
+                source
+            );
+
+
+        if(
+            matches.length === 0
+        ){
+
+            throw new Error(
+                "AI ANALYSIS returned no valid calculated matches."
+            );
+        }
+
+
+        renderDashboard(
+            matches
+        );
+
+
+        setConnectionStatus(
+            "✅ APEX AI Connected · " +
+            matches.length +
+            " calculated matches",
+            "success"
         );
 
 
     }catch(error){
 
         console.error(
-            "APEX frontend error:",
+            "APEX dashboard error:",
             error
         );
 
@@ -2286,44 +1139,998 @@ async function initializeAPEX(){
         );
 
 
-        const targets = [
+        const featuredState =
+            document.getElementById(
+                "featuredState"
+            );
 
-            "featuredMatch",
-            "analysisSummary",
-            "confidenceSummary",
-            "factorSummary",
-            "matchList"
+        if(featuredState){
 
-        ];
+            featuredState.style.display =
+                "block";
+
+            featuredState.className =
+                "state error";
+
+            featuredState.textContent =
+                error.message;
+        }
 
 
-        targets.forEach(
-            function(id){
+        const matchesState =
+            document.getElementById(
+                "matchesState"
+            );
 
-                const element =
-                    document.getElementById(
-                        id
-                    );
+        if(matchesState){
 
-                if(
-                    element
-                ){
+            matchesState.style.display =
+                "block";
 
-                    element.innerHTML =
-                        `
-                        <div class="state error">
+            matchesState.className =
+                "state error";
 
-                            ${formatValue(
-                                error.message
-                            )}
-
-                        </div>
-                        `;
-                }
-            }
-        );
+            matchesState.textContent =
+                error.message;
+        }
     }
 }
+
+
+/* =========================================================
+   MAIN DASHBOARD RENDER
+   ========================================================= */
+
+function renderDashboard(matches){
+
+    updateKPIs(
+        matches
+    );
+
+    updateFeatured(
+        matches[0]
+    );
+
+    updateSummary(
+        matches
+    );
+
+    renderMatchList(
+        matches
+    );
+}
+
+
+/* =========================================================
+   KPI SECTION
+   ========================================================= */
+
+function updateKPIs(matches){
+
+    const matchesCount =
+        document.getElementById(
+            "matchesCount"
+        );
+
+    if(matchesCount){
+
+        matchesCount.textContent =
+            matches.length;
+    }
+
+
+    const predictions =
+        matches.filter(
+            function(match){
+
+                return (
+                    String(
+                        getPrediction(
+                            match
+                        )
+                    ).trim() !== ""
+                );
+            }
+        ).length;
+
+
+    const predictionCount =
+        document.getElementById(
+            "predictionCount"
+        );
+
+    if(predictionCount){
+
+        predictionCount.textContent =
+            predictions;
+    }
+
+
+    const confidences =
+        matches
+            .map(
+                getConfidence
+            )
+            .filter(
+                function(value){
+
+                    return value !== null;
+                }
+            );
+
+
+    const best =
+        confidences.length
+            ? Math.max(
+                ...confidences
+            )
+            : null;
+
+
+    const bestConfidence =
+        document.getElementById(
+            "bestConfidence"
+        );
+
+    if(bestConfidence){
+
+        bestConfidence.textContent =
+            best === null
+                ? "—"
+                : best + "%";
+    }
+
+
+    const lowRisk =
+        matches.filter(
+            function(match){
+
+                return (
+                    String(
+                        getRisk(match)
+                    ).toUpperCase()
+                    ===
+                    "LOW"
+                );
+            }
+        ).length;
+
+
+    const lowRiskCount =
+        document.getElementById(
+            "lowRiskCount"
+        );
+
+    if(lowRiskCount){
+
+        lowRiskCount.textContent =
+            lowRisk;
+    }
+}
+
+
+/* =========================================================
+   FEATURED MATCH
+   ========================================================= */
+
+function updateFeatured(match){
+
+    const state =
+        document.getElementById(
+            "featuredState"
+        );
+
+    const content =
+        document.getElementById(
+            "featuredContent"
+        );
+
+
+    if(!match){
+
+        if(state){
+
+            state.style.display =
+                "block";
+
+            state.textContent =
+                "No qualified APEX prediction available.";
+        }
+
+        if(content){
+
+            content.style.display =
+                "none";
+        }
+
+        return;
+    }
+
+
+    if(state){
+
+        state.style.display =
+            "none";
+    }
+
+
+    if(content){
+
+        content.style.display =
+            "block";
+    }
+
+
+    const teams =
+        splitMatch(
+            match
+        );
+
+
+    const confidence =
+        getConfidence(
+            match
+        );
+
+
+    const risk =
+        getRisk(
+            match
+        );
+
+
+    const prediction =
+        getPrediction(
+            match
+        );
+
+
+    const market =
+        getMarket(
+            match
+        );
+
+
+    const league =
+        getValue(
+            match,
+            [
+                "League",
+                "Competition"
+            ]
+        );
+
+
+    const leagueText =
+        league !== ""
+            ? "🏆 " + league
+            : "🤖 Smart Gate V7 · AI Analysis";
+
+
+    const featuredLeague =
+        document.getElementById(
+            "featuredLeague"
+        );
+
+    if(featuredLeague){
+
+        featuredLeague.textContent =
+            leagueText;
+    }
+
+
+    const featuredHome =
+        document.getElementById(
+            "featuredHome"
+        );
+
+    if(featuredHome){
+
+        featuredHome.textContent =
+            teams.home;
+    }
+
+
+    const featuredAway =
+        document.getElementById(
+            "featuredAway"
+        );
+
+    if(featuredAway){
+
+        featuredAway.textContent =
+            teams.away;
+    }
+
+
+    const featuredPrediction =
+        document.getElementById(
+            "featuredPrediction"
+        );
+
+    if(featuredPrediction){
+
+        featuredPrediction.textContent =
+            prediction || "—";
+    }
+
+
+    const featuredConfidence =
+        document.getElementById(
+            "featuredConfidence"
+        );
+
+    if(featuredConfidence){
+
+        featuredConfidence.textContent =
+            percentage(
+                confidence
+            );
+    }
+
+
+    const featuredMarket =
+        document.getElementById(
+            "featuredMarket"
+        );
+
+    if(featuredMarket){
+
+        featuredMarket.textContent =
+            market || "—";
+    }
+
+
+    const featuredRisk =
+        document.getElementById(
+            "featuredRisk"
+        );
+
+    if(featuredRisk){
+
+        featuredRisk.textContent =
+            risk || "UNKNOWN";
+    }
+
+
+    const featuredStatus =
+        document.getElementById(
+            "featuredStatus"
+        );
+
+    if(featuredStatus){
+
+        featuredStatus.textContent =
+            getDecision(
+                match
+            );
+    }
+
+
+    const score =
+        confidence === null
+            ? 0
+            : Math.max(
+                0,
+                Math.min(
+                    100,
+                    confidence
+                )
+            );
+
+
+    const featuredScore =
+        document.getElementById(
+            "featuredScore"
+        );
+
+    if(featuredScore){
+
+        featuredScore.textContent =
+            score +
+            " / 100";
+    }
+
+
+    const featuredScoreFill =
+        document.getElementById(
+            "featuredScoreFill"
+        );
+
+    if(featuredScoreFill){
+
+        featuredScoreFill.style.width =
+            score + "%";
+    }
+
+
+    const confidenceNumber =
+        document.getElementById(
+            "confidenceNumber"
+        );
+
+    if(confidenceNumber){
+
+        confidenceNumber.textContent =
+            percentage(
+                confidence
+            );
+    }
+
+
+    const confidenceProgress =
+        document.getElementById(
+            "confidenceProgress"
+        );
+
+    if(confidenceProgress){
+
+        confidenceProgress.style.width =
+            score + "%";
+    }
+
+
+    const factorPrediction =
+        document.getElementById(
+            "factorPrediction"
+        );
+
+    if(factorPrediction){
+
+        factorPrediction.textContent =
+            prediction || "—";
+    }
+
+
+    const factorMarket =
+        document.getElementById(
+            "factorMarket"
+        );
+
+    if(factorMarket){
+
+        factorMarket.textContent =
+            market || "—";
+    }
+
+
+    const factorRisk =
+        document.getElementById(
+            "factorRisk"
+        );
+
+    if(factorRisk){
+
+        factorRisk.textContent =
+            risk || "—";
+    }
+
+
+    setText(
+        "factorGoalScore",
+        getGoalScore(match)
+    );
+
+    setText(
+        "factorFormScore",
+        getFormScore(match)
+    );
+
+    setText(
+        "factorAttackScore",
+        getAttackScore(match)
+    );
+
+    setText(
+        "factorDefenceScore",
+        getDefenceScore(match)
+    );
+
+    setText(
+        "factorBTTSScore",
+        getBTTSScore(match)
+    );
+
+    setText(
+        "factorOver15Score",
+        getOver15Score(match)
+    );
+
+    setText(
+        "factorOver25Score",
+        getOver25Score(match)
+    );
+
+    setText(
+        "factorH2HScore",
+        getH2HScore(match)
+    );
+
+    setText(
+        "factorOddsValue",
+        getOddsValue(match)
+    );
+}
+
+
+/* =========================================================
+   SET TEXT HELPER
+   ========================================================= */
+
+function setText(
+    id,
+    value
+){
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+    if(!element){
+
+        return;
+    }
+
+    element.textContent =
+        (
+            value === null ||
+            value === undefined ||
+            String(value).trim() === ""
+        )
+            ? "—"
+            : String(value);
+}
+
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+
+function updateSummary(matches){
+
+    if(!matches.length){
+
+        return;
+    }
+
+
+    const confidenceValues =
+        matches
+            .map(
+                getConfidence
+            )
+            .filter(
+                function(value){
+
+                    return value !== null;
+                }
+            );
+
+
+    const average =
+        confidenceValues.length
+            ? Math.round(
+                confidenceValues.reduce(
+                    function(
+                        total,
+                        value
+                    ){
+
+                        return (
+                            total +
+                            value
+                        );
+
+                    },
+                    0
+                ) /
+                confidenceValues.length
+            )
+            : null;
+
+
+    const lowRisk =
+        matches.filter(
+            function(match){
+
+                return (
+                    String(
+                        getRisk(match)
+                    ).toUpperCase()
+                    ===
+                    "LOW"
+                );
+            }
+        ).length;
+
+
+    const markets = {};
+
+
+    matches.forEach(
+        function(match){
+
+            const market =
+                getMarket(
+                    match
+                );
+
+
+            if(!market){
+
+                return;
+            }
+
+
+            markets[market] =
+                (
+                    markets[market] ||
+                    0
+                ) + 1;
+
+        }
+    );
+
+
+    let mainMarket =
+        "—";
+
+    let highestCount =
+        0;
+
+
+    Object.keys(markets).forEach(
+        function(market){
+
+            if(
+                markets[market] >
+                highestCount
+            ){
+
+                highestCount =
+                    markets[market];
+
+                mainMarket =
+                    market;
+            }
+
+        }
+    );
+
+
+    setText(
+        "summaryMatches",
+        matches.length
+    );
+
+
+    setText(
+        "summaryConfidence",
+        average === null
+            ? "—"
+            : average + "%"
+    );
+
+
+    setText(
+        "summaryLowRisk",
+        lowRisk
+    );
+
+
+    setText(
+        "summaryMarket",
+        mainMarket
+    );
+}
+
+
+/* =========================================================
+   MATCH LIST
+   ========================================================= */
+
+function renderMatchList(matches){
+
+    const state =
+        document.getElementById(
+            "matchesState"
+        );
+
+    const table =
+        document.getElementById(
+            "matchesTable"
+        );
+
+    const container =
+        document.getElementById(
+            "matchRows"
+        );
+
+
+    if(!container){
+
+        return;
+    }
+
+
+    container.innerHTML =
+        "";
+
+
+    matches.forEach(
+        function(
+            match,
+            index
+        ){
+
+            const teams =
+                splitMatch(
+                    match
+                );
+
+
+            const prediction =
+                getPrediction(
+                    match
+                );
+
+
+            const market =
+                getMarket(
+                    match
+                );
+
+
+            const confidence =
+                getConfidence(
+                    match
+                );
+
+
+            const risk =
+                getRisk(
+                    match
+                );
+
+
+            const decision =
+                getDecision(
+                    match
+                );
+
+
+            const riskClass =
+                getRiskClass(
+                    risk
+                );
+
+
+            const goalScore =
+                getGoalScore(
+                    match
+                );
+
+
+            const formScore =
+                getFormScore(
+                    match
+                );
+
+
+            const attackScore =
+                getAttackScore(
+                    match
+                );
+
+
+            const defenceScore =
+                getDefenceScore(
+                    match
+                );
+
+
+            const totalScore =
+                getTotalScore(
+                    match
+                );
+
+
+            const btts =
+                getBTTSScore(
+                    match
+                );
+
+
+            const over15 =
+                getOver15Score(
+                    match
+                );
+
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className =
+                "match-row";
+
+
+            row.innerHTML = `
+
+                <div class="match-number">
+
+                    ${index + 1}
+
+                </div>
+
+
+                <div>
+
+                    <div
+                        class="match-teams-small"
+                    >
+
+                        ${escapeHtml(
+                            teams.home
+                        )}
+
+                        <span>
+                            VS
+                        </span>
+
+                        ${escapeHtml(
+                            teams.away
+                        )}
+
+                    </div>
+
+
+                    <div
+                        class="match-league"
+                    >
+
+                        AI ANALYSIS ·
+                        Smart Gate V7
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="match-prediction"
+                >
+
+                    ${escapeHtml(
+                        prediction || "—"
+                    )}
+
+                    <span
+                        class="market-small"
+                    >
+
+                        ${escapeHtml(
+                            market || "—"
+                        )}
+
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="match-confidence"
+                >
+
+                    ${escapeHtml(
+                        percentage(
+                            confidence
+                        )
+                    )}
+
+                </div>
+
+
+                <div
+                    class="match-info"
+                >
+
+                    Goal:
+                    ${escapeHtml(
+                        goalScore || "—"
+                    )}<br>
+
+                    Form:
+                    ${escapeHtml(
+                        formScore || "—"
+                    )}<br>
+
+                    Attack:
+                    ${escapeHtml(
+                        attackScore || "—"
+                    )}<br>
+
+                    Defence:
+                    ${escapeHtml(
+                        defenceScore || "—"
+                    )}<br>
+
+                    Total:
+                    ${escapeHtml(
+                        totalScore || "—"
+                    )}<br>
+
+                    BTTS:
+                    ${escapeHtml(
+                        btts || "—"
+                    )}<br>
+
+                    O1.5:
+                    ${escapeHtml(
+                        over15 || "—"
+                    )}
+
+                </div>
+
+
+                <div>
+
+                    <span
+                        class="
+                            decision
+                            ${riskClass}
+                        "
+                    >
+
+                        ${escapeHtml(
+                            decision
+                        )}
+
+                    </span>
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                row
+            );
+
+        }
+    );
+
+
+    if(state){
+
+        state.style.display =
+            "none";
+    }
+
+
+    if(table){
+
+        table.style.display =
+            "block";
+    }
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        loadDashboard();
+
+    }
+);
 
 
 /* =========================================================
@@ -2363,30 +2170,25 @@ window.openSettings =
 window.logout =
     logout;
 
-window.fetchAPEXData =
-    fetchAPEXData;
+window.loadDashboard =
+    loadDashboard;
 
 window.loadAPEXData =
     loadAPEXData;
 
-window.getMatches =
-    getMatches;
+window.fetchAPEXData =
+    fetchAPEXData;
 
-window.prepareMatches =
-    prepareMatches;
+window.getPrediction =
+    getPrediction;
 
+window.getConfidence =
+    getConfidence;
 
-/* =========================================================
-   START
-   ========================================================= */
+window.getMarket =
+    getMarket;
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function(){
-
-        initializeAPEX();
-
-    }
-);
+window.getRisk =
+    getRisk;
 
 </script>
